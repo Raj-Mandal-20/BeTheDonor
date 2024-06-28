@@ -1,0 +1,24 @@
+{
+  "name": "hack4bengal_backend",
+  "version": "1.0.0",
+  "description": "this is made for hackathon",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Raj Mandal",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.4",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.4",
+    "socket.io": "^4.7.5"
+  }
+}
