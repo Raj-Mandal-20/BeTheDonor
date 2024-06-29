@@ -1,5 +1,5 @@
 'use server'
 
 export async function getHost() {
-    return process.env.HOST;
+    return process.env.HOSTB;
 }
