@@ -39,9 +39,10 @@ const Navbar = async () => {
         <Link href={"/"} className='text-white'>Home</Link>
         <Link href={"/myrequests"} className='text-white'>My Requests</Link>
         <Link href={"/allrequests"} className='text-white'>All Requets</Link>
+        <Link href={"/createrequest"} className='text-white'>Create Requet</Link>
       </div>
       {(cookies().has('usertoken')) ? 
-      <Link href={"/logout"}><FontAwesomeIcon icon={faArrowRightFromBracket} size='lg' className='text-blue-500' />logout</Link> : 
+      <Link href={"/logout"} className='text-white border-solid border-red-500 rounded-lg border-2 px-3 py-2 bg-red-500'>logout</Link> : 
       <div className='flex gap-3'>
         <Link href={"/login"} className='text-white border-solid border-red-500 rounded-lg border-2 px-3 py-2 bg-red-500'>login</Link>
         <Link href={"/register"} className='text-[#2fdde6] border-solid border-[#2fdde6] red-500 rounded-lg border-2 px-3 py-2'>Register</Link>
