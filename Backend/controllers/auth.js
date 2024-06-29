@@ -23,6 +23,7 @@ exports.signup = async (req, res, next) => {
   const pin = req.body.pin;
   const bloodGroup = req.body.bloodGroup;
   const available = req.body.available;
+  const phoneNumber = req.body.phoneNumber;
 
   User.findOne({ email: email })
     .then((user) => {
@@ -41,6 +42,7 @@ exports.signup = async (req, res, next) => {
         pin: pin,
         bloodGroup: bloodGroup,
         available: available,
+        phoneNumber : phoneNumber
       });
       // sendEMail(username, email);
       // console.log("sendemil Line Crossed!");
