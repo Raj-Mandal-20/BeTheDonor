@@ -31,3 +31,7 @@ body {
     text-wrap: balance;
   }
 } */
+
+.card-gradient {
+  background: linear-gradient(to bottom right, #1b3363, #122141);
+}
