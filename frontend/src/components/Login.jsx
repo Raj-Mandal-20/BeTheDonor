@@ -15,7 +15,7 @@ const Login = (props) => {
     const submit = async (e) => {
         e.preventDefault();
         setProgress(10)
-        let response = await fetch(`${props.HOST}/api/auth/user/login`, {
+        let response = await fetch(`${props.HOST}/auth/signin`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -39,7 +39,7 @@ const Login = (props) => {
             setProgress(100)
         }
         else {
-            setCookie(null, "usertoken", token.userToken, {
+            setCookie(null, "usertoken", token.token, {
                 maxAge: 30 * 24 * 60 * 60,
                 path: '/',
             })
@@ -53,9 +53,10 @@ const Login = (props) => {
                 progress: undefined,
                 theme: "light",
             });
+            console.log(token.token)
             setProgress(100)
-            setTimeout(() => { refresh() }, 100)
-            push("/menu");
+            // setTimeout(() => { refresh() }, 100)
+            // push("/menu");
         }
     }
 
@@ -64,7 +65,7 @@ const Login = (props) => {
     }
 
     return (
-        <div className='p-10 small:px-0 flex flex-col items-center w-full h-screen overflow-auto'>
+        <div className='p-4 small:px-0 flex flex-col gap-5 items-center bg-gradient-to-r from-[#253d6c] to-[#182e58] overflow-auto bg-[#051a39] rounded-lg shadow-md  shadow-black'>
             <LoadingBar
                 color='#3b82f6'
                 progress={progress}
@@ -82,20 +83,19 @@ const Login = (props) => {
                 pauseOnHover
                 theme="light"
             />
-            <h1 className='p-5 text-xl font-bold text-blue-500 italic'>User Login</h1>
-            <div className='p-5'>
+            <h1 className='p-3 text-xl font-bold text-white'>User Login</h1>
+            <div className='p-3'>
                 <form onSubmit={submit} className='flex flex-col gap-3'>
                     <div>
-                        <input type="email" name="email" autoComplete='username' value={data.email} placeholder='Email Address' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg' required />
+                        <input type="email" name="email" autoComplete='username' value={data.email} placeholder='Email Address' onChange={change} className='bg-slate-200 p-1 shadow rounded' required />
                     </div>
                     <div>
-                        <input type="password" name="password" autoComplete='current-password' value={data.password} placeholder='Password' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg' required />
+                        <input type="password" name="password" autoComplete='current-password' value={data.password} placeholder='Password' onChange={change} className='bg-slate-200 p-1 shadow rounded' required />
                     </div>
-                    <button type="submit" className='bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 active:from-cyan-400 active:to-blue-400 hover:shadow-blue-200 hover:shadow-md text-white font-bold p-3 rounded-lg'>Login</button>
+                    <button type="submit" className='bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 active:from-cyan-400 active:to-blue-400 hover:shadow-blue-200 hover:shadow text-white font-bold p-3 rounded-lg'>Login</button>
                 </form>
             </div>
-            <Link href={"/user/reset"} className='underline text-xs'>Forget Password ?</Link>
-            <div className='p-5 text-sm'>Don&apos;t have an account? <Link href={"/user/signup"} className='underline'>Sign Up</Link></div>
+            <div className='p-5 text-sm text-white'>Don&apos;t have an account? <Link href={"/register"} className='underline'>Register</Link></div>
         </div>
     )
 }

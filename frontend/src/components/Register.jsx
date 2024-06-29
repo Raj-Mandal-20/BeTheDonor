@@ -13,6 +13,7 @@ import LoadingBar from 'react-top-loading-bar'
 const Register = (props) => {
     const [progress, setProgress] = useState(0)
     const [password, setPassword] = useState("")
+    const [isChecked, setIsChecked] = useState(false);
     // const getStateValue = (value) => {
     //     // for geting  the input value pass the function in oChnage props and you will get value back from component
     //     setState(value);
@@ -27,10 +28,10 @@ const Register = (props) => {
         state: "",
         district: "",
         city: "",
-        pin: 0,
+        pin: "",
         contact: "",
         available: true,
-        bloodGroup: 'B+'
+        bloodGroup: ""
 
     })
     const { push, refresh } = useRouter();
@@ -81,7 +82,7 @@ const Register = (props) => {
                 });
                 setProgress(100)
                 setTimeout(() => { refresh() }, 100)
-                push("/menu");
+                // push("/menu");
             }
         } else {
             toast.error('Passwords do not page', {
@@ -104,6 +105,11 @@ const Register = (props) => {
 
     const changeP = (e) => {
         setPassword(e.target.value)
+    }
+
+    const handleCheckboxChange = (e) => {
+        setIsChecked(e.target.checked);
+        setData({ ...data, available: e.target.checked });
     }
 
     // function checkValue() {
@@ -140,7 +146,7 @@ const Register = (props) => {
     // // const 
 
     return (
-        <form onSubmit={submit} className='p-10 small:px-0 flex flex-col gap-5 items-center w-full overflow-auto bg-[#051a39]'>
+        <form onSubmit={submit} className='p-4 small:px-0 flex flex-col gap-5 items-center bg-gradient-to-r from-[#253d6c] to-[#182e58] overflow-auto bg-[#051a39] rounded-lg shadow-md  shadow-black'>
             <LoadingBar
                 color='#3b82f6'
                 progress={progress}
@@ -158,32 +164,50 @@ const Register = (props) => {
                 pauseOnHover
                 theme="light"
             />
-            <h1 className='p-2 text-xl font-bold text-blue-500 italic'>Register as a Donor</h1>
-            <div className='flex flex-col gap-2 p-5 small:p-2'>
+            <h1 className='p-1 text-xl font-bold text-white'>Register as a Donor</h1>
+            <div className='flex flex-col gap-4 p-5 small:p-2'>
+
                 <div className='flex gap-2'>
+
+                <input type="text" name="name" value={data.name} placeholder='Name' onChange={change} className='bg-slate-200 p-1 shadow text-black  rounded micro:w-2/3 self-center ' required />
+
+            <input type="email" name="email" value={data.email} placeholder='Email' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center' required />
+                </div>
 
                     {/* <input type="text" name="fname" value={data.fname} placeholder='First Name' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
                     <input type="text" name="fname" value={data.fname} placeholder='First Name' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required /> */}
 
-                    <input type="text" name="name" value={data.name} placeholder='Last Name' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
+
+                <div className='flex gap-2'>
+
+                    <input type="text" name="state" value={data.state} placeholder='State' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center' required />
+                    <input type="text" name="district" value={data.district} placeholder='District' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center' required />
+                </div>
+                <div className='flex gap-2'>
+                    <input type="text" name="city" value={data.city} placeholder='City' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
+
+                    <input type="text" name="pin" value={data.pin} placeholder='Pincode' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
+                </div>
+                <div className='flex gap-2'>
+                <input type="tel" name="contact" value={data.contact} placeholder='Contact Number' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
+
+                        <select name="bloodGroup" id="bg" value={data.bloodGroup} onChange={change} className='w-1/2'>
+                        <option value="">Select Blood Group</option>
+                            <option value="A+">A+</option>
+                            <option value="B+">B+</option>
+                            <option value="O+">O+</option>
+                            <option value="A-">A-</option>
+                            <option value="B-">B-</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
 
                 </div>
-                <input type="email" name="email" value={data.email} placeholder='Email' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
+                <div className='flex gap-2'>
+                    <input type="password" name="password" value={data.password} placeholder='Password' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
 
-                <div>
-
-                    <input type="text" name="state" value={data.state} placeholder='State' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
-                    <input type="text" name="district" value={data.district} placeholder='District' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
-                </div>
-                <div>
-                    <input type="text" name="city" value={data.city} placeholder='City' onChange={change} className='bg-slate-200 p-1 shadow rounded-lg micro:w-2/3 self-center w-full' required />
-
-                    <input type="number" name="pincode" value={data.pincode} placeholder='Pincode' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
-                </div>
-                <input type="tel" name="contact" value={data.contact} placeholder='Contact Number' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
-                <div>
-                    <input type="password" name="password" value={data.password} placeholder='Password' onChange={change} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
-                    <input type="password" name="cpassword" value={password} placeholder='Confirm Password' onChange={changeP} className='bg-slate-200 p-2 shadow rounded-lg micro:w-2/3 self-center w-full' required />
+                    <input type="password" name="cpassword" value={password} placeholder='Confirm Password' onChange={changeP} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
 
                 </div>
 
@@ -238,9 +262,16 @@ const Register = (props) => {
                         <option value="">-- select one -- </option>
                     </select>
                 </div> */}
+
+<div className='flex gap-2'>
+            <input type="checkbox" id="available" checked={isChecked} onChange={handleCheckboxChange} />
+            <label htmlFor="available" className='text-white'>Available to Donate ? </label>
+        </div>
+            <div className='text-gray-300'>This will allow others to see your contact information.</div>
+
+            <button type="submit" className='w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 active:from-cyan-400 active:to-blue-400 hover:shadow-blue-200 hover:shadow-sm text-white font-bold p-3 rounded-lg '>Sign Up</button>
             </div>
-            <button type="submit" className='bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 active:from-cyan-400 active:to-blue-400 hover:shadow-blue-200 hover:shadow-md text-white font-bold p-3 rounded-lg w-1/2'>Sign Up</button>
-            <div className='p-5 text-sm'>Already have an account? <Link href={"/login"} className='underline'>Login</Link></div>
+            <div className='p-5 text-sm text-white'>Already have an account? <Link href={"/login"} className='underline text-white'>Login</Link></div>
         </form>
     )
 }

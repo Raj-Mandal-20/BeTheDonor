@@ -40,11 +40,19 @@ const Navbar = async () => {
         <Link href={"/myrequests"} className='text-white'>My Requests</Link>
         <Link href={"/allrequests"} className='text-white'>All Requets</Link>
       </div>
-      {/* {(cookies().has('usertoken')) ? */}
+      {(cookies().has('usertoken')) ? 
+      <Link href={"/logout"}><FontAwesomeIcon icon={faArrowRightFromBracket} size='lg' className='text-blue-500' />logout</Link> : 
+      <div className='flex gap-3'>
+        <Link href={"/login"} className='text-white border-solid border-red-500 rounded-lg border-2 px-3 py-2 bg-red-500'>login</Link>
+        <Link href={"/register"} className='text-[#2fdde6] border-solid border-[#2fdde6] red-500 rounded-lg border-2 px-3 py-2'>Register</Link>
+        </div>
+      }
+
+      {/* // </div> : <div className='flex gap-3'>}
         {/* // <div className='flex gap-3 items-center'> */}
         {/* //   <Link href={"/user/dashboard/profile"} className='flex gap-2 items-center'> */}
         {/* //     <p className='mini:hidden'>Hi! {data.name.split(" ")[0]}</p> */}
-        //     {/* <Image src={data.image} alt="" height={25} width={25} className='rounded-full ring-2 ring-blue-500 w-[25px] h-[25px]' /> */}
+        {/* <Image src={data.image} alt="" height={25} width={25} className='rounded-full ring-2 ring-blue-500 w-[25px] h-[25px]' /> */}
         {/* //     </Link> */}
         {/* //   <Link href={"/logout"}><FontAwesomeIcon icon={faArrowRightFromBracket} size='lg' className='text-blue-500' /></Link> */}
         {/* // </div> : <div className='flex gap-3'> */}
