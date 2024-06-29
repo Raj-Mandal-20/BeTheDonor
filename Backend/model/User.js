@@ -6,6 +6,9 @@ const userSchema = new Schema({
         type : String,
         required : true
     },
+    imageUrl : {
+        type : String,
+    },
     email : {
         type : String,
         required : true
@@ -27,7 +30,11 @@ const userSchema = new Schema({
         required : true
     },
     pin : {
-        type : Number, 
+        type : String, 
+        required : true
+    },
+    phoneNumber : {
+        type : String,
         required : true
     },
     bloodGroup : {
@@ -38,9 +45,9 @@ const userSchema = new Schema({
         type : Boolean,
         required : true
     },
-    posts : [{
+    requests : [{
         type : Schema.Types.ObjectId,
-        ref : 'Post'
+        ref : 'Request'
     }]
 }, {timestamps : true});
 

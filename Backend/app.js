@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const authRouter = require('./routes/auth');
+const feedRouter = require('./routes/feed');
+
 const app = express();
 
 const fileStorage = multer.diskStorage({
@@ -47,6 +49,8 @@ app.use((req, res, next)=>{
 
 
 app.use('/auth', authRouter);
+
+app.use('/v1', feedRouter);
 
 app.use('/', (req, res, next)=>{
     res.send('Hack4Bengal API');
