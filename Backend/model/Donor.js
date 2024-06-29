@@ -14,8 +14,8 @@ const donorSchema = new Schema({
         type : Number,
         required : true
     },
-    phoneNo : {
-        type : Number,
+    phoneNumber : {
+        type : String,
         requried: true
     },
     bloodGroup : {
