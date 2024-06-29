@@ -42,6 +42,6 @@ const userSchema = new Schema({
         type : Schema.Types.ObjectId,
         ref : 'Post'
     }]
-});
+}, {timestamps : true});
 
 module.exports =  mongoose.model('User', userSchema);

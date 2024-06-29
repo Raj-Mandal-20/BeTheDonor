@@ -3,7 +3,8 @@ require('dotenv').config();
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const multer = require('multer')
+const multer = require('multer');
+const authRouter = require('./routes/auth');
 const app = express();
 
 const fileStorage = multer.diskStorage({
@@ -44,8 +45,11 @@ app.use((req, res, next)=>{
   next();
 })
 
+
+app.use('/auth', authRouter);
+
 app.use('/', (req, res, next)=>{
-    res.send('Hello World');
+    res.send('Hack4Bengal API');
 });
 
 app.use((error, req, res, next) => {
@@ -64,7 +68,6 @@ mongoose.connect(process.env.DATABASE_URL).then(()=>{
     const server = app.listen(process.env.PORT, ()=>{
         console.log(`Server is Running on PORT ${process.env.PORT} 🚀`);
     });
-
     const rule = {
         cors : {
             origin : "*"
