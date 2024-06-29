@@ -27,7 +27,7 @@ const Login = (props) => {
         console.log(token);
         setProgress(70)
         if (token.message) {
-            toast.error('Invalid email or password', {
+            toast.error(token.message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,

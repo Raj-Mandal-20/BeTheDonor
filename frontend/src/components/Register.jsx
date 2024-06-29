@@ -29,7 +29,7 @@ const Register = (props) => {
         district: "",
         city: "",
         pin: "",
-        contact: "",
+        phoneNumber: "",
         available: true,
         bloodGroup: ""
 
@@ -52,8 +52,8 @@ const Register = (props) => {
             setProgress(40)
             const token = await response.json();
             setProgress(70)
-            if (token.error) {
-                toast.error('User with same email id already exists', {
+            if (token.message) {
+                toast.error(token.message, {
                     position: "top-center",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -189,7 +189,7 @@ const Register = (props) => {
                     <input type="text" name="pin" value={data.pin} placeholder='Pincode' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
                 </div>
                 <div className='flex gap-2'>
-                <input type="tel" name="contact" value={data.contact} placeholder='Contact Number' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
+                <input type="text" name="phoneNumber" value={data.phoneNumber} placeholder='Contact Number' onChange={change} className='bg-slate-200 p-1 shadow rounded micro:w-2/3 self-center ' required />
 
                         <select name="bloodGroup" id="bg" value={data.bloodGroup} onChange={change} className='w-1/2'>
                         <option value="">Select Blood Group</option>
