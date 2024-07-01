@@ -1,9 +1,7 @@
 "use client"
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { setCookie } from 'nookies'
 import { parseCookies } from 'nookies'
-import Link from 'next/link'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingBar from 'react-top-loading-bar'
@@ -52,11 +50,11 @@ const Request = (props) => {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "light",
+                theme: "dark",
             });
             setProgress(100)
-            // setTimeout(() => { refresh() }, 100)
-            // push("/menu");
+            refresh()
+            push("/myprofile");
         }
     }
 
@@ -104,7 +102,6 @@ const Request = (props) => {
                 </div>
                 <div className="mt-4 flex justify-between w-full">
                     <button className="px-4 w-full py-2 rounded-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="submit">Submit</button>
-                    {/* <button className="px-4 py-2 rounded-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="button">Edit</button> */}
                 </div>
             </form>
             <ToastContainer />

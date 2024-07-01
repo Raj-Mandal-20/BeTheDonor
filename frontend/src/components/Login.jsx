@@ -24,18 +24,17 @@ const Login = (props) => {
         });
         setProgress(40)
         const res = await response.json();
-        console.log(res);
         setProgress(70)
-        if (data.message) {
+        if (res.message) {
             toast.error(res.message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 3000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "light",
+                theme: "dark",
             });
             setProgress(100)
         }
@@ -50,18 +49,17 @@ const Login = (props) => {
             })
             toast.success("Successfully logged in", {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 3000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "light",
+                theme: "dark",
             });
-            console.log(res.token)
             setProgress(100)
-            // setTimeout(() => { refresh() }, 100)
-            // push("/menu");
+            refresh()
+            setTimeout(()=>{push("/allrequest")}, 300)
         }
     }
 
@@ -70,7 +68,7 @@ const Login = (props) => {
     }
 
     return (
-        <div className='p-4, small:px-0 flex flex-col gap-5 items-center bg-gradient-to-r from-[#253d6c] to-[#182e58] overflow-auto bg-[#051a39] rounded-lg shadow-md  shadow-black'>
+        <div className='p-4 small:px-0 flex flex-col gap-5 items-center bg-gradient-to-r from-[#253d6c] to-[#182e58] overflow-auto bg-[#051a39] rounded-lg shadow-md  shadow-black'>
             <LoadingBar
                 color='#3b82f6'
                 progress={progress}
@@ -90,14 +88,14 @@ const Login = (props) => {
             />
             <h1 className='p-1 text-xl font-bold text-white'>User Login</h1>
             <div className='p-5'>
-                <form onSubmit={submit} className='flex flex-col gap-3'>
+                <form onSubmit={submit} className='flex flex-col gap-5 p-4'>
                     <div>
-                        <input type="email" name="email" autoComplete='username' value={data.email} placeholder='Email Address' onChange={change} className='bg-slate-200 py-1 px-2 shadow rounded' required />
+                        <input type="email" name="email" autoComplete='username' value={data.email} placeholder='Email Address' onChange={change} className='bg-transparent py-1 border-b-2 border-cyan-500 placeholder-white text-white micro:w-2/3 self-center outline-none' required />
                     </div>
                     <div>
-                        <input type="password" name="password" autoComplete='current-password' value={data.password} placeholder='Password' onChange={change} className='bg-slate-200 py-1 px-2 shadow rounded' required />
+                        <input type="password" name="password" autoComplete='current-password' value={data.password} placeholder='Password' onChange={change} className='bg-transparent py-1 border-b-2 border-cyan-500 placeholder-white text-white micro:w-2/3 self-center outline-none' required />
                     </div>
-                    <button type="submit" className='bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 active:from-cyan-400 active:to-blue-400 hover:shadow-blue-200 hover:shadow text-white font-bold p-3 rounded-lg'>Login</button>
+                    <button type="submit" className='w-full bg-[#b9003a] hover:bg-[#e2034b] shadow-sm text-white font-bold p-3 rounded-lg '>Login</button>
                 </form>
             </div>
             <div className='p-5 text-sm text-white'>Don&apos;t have an account? <Link href={"/register"} className='underline'>Register</Link></div>
