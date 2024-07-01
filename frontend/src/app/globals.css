@@ -31,3 +31,36 @@ body {
     text-wrap: balance;
   }
 } */
+
+.card-gradient {
+  background: linear-gradient(to bottom right, #1b3363, #122141);
+}
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.card {
+  background: linear-gradient(to bottom right, #d80445, #85022b);
+}
+
+@keyframes blink {
+  0%, 100% {
+    fill: #00ff00;
+  }
+  50% {
+    fill: #006256;
+  }
+}
+
+.blink {
+  animation: blink 1s infinite;
+}
+
+.logo-circle {
+  background-color: black;
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
