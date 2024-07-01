@@ -14,9 +14,9 @@ const Request = (props) => {
 
     const submit = async (e) => {
         e.preventDefault();
-        
+        console.log(data)
         setProgress(10)
-        let response = await fetch(`${props.HOST}/v1/createrequest`, {
+        let response = await fetch(`${props.HOST}/v1/create-request`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
