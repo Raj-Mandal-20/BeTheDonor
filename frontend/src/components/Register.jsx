@@ -211,9 +211,9 @@ const Register = (props) => {
 
                 </div>
 
-                {/* <div class="form-group col-md-4">
+                {/* <div className="form-group col-md-4">
                     {/* <label for="state">State</label>
-                    <select class="form-control" id="state" name='state'>
+                    <select className="form-control" id="state" name='state'>
                         <option value="SelectState">Select State</option>
                         <option value="Andra Pradesh">Andra Pradesh</option>
                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -256,9 +256,9 @@ const Register = (props) => {
                 {/* <States onChange={getStateValue} />
                     <Districts state={state} onChange={getDistrictValue} /> */}
                 {/* </div>
-                <div class="form-group col-md-4">
+                <div className="form-group col-md-4">
                     <label for="inputDistrict">District</label>
-                    <select class="form-control" id="inputDistrict" name='district'>
+                    <select className="form-control" id="inputDistrict" name='district'>
                         <option value="">-- select one -- </option>
                     </select>
                 </div> */}

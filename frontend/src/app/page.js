@@ -32,12 +32,12 @@ export default function Home() {
           </p>
         </div>
       </div>
-        <footer class="bg-gray-900 text-white py-10 w-full p-10">
-        <div class="container mx-auto flex justify-between items-center">
-            <p class="text-sm">© 2024 Be-The-Donor. All rights reserved.</p>
-            <div class="flex space-x-4">
-                <a href="#" class="text-sm hover:underline">Privacy</a>
-                <a href="#" class="text-sm hover:underline">Terms of Service</a>
+        <footer className="bg-gray-900 text-white py-10 w-full p-10">
+        <div className="container mx-auto flex justify-between items-center">
+            <p className="text-sm">© 2024 Be-The-Donor. All rights reserved.</p>
+            <div className="flex space-x-4">
+                <a href="#" className="text-sm hover:underline">Privacy</a>
+                <a href="#" className="text-sm hover:underline">Terms of Service</a>
             </div>
         </div>
     </footer>

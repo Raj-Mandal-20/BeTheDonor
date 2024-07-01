@@ -66,7 +66,7 @@ const Request = (props) => {
 
 
     return (
-        <div class="h-screen flex items-start justify-center bg-[#051a39]">
+        <div className="h-screen flex items-start justify-center bg-[#051a39]">
         <div className="w-full max-w-md p-6 text-white rounded-lg shadow-lg card-gradient">
             <h2 className="text-2xl font-bold mb-2">Donate Blood</h2>
             <p className="mb-4 text-gray-400">Fill out the form to schedule your blood donation.</p>
