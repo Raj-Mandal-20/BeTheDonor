@@ -15,7 +15,7 @@ future by them by posting any poster related to this (future implementation.
 ## Setup locally
 
 ```bash
-git clone https://github.com/Raj-Mandal-20/hack4bengal.git
+https://github.com/Raj-Mandal-20/BeTheDonor.git
 ```
 ### To Start Frontend
 ---
