@@ -49,7 +49,7 @@ const Login = (props) => {
             })
             toast.success("Successfully logged in", {
                 position: "top-center",
-                autoClose: 3000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -59,7 +59,7 @@ const Login = (props) => {
             });
             setProgress(100)
             refresh()
-            setTimeout(()=>{push("/allrequest")}, 300)
+            setTimeout(()=>{push("/allrequest")}, 2000)
         }
     }
 
