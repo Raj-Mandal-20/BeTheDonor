@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 const requestSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     city: {
       type: String,
       required: true,
@@ -19,15 +15,27 @@ const requestSchema = new Schema(
       type: String,
       required: true,
     },
-    // email: {
-    //   type: String,
-    //   required: true,
-    // },
     bloodUnit: {
       type: Number,
       required: true,
     },
     bloodGroup: {
+      type: String,
+      required: true,
+    },
+    deadline: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    phoneNumber: {
+      type: String,
+      required: true
+    },
+    email: {
       type: String,
       required: true,
     },
@@ -40,7 +48,7 @@ const requestSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-    //   required: true,
+      required: true,
     },
   },
   { timestamps: true }
