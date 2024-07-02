@@ -1,9 +1,7 @@
 "use client"
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { setCookie } from 'nookies'
 import { parseCookies } from 'nookies'
-import Link from 'next/link'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingBar from 'react-top-loading-bar'
@@ -16,9 +14,9 @@ const Request = (props) => {
 
     const submit = async (e) => {
         e.preventDefault();
-        
+        console.log(data)
         setProgress(10)
-        let response = await fetch(`${props.HOST}/v1/createrequest`, {
+        let response = await fetch(`${props.HOST}/v1/create-request`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -52,11 +50,11 @@ const Request = (props) => {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "light",
+                theme: "dark",
             });
             setProgress(100)
-            // setTimeout(() => { refresh() }, 100)
-            // push("/menu");
+            refresh()
+            push("/myprofile");
         }
     }
 
@@ -66,7 +64,7 @@ const Request = (props) => {
 
 
     return (
-        <div class="h-screen flex items-start justify-center bg-[#051a39]">
+        <div className="h-screen flex items-start justify-center bg-[#051a39]">
         <div className="w-full max-w-md p-6 text-white rounded-lg shadow-lg card-gradient">
             <h2 className="text-2xl font-bold mb-2">Donate Blood</h2>
             <p className="mb-4 text-gray-400">Fill out the form to schedule your blood donation.</p>
@@ -104,7 +102,6 @@ const Request = (props) => {
                 </div>
                 <div className="mt-4 flex justify-between w-full">
                     <button className="px-4 w-full py-2 rounded-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="submit">Submit</button>
-                    {/* <button className="px-4 py-2 rounded-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="button">Edit</button> */}
                 </div>
             </form>
             <ToastContainer />
