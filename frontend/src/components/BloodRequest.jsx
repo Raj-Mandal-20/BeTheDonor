@@ -6,6 +6,9 @@ const BloodRequest = (props) => {
     console.log(props);
 
     const cookies = parseCookies();
+    const createdAt = new Date(props.request.createdAt).toDateString();    
+    const currentUser =  cookies["userId"];
+
 
     useEffect(()=>{
         const fetchUser = async () => {
@@ -18,6 +21,7 @@ const BloodRequest = (props) => {
                 body: JSON.stringify({userId: props.request.userId})
             });
             const fetchedUser = await getUser.json();
+            console.log(fetchedUser)
             setUser(fetchedUser.user);
         }
         return ()=>{
@@ -107,9 +111,14 @@ const BloodRequest = (props) => {
           </div>
         </div>
         <div className="mt-6 flex justify-between">
-          <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-black hover:bg-gray-300">
+          { currentUser !== props.request.userId &&  <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-black hover:bg-gray-300">
             Accept Donation
-          </button>
+          </button>}  
+          {
+            currentUser === props.request.userId && <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-300 text-white"> Requested By You </div>
+          }
+
+         
           <div className="flex items-center space-x-2 text-gray-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +133,7 @@ const BloodRequest = (props) => {
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <span className="text-sm">2 hours ago</span>
+            <span className="text-sm">{createdAt}</span>
           </div>
         </div>
       </div>
