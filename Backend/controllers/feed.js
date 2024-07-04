@@ -166,3 +166,28 @@ exports.requestHistory = async(req, res, next)=>{
     next(err);
   }
 }
+
+exports.acceptDonation = async (req, res, next)=>{
+  try{
+    // donor increases
+    // one time accept
+    
+    const requestId = req.body.requestId;
+    const bloodRequest = await Request.findById(requestId);
+    bloodRequest.donors.push(req.userId);
+    await bloodRequest.save();
+    console.log(bloodRequest);
+    res.status(200).json({
+      message : 'Donation Accepted Successfully!',
+      bloodRequest  :   bloodRequest
+    });
+    
+
+  }
+  catch(err){
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}

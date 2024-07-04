@@ -9,6 +9,6 @@ router.get('/all-blood-request',isAuth, feedController.allBloodRequest);
 router.post('/fetchUserByUserId',isAuth, feedController.fetchUserDetails);
 router.get('/my-profile', isAuth, feedController.myProfile);
 router.get('/request-history', isAuth, feedController.requestHistory);
-
+router.post('/donation', isAuth, feedController.acceptDonation);
 
 module.exports = router;
