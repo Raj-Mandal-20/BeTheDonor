@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const Request = require('../model/Request');
 const User = require('../model/User');
 const nodemailer = require("nodemailer");
+const Donor = require('../model/Donor');
 
 exports.createRequest = async (req, res, next)=>{
     
@@ -15,43 +16,33 @@ exports.createRequest = async (req, res, next)=>{
     throw error;
   }
 
-  const name = req.body.name;
   const city = req.body.city;
   const state = req.body.state;
   const pin = req.body.pin;
-  const userId = req.body.userId;
-
+  const userId = req.userId;
   const bloodGroup = req.body.bloodGroup;
   const bloodUnit  = req.body.bloodUnit;
-  let phoneNumber, email;
+  const deadline = req.body.deadline;
 
-  User.findById(userId).then(user => {
-    if(!user){
-        throw new Error('User Not Found');
-    }
-    phoneNumber = user.phoneNumber;    
-    email = user.email;
-  })
-  
-  
+
   try{
-      const request = new Request({
-         name : name,
-         city : city,
-         state : state,
-         pin : pin,
-         bloodGroup : bloodGroup,
-         bloodUnit : bloodUnit,
-         phoneNumber : phoneNumber,
-         email : email,
-         userId : req.userId
-      });    
-      const reqId = await request.save();
+      
+    const request = new Request({
+        city : city,
+        state : state,
+        pin : pin,
+        bloodGroup : bloodGroup,
+        bloodUnit : bloodUnit,
+        userId : userId,
+        deadline : deadline
+    });    
+    const bloodRequest = await request.save();
+    console.log(bloodRequest);
 
-      res.status(200).json({
-        reqId : reqId,
+    res.status(200).json({
+        bloodRequest : bloodRequest,
         message: 'Request Created Successfully!'
-      })
+    });
   }
   catch(err){
     if (!err.statusCode) {
@@ -103,5 +94,19 @@ exports.notification = async(req, res, next)=>{
   }
   catch(err){
       console.log(err);
+  }
+}
+exports.allBloodRequest = async(req, res, next)=>{
+  try{
+    const allBloodRequest = await Request.find();
+    res.status(200).json({
+      allBloodRequest : allBloodRequest
+    });
+  }
+  catch(err){
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 }

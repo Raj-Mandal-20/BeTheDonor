@@ -28,7 +28,7 @@ const Request = (props) => {
         const res = await response.json();
         console.log(res);
         setProgress(70)
-        if (res.message) {
+        if (!res.bloodRequest) {
             toast.error(res.message, {
                 position: "top-center",
                 autoClose: 5000,
