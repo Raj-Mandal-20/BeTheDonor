@@ -1,64 +1,30 @@
 "use client";
-
-import { useRouter } from 'next/navigation'
-
+import React, { useEffect, useState } from 'react';
+import { parseCookies } from 'nookies';
 const BloodRequest = (props) => {
-
+    const [user, setUser] = useState({});
     console.log(props);
-    // const cookies = parseCookies();
-    // const [data, setData] = useState({ userId: cookies["userId"], city: "", state: "", pin: "", bloodUnit: "", bloodGroup: "", deadline: "" })
-    // const { push, refresh } = useRouter();
-    // const [progress, setProgress] = useState(0)
 
-    // const submit = async (e) => {
-    //     e.preventDefault();
-    //     console.log(data)
-    //     setProgress(10)
-    //     let response = await fetch(`${props.HOST}/v1/create-request`, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             Authorization: 'Bearer ' + cookies["usertoken"]
-    //         },
-    //         body: JSON.stringify(data)
-    //     });
-    //     setProgress(40)
-    //     const res = await response.json();
-    //     console.log(res);
-    //     setProgress(70)
-    //     if (!res.bloodRequest) {
-    //         toast.error(res.message, {
-    //             position: "top-center",
-    //             autoClose: 5000,
-    //             hideProgressBar: false,
-    //             closeOnClick: true,
-    //             pauseOnHover: true,
-    //             draggable: true,
-    //             progress: undefined,
-    //             theme: "light",
-    //         });
-    //         setProgress(100)
-    //     }
-    //     else {
-    //         toast.success(res.message, {
-    //             position: "top-center",
-    //             autoClose: 5000,
-    //             hideProgressBar: false,
-    //             closeOnClick: true,
-    //             pauseOnHover: true,
-    //             draggable: true,
-    //             progress: undefined,
-    //             theme: "dark",
-    //         });
-    //         setProgress(100)
-    //         refresh()
-    //         push("/myprofile");
-    //     }
-    // }
+    const cookies = parseCookies();
 
-    // const change = (e) => {
-    //     setData({ ...data, [e.target.name]: e.target.value })
-    // }
+    useEffect(()=>{
+        const fetchUser = async () => {
+            const getUser = await fetch(`${props.HOST}/v1/fetchUserByUserId`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + cookies["usertoken"],
+                },
+                body: JSON.stringify({userId: props.request.userId})
+            });
+            const fetchedUser = await getUser.json();
+            setUser(fetchedUser.user);
+        }
+        return ()=>{
+            fetchUser();
+        }
+    }, []);
+
 
   
   return (
@@ -82,7 +48,7 @@ const BloodRequest = (props) => {
               </svg>
             </div>
             <div className="flex flex-col">
-              <h3 className="text-2xl font-bold ml-3">Sovon Das</h3>
+              <h3 className="text-2xl font-bold ml-3">{user.name}</h3>
               <h5 className="text font-bold ml-3">{props.request.state} | {props.request.city} </h5>
             </div>
           </div>
