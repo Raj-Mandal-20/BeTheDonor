@@ -1,8 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const feedController = require('../controllers/feed');
+const isAuth = require('../middleware/is-auth');
 
-router.post('/create-request', feedController.createRequest)
-
+router.post('/create-request', isAuth,  feedController.createRequest);
+router.get('/notification', isAuth, feedController.notification);
+router.get('/all-blood-request',isAuth, feedController.allBloodRequest);
+router.post('/fetchUserByUserId',isAuth, feedController.fetchUserDetails);
+router.get('/my-profile', isAuth, feedController.myProfile);
+router.get('/request-history', isAuth, feedController.requestHistory);
+router.post('/donation', isAuth, feedController.acceptDonation);
 
 module.exports = router;
