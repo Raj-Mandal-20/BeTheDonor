@@ -4,7 +4,7 @@ const feedController = require('../controllers/feed');
 const isAuth = require('../middleware/is-auth');
 
 router.post('/create-request', isAuth,  feedController.createRequest);
-router.get('/notification', isAuth, feedController.notification);
+router.get('/notification', feedController.notification);
 router.get('/all-blood-request',isAuth, feedController.allBloodRequest);
 router.post('/fetchUserByUserId',isAuth, feedController.fetchUserDetails);
 router.get('/my-profile', isAuth, feedController.myProfile);

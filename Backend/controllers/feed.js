@@ -72,7 +72,9 @@ async function sendEMail() {
     },
   });
   
-  const recipients = ['hailchiku6@gmail.com', 'anioriginal4@gmail.com', 'souvikbh2@gmail.com', 'usingrajcseinfo@gmail.com'];
+  // const recipients = ['hailchiku6@gmail.com', 'anioriginal4@gmail.com', 'souvikbh2@gmail.com', 'usingrajcseinfo@gmail.com'];
+  const recipients = ['usingrajcseinfo@gmail.com'];
+
   const mailOptions = {
     from: `BeTheDonor <${process.env.EMAIL_FROM}>`,
     to: recipients.join(','),
