@@ -13,7 +13,7 @@ const Requests = (props) => {
     const fetchRequests = async () => {
       const requests = await fetch(`${props.HOST}/v1/all-blood-request`, {
         method: "GET",
-        headers: {
+        headers: {    
           "Content-Type": "application/json",
           Authorization: "Bearer " + cookies["usertoken"],
         },
@@ -26,7 +26,7 @@ const Requests = (props) => {
     return () => {
       fetchRequests();
     };
-  }, []);
+  }, [cookies, props.HOST]);
 
   return (
     <div className="bg-[#051a39] p-5 h-full flex flex-wrap gap-8 justify-center">

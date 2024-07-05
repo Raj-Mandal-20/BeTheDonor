@@ -27,12 +27,12 @@ const MyProfile = (props) => {
       const hist = await getHistory.json();
       console.log(hist.bloodRequests);
       setHistory(hist.bloodRequests);
-      setLoading2(false);
+      setLoading2(false);   
     };
     return () => {
       fetchRequests();
     };
-  }, []);
+  }, [cookies, props.HOST]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -51,7 +51,7 @@ const MyProfile = (props) => {
     return () => {
       fetchUser();
     };
-  }, []);
+  }, [cookies, props.HOST]);
 
   return (
     <div className="bg-[rgb(5,26,57)] flex items-start p-4 justify-center min-h-screen">
