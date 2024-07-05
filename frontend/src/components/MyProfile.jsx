@@ -85,7 +85,7 @@ const MyProfile = (props) => {
                 viewBox="0 0 20 20"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                   clip-rule="evenodd"
                 ></path>
@@ -113,7 +113,7 @@ const MyProfile = (props) => {
                 viewBox="0 0 20 20"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M3 10a7 7 0 1114 0 7 7 0 01-14 0zm4-1h6a1 1 0 000-2H7a1 1 0 100 2zM5 11a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
                   clip-rule="evenodd"
                 ></path>
