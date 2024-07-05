@@ -26,7 +26,7 @@ const Requests = (props) => {
     return () => {
       fetchRequests();
     };
-  }, []);
+  }, [cookies, props.HOST]);
 
   return (
     <div className="bg-[#051a39] p-5 h-full flex flex-wrap gap-8 justify-center">

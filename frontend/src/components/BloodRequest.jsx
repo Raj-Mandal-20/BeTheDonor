@@ -28,7 +28,7 @@ const BloodRequest = (props) => {
     return () => {
       fetchUser();
     };
-  }, []);
+  }, [props.HOST, cookies, props.request.userId ]);
 
   const submit = async (e) => {
     e.preventDefault();
