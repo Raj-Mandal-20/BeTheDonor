@@ -21,7 +21,7 @@ const Requests = (props) => {
         return ()=>{
             fetchRequests();
         }
-    }, []);
+    }, [allRequests]);
 
 
 

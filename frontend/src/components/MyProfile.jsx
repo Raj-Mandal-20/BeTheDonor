@@ -26,7 +26,7 @@ const MyProfile = (props) => {
     return () => {
       fetchRequests();
     };
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,7 +44,7 @@ const MyProfile = (props) => {
     return () => {
       fetchUser();
     };
-  }, []);
+  }, [profile]);
 
   
   return (
