@@ -55,7 +55,7 @@ const MyProfile = (props) => {
 
   return (
     <div className="bg-[rgb(5,26,57)] flex items-start p-4 justify-center min-h-screen">
-      {loading1 && (
+      {/* {loading1 && (
         <HashLoader
           color={"white"}
           loading={loading1}
@@ -63,7 +63,7 @@ const MyProfile = (props) => {
           aria-label="Loading Spinner"
           data-testid="loader"
         />
-      )}
+      )} */}
       {!loading1 && (
         <div className="bg-white w-2/3 p-6 rounded-lg shadow-lg ">
           <div className="flex items-center mb-4">
