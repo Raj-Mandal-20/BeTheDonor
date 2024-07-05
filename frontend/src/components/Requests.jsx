@@ -10,6 +10,7 @@ const Requests = (props) => {
   const [allRequests, setAllRequests] = useState([]);
 
   useEffect(() => {
+    
     const fetchRequests = async () => {
       const requests = await fetch(`${props.HOST}/v1/all-blood-request`, {
         method: "GET",
@@ -26,7 +27,7 @@ const Requests = (props) => {
     return () => {
       fetchRequests();
     };
-  }, [cookies, props.HOST]);
+  }, [cookies, props.HOST, loading, allRequests]);
 
   return (
     <div className="bg-[#051a39] p-5 h-full flex flex-wrap gap-8 justify-center">

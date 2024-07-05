@@ -32,7 +32,7 @@ const MyProfile = (props) => {
     return () => {
       fetchRequests();
     };
-  }, [cookies, props.HOST]);
+  }, [cookies, props.HOST, loading2, history]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -51,7 +51,7 @@ const MyProfile = (props) => {
     return () => {
       fetchUser();
     };
-  }, [cookies, props.HOST]);
+  }, [cookies, props.HOST, loading1, profile]);
 
   return (
     <div className="bg-[rgb(5,26,57)] flex items-start p-4 justify-center min-h-screen">
