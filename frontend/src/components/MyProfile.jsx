@@ -29,10 +29,11 @@ const MyProfile = (props) => {
       setHistory(hist.bloodRequests);
       setLoading2(false);
     };
-    return () => {
+
+    if(!history || !profile){
       fetchRequests();
-    };
-  }, []);
+    }
+  }, [cookies, props.HOST, loading2, history, profile]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -48,10 +49,12 @@ const MyProfile = (props) => {
       setProfile(profile.myProfile);
       setLoading1(false);
     };
-    return () => {
+
+    if(!profile || !history){
       fetchUser();
-    };
-  }, []);
+    }
+
+  }, [cookies, props.HOST, loading1, profile, history]);
 
   return (
     <div className="bg-[rgb(5,26,57)] flex items-start p-4 justify-center min-h-screen">
