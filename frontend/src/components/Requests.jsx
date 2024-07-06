@@ -37,10 +37,10 @@ const Requests = (props) => {
       fetchRequests();
       fetchRequests()
     }
-  }, [props.HOST, allRequests.length, cookies]);
+  }, [props.HOST, allRequests.length, cookies]);  
 
   return (
-    <div className="bg-[#051a39] p-5 h-full flex flex-wrap gap-8 justify-center">
+    <div className={`bg-[#051a39] p-5 h-full flex flex-wrap gap-8 justify-center pb-20  min-h-screen`}>
       {loading && (
         <HashLoader 
           color={'white'}
