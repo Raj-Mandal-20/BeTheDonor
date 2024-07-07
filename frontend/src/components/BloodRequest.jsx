@@ -32,7 +32,7 @@ const BloodRequest = (props) => {
     return () => {
       fetchUser();
     };
-  }, []);
+  }, [props.HOST, cookies, props.request.userId, user]);
 
   const submit = async (e) => {
     e.preventDefault();

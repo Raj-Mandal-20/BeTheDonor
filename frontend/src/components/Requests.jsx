@@ -27,8 +27,10 @@ const Requests = (props) => {
 
     if (!allRequests.length) {
       fetchRequests();
+      fetchRequests();
     };
-  }, []);
+   
+  }, [allRequests]);
 
   return (
     <div className={`bg-[#051a39] p-5 h-full flex flex-wrap gap-8 justify-center pb-20  min-h-screen`}>
