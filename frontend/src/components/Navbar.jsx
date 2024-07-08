@@ -26,7 +26,6 @@ const Navbar = async () => {
       <div className='flex gap-8 items-center small:hidden'>
         <Link href={"/"} className='text-white'>Home</Link>
         <Link href={"/allrequest"} className='text-white'>All Requets</Link>
-        <Link href={"/createrequest"} className='text-white'>Create Request</Link>
         <Link href={"/myprofile"} className='text-white'>My Profile</Link>
       </div>
       {(cookies().has('usertoken')) ?
