@@ -20,7 +20,7 @@ https://github.com/Raj-Mandal-20/BeTheDonor.git
 ### To Start Frontend
 ---
 
-```bah
+```
   Go to the root folder
 ```
 ```bash
@@ -35,7 +35,7 @@ https://github.com/Raj-Mandal-20/BeTheDonor.git
 	
 ### To Start Backend
 
-```bah
+```
   Go to the root folder
 ```
 ```bash
@@ -51,18 +51,18 @@ https://github.com/Raj-Mandal-20/BeTheDonor.git
 ### Usage Details
 ---
 
-1. Request and Broadcast:
+#### 1. Request and Broadcast:
 
 * Individuals submit blood requests.
 * Requests are broadcast to all registered users.
 * Potential donors register and become available for selection.
 
-2. Volunteer and Connect:
+#### 2. Volunteer and Connect:
 
 * Donors volunteer and share their location and contact details.
 * Requesters select donors based on proximity and convenience.
   
-3.  Direct Contact and Future Camps:
+#### 3.  Direct Contact and Future Camps:
    
 * Direct contact with nearby donors through filtering.
 * Dedicated page for posting information about future blood donation camps.
