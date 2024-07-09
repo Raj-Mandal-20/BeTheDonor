@@ -28,7 +28,7 @@ const Login = (props) => {
         if (res.message) {
             toast.error(res.message, {
                 position: "top-center",
-                autoClose: 3000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -49,7 +49,7 @@ const Login = (props) => {
             })
             toast.success("Successfully logged in", {
                 position: "top-center",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -58,8 +58,9 @@ const Login = (props) => {
                 theme: "dark",
             });
             setProgress(100)
+            // setTimeout(()=>{refresh()},2000)
             refresh()
-            setTimeout(()=>{push("/allrequest")}, 2000)
+            setTimeout(()=>{push("/allrequest")}, 3000)
         }
     }
 
@@ -76,7 +77,7 @@ const Login = (props) => {
             />
             <ToastContainer
                 position="top-center"
-                autoClose={5000}
+                autoClose={1000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -84,7 +85,7 @@ const Login = (props) => {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-                theme="light"
+                theme="dark"
             />
             <h1 className='p-1 text-xl font-bold text-white'>User Login</h1>
             <div className='p-5'>

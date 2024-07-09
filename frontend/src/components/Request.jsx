@@ -5,6 +5,11 @@ import { parseCookies } from 'nookies'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingBar from 'react-top-loading-bar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+    faPlus,
+    faXmark
+} from "@fortawesome/free-solid-svg-icons";
 
 const Request = (props) => {
     const cookies = parseCookies();
@@ -52,6 +57,8 @@ const Request = (props) => {
                 progress: undefined,
                 theme: "dark",
             });
+            document.getElementById('req').style.display = 'none';
+            document.getElementById('reqb').style.display = 'flex';
             setProgress(100)
             refresh()
             push("/myprofile");
@@ -63,10 +70,10 @@ const Request = (props) => {
     }
 
     const hideB = (e) => {
-        if(!parseCookies()["usertoken"]){
+        if (!parseCookies()["usertoken"]) {
             push("/login");
         }
-        else{
+        else {
             document.getElementById('reqb').style.display = "none";
             document.getElementById('req').style.display = "flex";
         }
@@ -79,57 +86,69 @@ const Request = (props) => {
 
     return (
         <div className="">
-
-            <div id='req' className="hidden items-center justify-center before:bg-black before:opacity-60 before:h-full before:w-full before:absolute before:-z-10 before:overflow-hidden z-10 before:inset-0 fixed h-full w-full">
-                <div className="w-full max-w-md p-6 text-white rounded-lg shadow-lg card-gradient">
-                    <div className='flex justify-stretch'>
-                        <h2 className="text-2xl font-bold mb-2">Donate Blood</h2>
-                        <button onClick={hideReq} className='bg-transparent cursor-pointer text-white'>cross</button>
+            <div id='req' className="hidden fixed h-full w-full items-center justify-center before:bg-black before:opacity-80 before:h-full before:w-full before:absolute before:-z-10">
+                <div className="w-2/5 p-6 text-white rounded-lg shadow-lg card-gradient">
+                    <div className='flex justify-between w-full items-center '>
+                        <h2 className="text-2xl font-bold mb-2">Request For Donation</h2>
+                        <button title='Close' onClick={hideReq} className='bg-transparent p-2 hover:bg-blue-100 hover:text-blue-950 rounded-lg cursor-pointer text-white'>
+                            <FontAwesomeIcon icon={faXmark} />
+                        </button>
                     </div>
-                    <p className="mb-4 text-gray-400">Fill out the form to schedule your blood donation.</p>
+                    <p className="mb-4 text-gray-400">Fill out the form to request for new donations.</p>
                     <form onSubmit={submit}>
                         <div className="grid grid-cols-1 gap-4">
                             <div className="grid grid-cols-3 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" htmlFor="city">City</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="city" name="city" placeholder="City" value={data.city} onChange={change} />
+                                    <label className="block text-sm font-medium mb-1" htmlFor="state">State</label>
+                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="state" name="state" placeholder="State" value={data.state} onChange={change} required/>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" htmlFor="state">State</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="state" name="state" placeholder="State" value={data.state} onChange={change} />
+                                    <label className="block text-sm font-medium mb-1" htmlFor="city">City</label>
+                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="city" name="city" placeholder="City" value={data.city} onChange={change} required/>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-1" htmlFor="pin">Pincode</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="zip" name="pin" placeholder="Pincode" value={data.pin} onChange={change} />
+                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="zip" name="pin" placeholder="Pincode" value={data.pin} onChange={change} required/>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium mb-1" htmlFor="bloodUnit">Blood Unit</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="bloodUnit" name="bloodUnit" placeholder="Enter your blood unit/group" value={data.bloodUnit} onChange={change} />
+                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="bloodUnit" name="bloodUnit" placeholder="Enter blood units required" value={data.bloodUnit} onChange={change} required />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-1" htmlFor="bloodGroup">Blood Group</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="bloodUnit" name="bloodGroup" placeholder="Enter your blood group" value={data.bloodGroup} onChange={change} />
+                                    <select id='bloodGroup' name="bloodGroup" value={data.bloodGroup} onChange={change} className='block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300'>
+                                        <option value="Any Blood Group" className='text-gray-800'>Select Blood Group</option>
+                                        <option value="A+" className='text-gray-800'>A+</option>
+                                        <option value="B+" className='text-gray-800'>B+</option>
+                                        <option value="O+" className='text-gray-800'>O+</option>
+                                        <option value="AB+" className='text-gray-800'>AB+</option>
+                                        <option value="A-" className='text-gray-800'>A-</option>
+                                        <option value="B-" className='text-gray-800'>B-</option>
+                                        <option value="O-" className='text-gray-800'>O-</option>
+                                        <option value="AB-" className='text-gray-800'>AB-</option>
+                                    </select>
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1" htmlFor="deadline">Deadline</label>
-
-                                <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="date" id="timeTag" name="deadline" placeholder="Enter the deadline" value={data.deadline} onChange={change} />
+                                <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="date" id="deadline" name="deadline" value={data.deadline} onChange={change} required/>
                             </div>
                         </div>
                         <div className="mt-4 flex justify-between w-full">
                             <button className="px-4 w-full py-2 rounded-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="submit">Submit</button>
                         </div>
                     </form>
-                    <ToastContainer />
-                    <LoadingBar color="#f11946" progress={progress} onLoaderFinished={() => setProgress(0)} />
                 </div>
             </div>
-            {/* <div id="reqb" className='h-full w-full fixed flex justify-end items-end p-10 -z-10'> */}
-                <button id="reqb" className='absolute top-3/4 left-3/4 bg-[#b9003a] p-4 rounded-full shadow-md border-none hover:bg-[#e2034b] text-white' onClick={hideB}>Hide</button>
-            {/* </div> */}
+
+            <button id="reqb" title='Add New Request' className='fixed flex top-[90%] left-[90%] bg-[#b9003a] p-4 rounded-full shadow-md border-none hover:bg-[#e2034b] text-white' onClick={hideB}>
+                <FontAwesomeIcon icon={faPlus} />
+            </button>
+
+            <ToastContainer />
+            <LoadingBar color="#f11946" progress={progress} onLoaderFinished={() => setProgress(0)} />
         </div>
     )
 }
