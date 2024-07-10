@@ -34,7 +34,7 @@ const BloodRequest = (props) => {
     return () => {
       fetchUser();
     };
-  }, []);
+  }, [props.HOST, cookies, props.request.userId, user]);
 
   useEffect(() => {
     const fetchDonor = async () => {
