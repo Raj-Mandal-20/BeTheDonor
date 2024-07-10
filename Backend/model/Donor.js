@@ -11,7 +11,11 @@ const donorSchema = new Schema({
         type : Schema.Types.ObjectId,
         ref : 'Request',
         required : true
-    }           
+    },
+    isDonated : {
+        type : Boolean,
+        default : false
+    }       
 });
 
 module.exports = mongoose.model('Donor', donorSchema);

@@ -1,14 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const feedController = require('../controllers/feed');
-const isAuth = require('../middleware/is-auth');
+const feedController = require("../controllers/feed");
+const isAuth = require("../middleware/is-auth");
 
-router.post('/create-request', isAuth,  feedController.createRequest);
-router.get('/notification', feedController.notification);
-router.get('/all-blood-request',isAuth, feedController.allBloodRequest);
-router.post('/fetchUserByUserId',isAuth, feedController.fetchUserDetails);
-router.get('/my-profile', isAuth, feedController.myProfile);
-router.get('/request-history', isAuth, feedController.requestHistory);
-router.post('/donation', isAuth, feedController.acceptDonation);
+router.post("/create-request", isAuth, feedController.createRequest);
+router.get("/notification", feedController.notification);
+router.get("/all-blood-request", isAuth, feedController.allBloodRequest);
+router.post("/fetchUserByUserId", isAuth, feedController.fetchUserDetails);
+router.get("/my-profile", isAuth, feedController.myProfile);
+router.get("/request-history", isAuth, feedController.requestHistory);
+router.get("/donor",isAuth, feedController.isDonated);
+router.post("/donation", isAuth, feedController.acceptDonation);
 
 module.exports = router;
