@@ -58,8 +58,7 @@ const Login = (props) => {
                 theme: "dark",
             });
             setProgress(100)
-            // setTimeout(()=>{refresh()},2000)
-            refresh()
+            setTimeout(()=>{refresh()},4000)
             setTimeout(()=>{push("/allrequest")}, 3000)
         }
     }

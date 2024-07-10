@@ -13,13 +13,12 @@ import {
 
 const Request = (props) => {
     const cookies = parseCookies();
-    const [data, setData] = useState({ userId: cookies["userId"], city: "", state: "", pin: "", bloodUnit: "", bloodGroup: "", deadline: "" })
-    const { push, refresh } = useRouter();
+    const [data, setData] = useState({ userId: cookies["userId"], city: "", state: "", pin: "", bloodUnit: "", bloodGroup: "Any", deadline: "" })
+    const { push } = useRouter();
     const [progress, setProgress] = useState(0)
 
     const submit = async (e) => {
         e.preventDefault();
-        // console.log(data)
         setProgress(10)
         let response = await fetch(`${props.HOST}/v1/create-request`, {
             method: "POST",
@@ -31,7 +30,6 @@ const Request = (props) => {
         });
         setProgress(40)
         const res = await response.json();
-        // console.log(res);
         setProgress(70)
         if (!res.bloodRequest) {
             toast.error(res.message, {
@@ -60,7 +58,6 @@ const Request = (props) => {
             document.getElementById('req').style.display = 'none';
             document.getElementById('reqb').style.display = 'flex';
             setProgress(100)
-            refresh()
             push("/myprofile");
         }
     }
@@ -119,7 +116,7 @@ const Request = (props) => {
                                 <div>
                                     <label className="block text-sm font-medium mb-1" htmlFor="bloodGroup">Blood Group</label>
                                     <select id='bloodGroup' name="bloodGroup" value={data.bloodGroup} onChange={change} className='block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300'>
-                                        <option value="Any Blood Group" className='text-gray-800'>Select Blood Group</option>
+                                        <option value="Any" className='text-gray-800'>Select Blood Group</option>
                                         <option value="A+" className='text-gray-800'>A+</option>
                                         <option value="B+" className='text-gray-800'>B+</option>
                                         <option value="O+" className='text-gray-800'>O+</option>
