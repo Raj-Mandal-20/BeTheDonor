@@ -14,7 +14,7 @@ const Request = (props) => {
 
     const submit = async (e) => {
         e.preventDefault();
-        console.log(data)
+        // console.log(data)
         setProgress(10)
         let response = await fetch(`${props.HOST}/v1/create-request`, {
             method: "POST",
@@ -26,9 +26,9 @@ const Request = (props) => {
         });
         setProgress(40)
         const res = await response.json();
-        console.log(res);
+        // console.log(res);
         setProgress(70)
-        if (res.message) {
+        if (!res.bloodRequest) {
             toast.error(res.message, {
                 position: "top-center",
                 autoClose: 5000,
