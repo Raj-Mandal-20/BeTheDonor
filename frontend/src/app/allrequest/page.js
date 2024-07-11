@@ -26,7 +26,7 @@ const page = async () => {
   return (
     <div className={`bg-[#051a39] p-10 flex flex-wrap gap-8 justify-center items-center min-h-screen`}>
       {
-        allBloodRequest.length > 0 ? (
+        allBloodRequest?.length > 0 ? (
           allBloodRequest.map((request, index) => (
             <BloodRequest key={index} request={request} HOST={host} />
           ))

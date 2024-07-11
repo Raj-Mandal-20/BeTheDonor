@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { parseCookies } from 'nookies'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LoadingBar from 'react-top-loading-bar'
+import LoadingBar from 'react-top-loading-bar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faPlus,
@@ -50,7 +50,7 @@ const Request = (props) => {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "light",
+                theme: "dark",
             });
             setProgress(100)
         }
@@ -151,7 +151,24 @@ const Request = (props) => {
 
     return (
         <div className="">
-            <div id='req' className="hidden fixed h-full w-full items-center justify-center before:bg-black before:opacity-80 before:h-full before:w-full before:absolute before:-z-10">
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+            <LoadingBar
+                color='#3b82f6'
+                progress={progress}
+                onLoaderFinished={() => setProgress(0)}
+            />
+            <div id='req' className="hidden fixed h-full w-full items-center justify-center z-10 before:bg-black before:opacity-80 before:h-full before:w-full before:absolute before:-z-10">
                 <div className="w-2/5 p-6 text-white rounded-lg shadow-lg card-gradient">
                     <div className='flex justify-between w-full items-center '>
                         <h2 className="text-2xl font-bold mb-2">Request For Donation</h2>
@@ -230,9 +247,6 @@ const Request = (props) => {
             <button id="reqb" title='Add New Request' className='fixed flex top-[90%] left-[90%] bg-[#b9003a] p-4 rounded-full shadow-md border-none hover:bg-[#e2034b] text-white' onClick={hideB}>
                 <FontAwesomeIcon icon={faPlus} />
             </button>
-
-            <ToastContainer />
-            <LoadingBar color="#f11946" progress={progress} onLoaderFinished={() => setProgress(0)} />
         </div>
     )
 }

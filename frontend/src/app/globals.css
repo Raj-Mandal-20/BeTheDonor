@@ -6,15 +6,15 @@
   background: linear-gradient(to bottom right, #1b3363, #122141);
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-}
-
 .card {
   background: linear-gradient(to bottom right, #d80445, #85022b);
 }
 
-@keyframes blink {
+/* body {
+  font-family: 'Inter', sans-serif;
+} */
+
+@keyframes blinkO {
   0%, 100% {
     fill: #00ff00;
   }
@@ -23,12 +23,25 @@ body {
   }
 }
 
-.blink {
-  animation: blink 1s infinite;
+@keyframes blinkC {
+  0%, 100% {
+    fill: rgb(247, 78, 78);
+  }
+  50% {
+    fill: rgb(196, 4, 4);
+  }
+}
+
+.blinkOpen {
+  animation: blinkO 1s infinite;
+}
+
+.blinkClose {
+  animation: blinkC 1s infinite;
 }
 
 .logo-circle {
-  background-color: black;
+  background-color: #051a39;
   border-radius: 50%;
   padding: 8px;
   display: flex;
