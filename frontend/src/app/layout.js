@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar'
 import Footer from "@/components/Footer";
 import Request from "@/components/Request";
 import { getHost } from './actions';
+import data from "../data.json";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
 
-        <Request HOST={host} />
+        <Request HOST={host} data={data} />
         <Navbar />
         {children}
         <Footer />

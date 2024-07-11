@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { parseCookies } from 'nookies'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,9 +13,19 @@ import {
 
 const Request = (props) => {
     const cookies = parseCookies();
-    const [data, setData] = useState({ userId: cookies["userId"], city: "", state: "", pin: "", bloodUnit: "", bloodGroup: "Any", deadline: "" })
+    const [data, setData] = useState({ userId: cookies["userId"], donationCenter: "", city: "", state: "", district: "", pin: "", bloodUnit: "", bloodGroup: "", deadline: "" })
     const { push } = useRouter();
     const [progress, setProgress] = useState(0)
+
+    useEffect(() => {
+        for (let state in props.data) {
+            let option = document.createElement("option");
+            option.innerHTML = `${state}`
+            option.setAttribute("value", `${state}`);
+            option.setAttribute("class", 'text-gray-800');
+            document.getElementById("stateRQ").appendChild(option)
+        }
+    }, [])
 
     const submit = async (e) => {
         e.preventDefault();
@@ -64,6 +74,64 @@ const Request = (props) => {
 
     const change = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
+        if (e.target.name == 'state') {
+            document.getElementById('districtRQ').innerHTML = '<option value="" class="text-gray-800">Select District</option>';
+            document.getElementById('cityRQ').innerHTML = '<option value="" class="text-gray-800">Select City</option>';
+            document.getElementById('pinRQ').innerHTML = '<option value="" class="text-gray-800">Select Pincode</option>';
+            for (let state in props.data) {
+                if (state == e.target.value) {
+                    for (let district in props.data[state]) {
+                        let option = document.createElement("option");
+                        option.innerHTML = `${district}`
+                        option.setAttribute("value", `${district}`);
+                        option.setAttribute("class", 'text-gray-800');
+                        document.getElementById("districtRQ").appendChild(option)
+                    }
+                }
+            }
+        }
+        if (e.target.name == 'district') {
+            document.getElementById('cityRQ').innerHTML = '<option value="" class="text-gray-800">Select City</option>';
+            document.getElementById('pinRQ').innerHTML = '<option value="" class="text-gray-800">Select Pincode</option>';
+
+            for (let state in props.data) {
+                if (state == data.state) {
+                    for (let district in props.data[state]) {
+                        if (district == e.target.value) {
+                            for (let city in props.data[state][district]) {
+                                let option = document.createElement("option");
+                                option.innerHTML = `${city}`
+                                option.setAttribute("value", `${city}`);
+                                option.setAttribute("class", 'text-gray-800');
+                                document.getElementById("cityRQ").appendChild(option)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (e.target.name == 'city') {
+            document.getElementById('pinRQ').innerHTML = '<option value="" class="text-gray-800">Select Pincode</option>';
+
+            for (let state in props.data) {
+                if (state == data.state) {
+                    for (let district in props.data[state]) {
+                        if (district == data.district) {
+                            for (let city in props.data[state][district]) {
+                                if (city == e.target.value) {
+                                    let zip = props.data[state][district][city];
+                                    let option = document.createElement("option");
+                                    option.innerHTML = `${zip}`
+                                    option.setAttribute("value", `${zip}`);
+                                    option.setAttribute("class", 'text-gray-800');
+                                    document.getElementById("pinRQ").appendChild(option)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     const hideB = (e) => {
@@ -87,36 +155,55 @@ const Request = (props) => {
                 <div className="w-2/5 p-6 text-white rounded-lg shadow-lg card-gradient">
                     <div className='flex justify-between w-full items-center '>
                         <h2 className="text-2xl font-bold mb-2">Request For Donation</h2>
-                        <button title='Close' onClick={hideReq} className='bg-transparent p-2 hover:bg-blue-100 hover:text-blue-950 rounded-lg cursor-pointer text-white'>
+                        <button title='Close' onClick={hideReq} className='flex bg-transparent p-2 hover:bg-blue-100 hover:text-blue-950 rounded-full cursor-pointer text-white'>
                             <FontAwesomeIcon icon={faXmark} />
                         </button>
                     </div>
                     <p className="mb-4 text-gray-400">Fill out the form to request for new donations.</p>
                     <form onSubmit={submit}>
                         <div className="grid grid-cols-1 gap-4">
-                            <div className="grid grid-cols-3 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-1" htmlFor="dcRQ">Donation Center</label>
+                                <input id='dcRQ' type="text" name="donationCenter" value={data.donationCenter} placeholder='Name of the Donation Center' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" htmlFor="state">State</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="state" name="state" placeholder="State" value={data.state} onChange={change} required/>
+                                    <label className="block text-sm font-medium mb-1" htmlFor="stateRQ">State</label>
+                                    <select name="state" onChange={change} id="stateRQ" title='Center State' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
+                                        <option value="" className='text-gray-800'>Select State</option>
+                                    </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" htmlFor="city">City</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="city" name="city" placeholder="City" value={data.city} onChange={change} required/>
+                                    <label className="block text-sm font-medium mb-1" htmlFor="districtRQ">District</label>
+                                    <select name="district" onChange={change} id="districtRQ" title='Center District' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
+                                        <option value="" className='text-gray-800'>Select District</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                    <label className="block text-sm font-medium mb-1" htmlFor="cityRQ">City</label>
+                                    <select name="city" onChange={change} id="cityRQ" title='Center City' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
+                                        <option value="" className='text-gray-800'>Select City</option>
+                                    </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" htmlFor="pin">Pincode</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="zip" name="pin" placeholder="Pincode" value={data.pin} onChange={change} required/>
+                                    <label className="block text-sm font-medium mb-1" htmlFor="pinRQ">Pincode</label>
+                                    <select name="pin" onChange={change} id="pinRQ" title='Center Pincode' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
+                                        <option value="" className='text-gray-800'>Select Pincode</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" htmlFor="bloodUnit">Blood Unit</label>
-                                    <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="text" id="bloodUnit" name="bloodUnit" placeholder="Enter blood units required" value={data.bloodUnit} onChange={change} required />
+                                    <label className="block text-sm font-medium mb-1" htmlFor="bloodUnitRQ">Blood Unit</label>
+                                    <input className="block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="number" min={1} id="bloodUnitRQ" name="bloodUnit" placeholder="Enter blood units required" value={data.bloodUnit} onChange={change} required />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" htmlFor="bloodGroup">Blood Group</label>
-                                    <select id='bloodGroup' name="bloodGroup" value={data.bloodGroup} onChange={change} className='block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300'>
-                                        <option value="Any" className='text-gray-800'>Select Blood Group</option>
+                                    <label className="block text-sm font-medium mb-1" htmlFor="bloodGroupRQ">Blood Group</label>
+                                    <select id='bloodGroupRQ' title='Required Blood Group' name="bloodGroup" value={data.bloodGroup} onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
+                                        <option value="" className='text-gray-800'>Select Blood Group</option>
+                                        <option value="any" className='text-gray-800'>Any Group</option>
                                         <option value="A+" className='text-gray-800'>A+</option>
                                         <option value="B+" className='text-gray-800'>B+</option>
                                         <option value="O+" className='text-gray-800'>O+</option>
@@ -129,12 +216,12 @@ const Request = (props) => {
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-1" htmlFor="deadline">Deadline</label>
-                                <input className="block w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="date" id="deadline" name="deadline" value={data.deadline} onChange={change} required/>
+                                <label className="block text-sm font-medium mb-1" htmlFor="deadlineRQ">Deadline</label>
+                                <input className="block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="date" id="deadlineRQ" name="deadline" value={data.deadline} onChange={change} required />
                             </div>
                         </div>
                         <div className="mt-4 flex justify-between w-full">
-                            <button className="px-4 w-full py-2 rounded-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="submit">Submit</button>
+                            <button className="px-4 w-full py-2 rounded-md hover:shadow-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="submit">Submit</button>
                         </div>
                     </form>
                 </div>
