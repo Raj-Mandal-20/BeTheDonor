@@ -28,58 +28,58 @@ const BloodRequest = (props) => {
   const [status, setStatus] = useState(true);
   const [progress, setProgress] = useState(0)
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      console.log("fetching")
-      const getUser = await fetch(`${props.HOST}/v1/fetchUserByUserId`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + cookies["usertoken"],
-        },
-        body: JSON.stringify({ userId: props.request.userId }),
-      });
-      console.log("1")
-      const fetchedUser = await getUser.json();
-      setUser(fetchedUser.user);
-      console.log(fetchedUser.user)
-      for (let acceptor of props.request.donors) {
-        if (acceptor == currentUser) {
-          setAccepted(true)
-        }
+  const fetchUser = async () => {
+    const getUser = await fetch(`${props.HOST}/v1/fetchUserByUserId`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + cookies["usertoken"],
+      },
+      body: JSON.stringify({ userId: props.request.userId }),
+    });
+    const fetchedUser = await getUser.json();
+    setUser(fetchedUser.user);
+    for (let acceptor of props.request.donors) {
+      if (acceptor == currentUser) {
+        setAccepted(true)
       }
-      console.log("2")
-      let c = new Date();
-      let d = new Date(props.request.deadline);
-      let year = d.getFullYear() - c.getFullYear();
-      let month = d.getMonth() - c.getMonth();
-      let day = d.getDate() - c.getDate();
-      if (year > 0) {
+    }
+    let c = new Date();
+    let d = new Date(props.request.deadline);
+    let year = d.getFullYear() - c.getFullYear();
+    let month = d.getMonth() - c.getMonth();
+    let day = d.getDate() - c.getDate();
+    if (year > 0) {
+      setStatus(true)
+    } else if (year == 0) {
+      if (month > 0) {
         setStatus(true)
-      } else if (year == 0) {
-        if (month > 0) {
+      } else if (month == 0) {
+        if (day > 0) {
           setStatus(true)
-        } else if (month == 0) {
-          if (day > 0) {
-            setStatus(true)
-          } else if (day == 0) {
-            setStatus(true)
-          } else {
-            setStatus(false)
-          }
+        } else if (day == 0) {
+          setStatus(true)
         } else {
           setStatus(false)
         }
       } else {
         setStatus(false)
       }
-      setLoading(false);
-      console.log("finish")
-    };
-    return () => {
-      fetchUser();
-    };
+    } else {
+      setStatus(false)
+    }
+    setLoading(false);
+    console.log("finish")
+  };
+
+  useEffect(() => {
+    // return () => {
+    //   console.log("start")
+    //   fetchUser();
+    // };
+    fetchUser();
   }, []);
+  // cookies, currentUser, props.HOST, props.request.deadline, props.request.donors, props.request.userId
 
   const accept = async (e) => {
     e.preventDefault();
@@ -114,7 +114,7 @@ const BloodRequest = (props) => {
         onLoaderFinished={() => setProgress(0)}
       />
       {loading && (
-        
+
         <div className="card h-fit rounded-lg p-6 w-full max-w-lg shadow-sm text-white flex justify-center items-center">
           <MoonLoader
             color={"white"}
@@ -123,12 +123,10 @@ const BloodRequest = (props) => {
             aria-label="Loading Spinner"
             data-testid="loader"
           />
-          {`${loading}`}
         </div>
       )}
       {!loading && (
         <div className="card h-fit rounded-lg hover:-translate-y-1 p-6 w-full max-w-lg shadow-xl text-white">
-          {`${loading}`}
           <div className="flex items-center justify-between">
             <div className="space-y-2 flex items-center">
               <div className="logo-circle">
