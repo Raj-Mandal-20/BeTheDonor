@@ -91,7 +91,6 @@ const Register = (props) => {
                 theme: "dark",
             });
         }
-
     }
 
     const change = (e) => {

@@ -69,17 +69,11 @@ const BloodRequest = (props) => {
       setStatus(false)
     }
     setLoading(false);
-    console.log("finish")
   };
 
   useEffect(() => {
-    // return () => {
-    //   console.log("start")
-    //   fetchUser();
-    // };
     fetchUser();
   }, []);
-  // cookies, currentUser, props.HOST, props.request.deadline, props.request.donors, props.request.userId
 
   const accept = async (e) => {
     e.preventDefault();
@@ -114,7 +108,6 @@ const BloodRequest = (props) => {
         onLoaderFinished={() => setProgress(0)}
       />
       {loading && (
-
         <div className="card h-fit rounded-lg p-6 w-full max-w-lg shadow-sm text-white flex justify-center items-center">
           <MoonLoader
             color={"white"}
