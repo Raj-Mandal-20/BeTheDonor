@@ -48,6 +48,10 @@ const userSchema = new Schema({
     requests : [{
         type : Schema.Types.ObjectId,
         ref : 'Request'
+    }],
+    donates : [{
+        type : Schema.Types.ObjectId,
+        ref : 'Donor'
     }]
 }, {timestamps : true});
 

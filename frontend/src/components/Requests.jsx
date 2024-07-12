@@ -25,10 +25,11 @@ const Requests = (props) => {
       setLoading(false);
     };
 
-    if (!allRequests.length) {
-      fetchRequests();
-      fetchRequests();
-    };
+    // if (!allRequests.length) {
+    //   fetchRequests();
+    //   fetchRequests();
+    // };
+    fetchRequests();
    
   }, [allRequests]);
 

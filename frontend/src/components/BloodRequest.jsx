@@ -7,6 +7,7 @@ const BloodRequest = (props) => {
   const [user, setUser] = useState({});
   // console.log(props);
   const [loading, setLoading] = useState(true);
+  const [isDonated, setIsDonated] = useState(false);
 
   const cookies = parseCookies();
   const createdAt = new Date(props.request.createdAt).toDateString();
@@ -26,6 +27,7 @@ const BloodRequest = (props) => {
       });
       const fetchedUser = await getUser.json();
       // console.log(fetchedUser);
+
       setUser(fetchedUser.user);
       setLoading(false);
     };
@@ -33,6 +35,26 @@ const BloodRequest = (props) => {
       fetchUser();
     };
   }, [props.HOST, cookies, props.request.userId, user]);
+
+  useEffect(() => {
+    const fetchDonor = async () => {
+      const donor = await fetch(
+        `${props.HOST}/v1/donor?requestId=${props.request._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + cookies["usertoken"],
+          },
+        }
+      );
+
+      const fetchedDonor = await donor.json();
+      console.log('Donor : ', fetchedDonor);
+      setIsDonated(fetchedDonor.isDonated)
+    };
+    fetchDonor();
+  }, [isDonated]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -49,14 +71,15 @@ const BloodRequest = (props) => {
     // console.log("Response Object");
     // console.log(res.bloodRequest.donors?.length);
     setDonors(res.bloodRequest.donors?.length);
+    setIsDonated(true);
   };
 
   return (
     <>
       {loading && (
-         <div className="card h-fit rounded-lg border p-6 w-full max-w-lg shadow-sm text-white flex justify-center items-center">
+        <div className="card h-fit rounded-lg border p-6 w-full max-w-lg shadow-sm text-white flex justify-center items-center">
           <div className="h-[120px]"> </div>
-          <MoonLoader 
+          <MoonLoader
             color={"white"}
             loading={loading}
             size={50}
@@ -151,12 +174,22 @@ const BloodRequest = (props) => {
             <form onSubmit={submit}>
               <input type="hidden" value={props.request._id} name="requestId" />
               {currentUser !== props.request.userId && (
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-black hover:bg-gray-300 font-extrabold"
-                >
-                  Accept Donation
-                </button>
+                <>
+                  {isDonated === true ? (
+                    <>
+                      <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-green-500 text-black font-extrabold">
+                        Donated
+                      </div>
+                    </>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-black hover:bg-gray-300 font-extrabold"
+                    >
+                      Accept Donation
+                    </button>
+                  )}
+                </>
               )}
               {currentUser === props.request.userId && (
                 <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-300 text-black font-extrabold">
