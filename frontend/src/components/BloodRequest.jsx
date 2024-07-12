@@ -30,6 +30,7 @@ const BloodRequest = (props) => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      console.log("fetching")
       const getUser = await fetch(`${props.HOST}/v1/fetchUserByUserId`, {
         method: "POST",
         headers: {
@@ -38,13 +39,16 @@ const BloodRequest = (props) => {
         },
         body: JSON.stringify({ userId: props.request.userId }),
       });
+      console.log("1")
       const fetchedUser = await getUser.json();
       setUser(fetchedUser.user);
+      console.log(fetchedUser.user)
       for (let acceptor of props.request.donors) {
         if (acceptor == currentUser) {
           setAccepted(true)
         }
       }
+      console.log("2")
       let c = new Date();
       let d = new Date(props.request.deadline);
       let year = d.getFullYear() - c.getFullYear();
@@ -70,6 +74,7 @@ const BloodRequest = (props) => {
         setStatus(false)
       }
       setLoading(false);
+      console.log("finish")
     };
     return () => {
       fetchUser();
@@ -109,6 +114,7 @@ const BloodRequest = (props) => {
         onLoaderFinished={() => setProgress(0)}
       />
       {loading && (
+        
         <div className="card h-fit rounded-lg p-6 w-full max-w-lg shadow-sm text-white flex justify-center items-center">
           <MoonLoader
             color={"white"}
@@ -117,10 +123,12 @@ const BloodRequest = (props) => {
             aria-label="Loading Spinner"
             data-testid="loader"
           />
+          {`${loading}`}
         </div>
       )}
       {!loading && (
         <div className="card h-fit rounded-lg hover:-translate-y-1 p-6 w-full max-w-lg shadow-xl text-white">
+          {`${loading}`}
           <div className="flex items-center justify-between">
             <div className="space-y-2 flex items-center">
               <div className="logo-circle">
