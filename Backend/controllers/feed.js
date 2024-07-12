@@ -37,7 +37,15 @@ exports.createRequest = async (req, res, next) => {
     const user = await User.findById(userId);
     user.requests.push(request);
 
+
+
     await user.save();
+
+    // notify all pepole
+    const users = await User.find({available : true, _id : {$ne : userId}});
+    const recipients = users.map(user => user.email);
+    console.log(recipients);
+    await notifyAll(bloodGroup, recipients);
 
     const bloodRequest = await request.save();
     console.log(bloodRequest);
@@ -54,7 +62,9 @@ exports.createRequest = async (req, res, next) => {
   }
 };
 
-async function sendEMail() {
+
+
+async function notifyAll(bloodGroup, recipients) {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     host: "smtp.gmail.com",
@@ -66,16 +76,14 @@ async function sendEMail() {
     },
   });
 
-  // const recipients = ['hailchiku6@gmail.com', 'anioriginal4@gmail.com', 'souvikbh2@gmail.com', 'usingrajcseinfo@gmail.com'];
-  const recipients = ["usingrajcseinfo@gmail.com"];
-
   const mailOptions = {
     from: `BeTheDonor <${process.env.EMAIL_FROM}>`,
     to: recipients.join(","),
-    subject: "[URGENT] Blood Donation",
+    subject: "[URGENT] Blood Needed",
     html: `
-      <h2> A Patient Needed O Negative (O-) Blood, Are You Available? </h2>
+      <h2> A Patient Needed (${bloodGroup}) Blood, do you want to contribute? </h2>
     `,
+    bcc : recipients.join(",")
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -87,16 +95,39 @@ async function sendEMail() {
   });
 }
 
-exports.notification = async (req, res, next) => {
-  try {
-    await sendEMail();
-    res.status(200).json({
-      message: "Broadcast email Successful",
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
+
+async function sendDonationEmail(userEmail){
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_FROM,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: `BeTheDonor <${process.env.EMAIL_FROM}>`,
+    to: userEmail,
+    subject: "[Accepted] Blood Donation",
+    html: `
+      <h2> Thank you for your blood donation</h2>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email: ", error);
+    } else {
+      console.log("Email sent: ", info.response);
+    }
+  });
+
+}
+
+
 exports.allBloodRequest = async (req, res, next) => {
   try {
     const allBloodRequest = await Request.find();
@@ -110,6 +141,20 @@ exports.allBloodRequest = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.donationEmail = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+
+    await sendEMail();
+    res.status(200).json({
+      message: "Broadcast email Successful",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 exports.fetchUserDetails = async (req, res, next) => {
   try {
@@ -160,7 +205,7 @@ exports.acceptDonation = async (req, res, next) => {
   try {
     // donor increases
     // one time accept
-
+    
     const requestId = req.body.requestId;
     const bloodRequest = await Request.findById(requestId);
 
@@ -193,6 +238,7 @@ exports.acceptDonation = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.donates.push(requestId);
     await user.save();
+    await sendDonationEmail(user.email);
 
     console.log(bloodRequest);
     res.status(200).json({
