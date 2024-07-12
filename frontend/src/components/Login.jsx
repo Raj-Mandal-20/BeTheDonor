@@ -28,7 +28,7 @@ const Login = (props) => {
         if (res.message) {
             toast.error(res.message, {
                 position: "top-center",
-                autoClose: 3000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -49,7 +49,7 @@ const Login = (props) => {
             })
             toast.success("Successfully logged in", {
                 position: "top-center",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -58,8 +58,8 @@ const Login = (props) => {
                 theme: "dark",
             });
             setProgress(100)
-            refresh()
-            setTimeout(()=>{push("/allrequest")}, 2000)
+            setTimeout(() => { refresh() }, 4000)
+            setTimeout(() => { push("/allrequest") }, 3000)
         }
     }
 
@@ -68,7 +68,7 @@ const Login = (props) => {
     }
 
     return (
-        <div className='p-4 small:px-0 flex flex-col gap-5 items-center bg-gradient-to-r from-[#253d6c] to-[#182e58] overflow-auto bg-[#051a39] rounded-lg shadow-md  shadow-black'>
+        <div className='p-4 text-white flex flex-col gap-5 items-center rounded-lg shadow-lg card-gradient'>
             <LoadingBar
                 color='#3b82f6'
                 progress={progress}
@@ -76,7 +76,7 @@ const Login = (props) => {
             />
             <ToastContainer
                 position="top-center"
-                autoClose={5000}
+                autoClose={1000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -84,21 +84,21 @@ const Login = (props) => {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-                theme="light"
+                theme="dark"
             />
-            <h1 className='p-1 text-xl font-bold text-white'>User Login</h1>
-            <div className='p-5'>
-                <form onSubmit={submit} className='flex flex-col gap-5 p-4'>
-                    <div>
-                        <input type="email" name="email" autoComplete='username' value={data.email} placeholder='Email Address' onChange={change} className='bg-transparent py-1 border-b-2 border-cyan-500 placeholder-white text-white micro:w-2/3 self-center outline-none' required />
-                    </div>
-                    <div>
-                        <input type="password" name="password" autoComplete='current-password' value={data.password} placeholder='Password' onChange={change} className='bg-transparent py-1 border-b-2 border-cyan-500 placeholder-white text-white micro:w-2/3 self-center outline-none' required />
-                    </div>
-                    <button type="submit" className='w-full bg-[#b9003a] hover:bg-[#e2034b] shadow-sm text-white font-bold p-3 rounded-lg '>Login</button>
-                </form>
-            </div>
-            <div className='p-5 text-sm text-white'>Don&apos;t have an account? <Link href={"/register"} className='underline'>Register</Link></div>
+            <h1 className='p-1 text-2xl font-bold text-white'>User Login</h1>
+            <form onSubmit={submit} className='flex flex-col gap-5 p-5'>
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="emailLog">E-Mail</label>
+                    <input id='emailLog' type="email" name="email" value={data.email} placeholder='Enter Your Email Address' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="pwLog">Password</label>
+                    <input id='pwLog' type="password" name="password" value={data.password} placeholder='Enter Your Password' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+                </div>
+                <button type="submit" className='px-4 w-full py-2 rounded-md hover:shadow-md bg-[#b9003a] text-white hover:bg-[#e2034b]'>Login</button>
+            </form>
+            <div className='p-3 text-sm text-white'>Don&apos;t have an account? <Link href={"/register"} className='underline'>Register</Link></div>
         </div>
     )
 }

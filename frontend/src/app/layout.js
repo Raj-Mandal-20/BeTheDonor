@@ -2,6 +2,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from '@/components/Navbar'
 import Footer from "@/components/Footer";
+import Request from "@/components/Request";
+import { getHost } from './actions';
+import data from "../data.json";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,13 +13,17 @@ export const metadata = {
   description: "A network of blood donors in India",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  let host = await getHost();
   return (
     <html lang="en">
       <body className={inter.className}>
+
+        <Request HOST={host} data={data} />
         <Navbar />
         {children}
         <Footer />
+
       </body>
     </html>
   );
