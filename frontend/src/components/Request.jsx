@@ -25,7 +25,7 @@ const Request = (props) => {
             option.setAttribute("class", 'text-gray-800');
             document.getElementById("stateRQ").appendChild(option)
         }
-    }, [])
+    }, [props.data])
 
     const submit = async (e) => {
         e.preventDefault();

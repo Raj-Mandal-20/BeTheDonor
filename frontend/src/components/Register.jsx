@@ -35,7 +35,7 @@ const Register = (props) => {
             option.setAttribute("class", 'text-gray-800');
             document.getElementById("stateRg").appendChild(option)
         }
-    }, [])
+    }, [props.data])
 
     const submit = async (e) => {
         e.preventDefault();

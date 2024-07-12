@@ -28,52 +28,51 @@ const BloodRequest = (props) => {
   const [status, setStatus] = useState(true);
   const [progress, setProgress] = useState(0)
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const getUser = await fetch(`${props.HOST}/v1/fetchUserByUserId`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + cookies["usertoken"],
-        },
-        body: JSON.stringify({ userId: props.request.userId }),
-      });
-      const fetchedUser = await getUser.json();
-      setUser(fetchedUser.user);
-      for (let acceptor of props.request.donors) {
-        if (acceptor == currentUser) {
-          setAccepted(true)
-        }
+  const fetchUser = async () => {
+    const getUser = await fetch(`${props.HOST}/v1/fetchUserByUserId`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + cookies["usertoken"],
+      },
+      body: JSON.stringify({ userId: props.request.userId }),
+    });
+    const fetchedUser = await getUser.json();
+    setUser(fetchedUser.user);
+    for (let acceptor of props.request.donors) {
+      if (acceptor == currentUser) {
+        setAccepted(true)
       }
-      let c = new Date();
-      let d = new Date(props.request.deadline);
-      let year = d.getFullYear() - c.getFullYear();
-      let month = d.getMonth() - c.getMonth();
-      let day = d.getDate() - c.getDate();
-      if (year > 0) {
+    }
+    let c = new Date();
+    let d = new Date(props.request.deadline);
+    let year = d.getFullYear() - c.getFullYear();
+    let month = d.getMonth() - c.getMonth();
+    let day = d.getDate() - c.getDate();
+    if (year > 0) {
+      setStatus(true)
+    } else if (year == 0) {
+      if (month > 0) {
         setStatus(true)
-      } else if (year == 0) {
-        if (month > 0) {
+      } else if (month == 0) {
+        if (day > 0) {
           setStatus(true)
-        } else if (month == 0) {
-          if (day > 0) {
-            setStatus(true)
-          } else if (day == 0) {
-            setStatus(true)
-          } else {
-            setStatus(false)
-          }
+        } else if (day == 0) {
+          setStatus(true)
         } else {
           setStatus(false)
         }
       } else {
         setStatus(false)
       }
-      setLoading(false);
-    };
-    return () => {
-      fetchUser();
-    };
+    } else {
+      setStatus(false)
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, []);
 
   const accept = async (e) => {
