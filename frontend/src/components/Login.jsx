@@ -28,7 +28,7 @@ const Login = (props) => {
         if (res.message) {
             toast.error(res.message, {
                 position: "top-center",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -58,8 +58,8 @@ const Login = (props) => {
                 theme: "dark",
             });
             setProgress(100)
-            setTimeout(() => { refresh() }, 4000)
-            setTimeout(() => { push("/allrequest") }, 3000)
+            setTimeout(() => { refresh() }, 3000)
+            setTimeout(() => { push("/allrequest") }, 2000)
         }
     }
 
