@@ -24,6 +24,14 @@ const requestSchema = new Schema(
       type: String,
       required: true,
     },
+    donationCenter : {
+      type : String,
+      required : true
+    },
+    district : {
+      type : String,
+      required : true
+    },
     deadline: {
       type: Date,
       required: true,

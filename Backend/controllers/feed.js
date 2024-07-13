@@ -22,6 +22,8 @@ exports.createRequest = async (req, res, next) => {
   const bloodGroup = req.body.bloodGroup;
   const bloodUnit = req.body.bloodUnit;
   const deadline = req.body.deadline;
+  const district = req.body.district;
+  const donationCenter = req.body.donationCenter;
 
   try {
     const request = new Request({
@@ -32,6 +34,8 @@ exports.createRequest = async (req, res, next) => {
       bloodUnit: bloodUnit,
       userId: userId,
       deadline: deadline,
+      district: district,
+      donationCenter : donationCenter
     });
 
     const user = await User.findById(userId);
