@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { parseCookies } from "nookies";
 import MoonLoader from "react-spinners/MoonLoader";
 import LoadingBar from 'react-top-loading-bar';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEnvelope,
@@ -12,8 +14,7 @@ import {
 import {
   faPhone,
   faLocationCrosshairs,
-  faLocationDot,
-  faHandHoldingDroplet
+  faLocationDot
 } from "@fortawesome/free-solid-svg-icons";
 
 const BloodRequest = (props) => {
@@ -39,11 +40,15 @@ const BloodRequest = (props) => {
     });
     const fetchedUser = await getUser.json();
     setUser(fetchedUser.user);
-    for (let acceptor of props.request.donors) {
-      if (acceptor == currentUser) {
-        setAccepted(true)
-      }
-    }
+    const acceptor = await fetch(`${props.HOST}/v1/donor?requestId=${props.request._id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + cookies["usertoken"],
+      },
+    });
+    const fetchedAcceptor = await acceptor.json();
+    setAccepted(fetchedAcceptor.isDonated);
     let c = new Date();
     let d = new Date(props.request.deadline);
     let year = d.getFullYear() - c.getFullYear();
@@ -74,7 +79,6 @@ const BloodRequest = (props) => {
   useEffect(() => {
     fetchUser();
   }, []);
-
   const accept = async (e) => {
     e.preventDefault();
     setProgress(10);
@@ -90,12 +94,32 @@ const BloodRequest = (props) => {
     const newCard = await res.json();
     if (newCard.bloodRequest) {
       setProgress(50);
+      // toast.success(newCard.message, {
+      //   position: "top-center",
+      //   autoClose: 3000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "dark",
+      // });
       setProgress(75);
       setDonors(newCard.bloodRequest.donors?.length);
       setAccepted(true);
       setProgress(100);
     } else {
       setProgress(50);
+      // toast.error('Failed to accept the request!', {
+      //   position: "top-center",
+      //   autoClose: 3000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "dark",
+      // });
       setProgress(100)
     }
   };
@@ -107,6 +131,7 @@ const BloodRequest = (props) => {
         progress={progress}
         onLoaderFinished={() => setProgress(0)}
       />
+
       {loading && (
         <div className="card h-fit rounded-lg p-6 w-full max-w-lg shadow-sm text-white flex justify-center items-center">
           <MoonLoader
@@ -120,8 +145,8 @@ const BloodRequest = (props) => {
       )}
       {!loading && (
         <div className="card h-fit rounded-lg hover:-translate-y-1 p-6 w-full max-w-lg shadow-xl text-white">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2 flex items-center">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start">
               <div className="logo-circle">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -137,10 +162,10 @@ const BloodRequest = (props) => {
                   <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
                 </svg>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col justify-start">
                 <h3 className="text-xl font-bold ml-3">{user.name}</h3>
                 {accepted ?
-                  <h4 className="text-sm text-gray-300 ml-3 flex gap-2 items-center">
+                  <h4 className="text-sm text-gray-300 ml-3 flex flex-col gap-1 items-start">
                     <div className="flex gap-1 items-center">
                       <FontAwesomeIcon icon={faEnvelope} />
                       <p>{user.email},</p>
@@ -150,7 +175,7 @@ const BloodRequest = (props) => {
                       <p>{user.phoneNumber}</p>
                     </div>
                   </h4> :
-                  <h4 className="text-sm text-gray-300 ml-3 flex gap-2 items-center invisible">
+                  <h4 className="text-sm text-gray-300 ml-3 flex flex-col gap-1 items-start invisible">
                     <div className="flex gap-1 items-center">
                       <FontAwesomeIcon icon={faEnvelope} />
                       <p>{user.email},</p>
@@ -202,7 +227,7 @@ const BloodRequest = (props) => {
               )
             }
           </div>
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-3 flex items-center justify-between">
             <div className="flex flex-col gap-2 items-start">
               <div className="flex gap-2 items-center">
                 <FontAwesomeIcon icon={faHospital} />
@@ -218,10 +243,6 @@ const BloodRequest = (props) => {
               </div>
             </div>
             <div className="flex flex-col gap-2 items-start">
-              <div className="flex gap-2 items-center">
-                <FontAwesomeIcon icon={faHandHoldingDroplet} />
-                <p>{props.request.bloodGroup}</p>
-              </div>
               <div className="flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -239,7 +260,8 @@ const BloodRequest = (props) => {
                 <span className="text-xl font-bold">
                   {props.request.bloodUnit}
                 </span>
-                <span className="text-gray-300">Unit(s)</span>
+                <span className="text-gray-300">Unit(s) of</span>
+                <span>{props.request.bloodGroup}</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -271,7 +293,7 @@ const BloodRequest = (props) => {
               {currentUser !== props.request.userId && (
                 status ?
                   (accepted ?
-                    <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-300 text-black font-extrabold">
+                    <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-green-300 text-black font-extrabold">
                       Allready Accecpted By You
                     </div> :
                     <button
@@ -280,7 +302,7 @@ const BloodRequest = (props) => {
                     >
                       Accept Request
                     </button>) :
-                  <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-blue-300 text-black font-extrabold">
+                  <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-orange-300 text-black font-extrabold">
                     Request Closed
                   </div>
               )}
@@ -307,8 +329,22 @@ const BloodRequest = (props) => {
               <span className="text-sm">{createdAt}</span>
             </div>
           </div>
+          {/* <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+            containerId={props.key}
+            limit={1}
+          /> */}
         </div>
-      )}
+      )}    
     </>
   );
 };

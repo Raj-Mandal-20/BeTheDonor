@@ -32,12 +32,25 @@
   }
 }
 
+@keyframes blinkL {
+  0%, 100% {
+    color: white;
+  }
+  50% {
+    color: grey;
+  }
+}
+
 .blinkOpen {
   animation: blinkO 1s infinite;
 }
 
 .blinkClose {
   animation: blinkC 1s infinite;
+}
+
+.blinkL {
+  animation: blinkL 1s infinite;
 }
 
 .logo-circle {

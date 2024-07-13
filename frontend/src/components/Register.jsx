@@ -16,7 +16,7 @@ const Register = (props) => {
         name: "",
         email: "",
         phoneNumber: "",
-        age: "",
+        dob: "",
         gender: "",
         bloodGroup: "",
         state: "",
@@ -202,8 +202,8 @@ const Register = (props) => {
                         <input id='cRg' type="tel" name="phoneNumber" value={data.phoneNumber} placeholder='Enter Your Contact No' onChange={change} className='block outline-cyan-500 w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="ageRg">Age</label>
-                        <input id='ageRg' type="number" min={18} max={65} name="age" value={data.age} placeholder='Enter Your Age' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+                        <label className="block text-sm font-medium mb-1" htmlFor="dobRg">Date of Birth</label>
+                        <input className="block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="date" id="dobRg" name="dob" value={data.dob} onChange={change} required />
                     </div>
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
