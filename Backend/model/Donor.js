@@ -2,31 +2,20 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const donorSchema = new Schema({
-    name : {
-        type : String,
-        required : true
-    },
-    city : {
-        type : String, 
-        required : true
-    },
-    pin : {
-        type : Number,
-        required : true
-    },
-    phoneNumber : {
-        type : String,
-        requried: true
-    },
-    bloodGroup : {
-        type : String,
+    userId : {
+        type : Schema.Types.ObjectId,
+        ref : 'User',
         required : true
     },
     requestId : {
         type : Schema.Types.ObjectId,
         ref : 'Request',
         required : true
-    }           
+    },
+    isDonated : {
+        type : Boolean,
+        default : false
+    }       
 });
 
 module.exports = mongoose.model('Donor', donorSchema);
