@@ -4,6 +4,7 @@ import React from 'react'
 import { destroyCookie, parseCookies } from 'nookies'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import success from '../../public/success.gif';
 
 const Logout = () => {
     const { refresh } = useRouter();
@@ -17,16 +18,12 @@ const Logout = () => {
         logout();
     }
     return (
-        <div className='w-full bg-[#051a39] min-h-screen flex p-10 justify-center'>
-            <div className='flex flex-col items-center'>
-                <h1 className='text-3xl text-red-400 p-5'>Logged Out Successfully</h1>
-                <Image src="/success.gif" width={300} height={300} alt="BYE! SEE YOU SOON" />
-                <h1 className='text-xl text-blue-200 p-5'>Visit Us Again</h1>
-                <div className='flex gap-2 text-lg text-white'>
-                    <span className=''>Go Back to</span>
-                    <Link href={"/"} className='underline'>Home Page</Link>
-                </div>
-            </div>
+        <div className='w-full flex flex-col min-h-screen p-12  items-center'>
+                <h1 className='text-3xl text-red-600'>Logged Out Successfully</h1>
+                <Image src={success} alt="Bye! See You Soon" priority/>
+                <button className='border border-red-600 px-4 py-2 text-red-600 rounded-lg text-xl hover:bg-red-600 hover:text-white'>
+                    <Link href={"/"}>Go Back to Home Page</Link>
+                </button>
         </div>
     )
 }

@@ -2,7 +2,6 @@
 import { useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-// import Image from 'next/image'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingBar from 'react-top-loading-bar';
@@ -28,6 +27,7 @@ const Register = (props) => {
     })
 
     useEffect(() => {
+        document.getElementById('stateRg').innerHTML = '<option value="" class="hidden"></option>';
         for (let state in props.data) {
             let option = document.createElement("option");
             option.innerHTML = `${state}`
@@ -51,7 +51,7 @@ const Register = (props) => {
             setProgress(40)
             const result = await response.json();
             setProgress(70)
-            if (!result.userId) {
+            if (result.message != 'Verification Email Sent Successfully!') {
                 toast.error(result.message, {
                     position: "top-center",
                     autoClose: 3000,
@@ -62,7 +62,7 @@ const Register = (props) => {
                     progress: undefined,
                     theme: "dark",
                 });
-                setProgress(100)
+                setProgress(100);
             }
             else {
                 toast.success(result.message, {
@@ -75,8 +75,7 @@ const Register = (props) => {
                     progress: undefined,
                     theme: "dark",
                 });
-                setProgress(100)
-                refresh();
+                setProgress(100);
                 push("/login");
             }
         } else {
@@ -96,10 +95,24 @@ const Register = (props) => {
 
     const change = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
+        if (e.target.name === 'password') {
+            if (/[A-Z]/.test(e.target.value) && /[a-z]/.test(e.target.value) && /[0-9]/.test(e.target.value) && e.target.value.length >= 8) {
+                document.getElementById('pwRg').style.color = '#22c55e';
+                document.getElementById('pwRg').style.borderColor = '#22c55e';
+                document.getElementById('plRg').style.color = '#22c55e';
+                e.target.setCustomValidity('');
+            } else {
+                document.getElementById('pwRg').style.color = '#e2034b';
+                document.getElementById('pwRg').style.borderColor = '#e2034b';
+                document.getElementById('plRg').style.color = '#e2034b';
+                e.target.setCustomValidity('Must have 1 lowercase, 1 uppercase, 1 number, 8 characters or more');
+                e.target.reportValidity();
+            }
+        }
         if (e.target.name == 'state') {
-            document.getElementById('districtRg').innerHTML = '<option value="" class="text-gray-800">Select District</option>';
-            document.getElementById('cityRg').innerHTML = '<option value="" class="text-gray-800">Select City</option>';
-            document.getElementById('pinRg').innerHTML = '<option value="" class="text-gray-800">Select Pincode</option>';
+            document.getElementById('districtRg').innerHTML = '<option value="" class="hidden"></option>';
+            document.getElementById('cityRg').innerHTML = '<option value="" class="hidden"></option>';
+            document.getElementById('pinRg').innerHTML = '<option value="" class="hidden"></option>';
             for (let state in props.data) {
                 if (state == e.target.value) {
                     for (let district in props.data[state]) {
@@ -113,8 +126,8 @@ const Register = (props) => {
             }
         }
         if (e.target.name == 'district') {
-            document.getElementById('cityRg').innerHTML = '<option value="" class="text-gray-800">Select City</option>';
-            document.getElementById('pinRg').innerHTML = '<option value="" class="text-gray-800">Select Pincode</option>';
+            document.getElementById('cityRg').innerHTML = '<option value="" class="hidden"></option>';
+            document.getElementById('pinRg').innerHTML = '<option value="" class="hidden"></option>';
 
             for (let state in props.data) {
                 if (state == data.state) {
@@ -133,7 +146,7 @@ const Register = (props) => {
             }
         }
         if (e.target.name == 'city') {
-            document.getElementById('pinRg').innerHTML = '<option value="" class="text-gray-800">Select Pincode</option>';
+            document.getElementById('pinRg').innerHTML = '<option value="" class="hidden"></option>';
 
             for (let state in props.data) {
                 if (state == data.state) {
@@ -158,6 +171,20 @@ const Register = (props) => {
 
     const changeP = (e) => {
         setPassword(e.target.value)
+        if (e.target.name === 'cpassword') {
+            if (/[A-Z]/.test(e.target.value) && /[a-z]/.test(e.target.value) && /[0-9]/.test(e.target.value) && e.target.value.length >= 8) {
+                document.getElementById('cpwRg').style.color = '#22c55e';
+                document.getElementById('cpwRg').style.borderColor = '#22c55e';
+                document.getElementById('cplRg').style.color = '#22c55e';
+                e.target.setCustomValidity('');
+            } else {
+                document.getElementById('cpwRg').style.color = '#e2034b';
+                document.getElementById('cpwRg').style.borderColor = '#e2034b';
+                document.getElementById('cplRg').style.color = '#e2034b';
+                e.target.setCustomValidity('Must have 1 lowercase, 1 uppercase, 1 number, 8 characters or more');
+                e.target.reportValidity();
+            }
+        }
     }
 
     const handleCheckboxChange = (e) => {
@@ -166,9 +193,9 @@ const Register = (props) => {
     }
 
     return (
-        <form onSubmit={submit} className='p-4 text-white flex flex-col gap-5 items-center rounded-lg shadow-lg card-gradient'>
+        <form onSubmit={submit} className='p-4 w-1/2 text-white border border-gray-800 bg-[#1c1c1f] shadow-black flex flex-col gap-5 items-center rounded-lg shadow-lg card-gradient'>
             <LoadingBar
-                color='#3b82f6'
+                color='#b9003a'
                 progress={progress}
                 onLoaderFinished={() => setProgress(0)}
             />
@@ -185,41 +212,38 @@ const Register = (props) => {
                 theme="dark"
             />
             <h1 className='p-1 text-2xl font-bold text-white'>Register as a Donor</h1>
-            <div className='flex flex-col gap-5 p-5'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="nameRg">Name</label>
-                        <input id='nameRg' type="text" name="name" value={data.name} placeholder='Enter Your Name' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+            <div className='flex flex-col gap-8 p-8 w-full'>
+                <div className='flex relative'>
+                    <input id='nameRg' type="text" name="name" value={data.name} onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required/>
+                    <label className="labels text-sm rounded-md" htmlFor="nameRg">User Name</label>
+                </div>
+                <div className='flex gap-4'>
+                    <div className='w-1/2 flex relative'>
+                        <input id='emailRg' type="email" name="email" value={data.email} placeholder='' onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
+                        <label id='elRg' className="labels text-sm rounded-md" htmlFor="emailRg">E-mail Address</label>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="emailRg">E-Mail</label>
-                        <input id='emailRg' type="email" name="email" value={data.email} placeholder='Enter Your Email' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+                    <div className='w-1/2 flex relative'>
+                        <input id='cRg' type="tel" name="phoneNumber" value={data.phoneNumber} onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' minLength={8} maxLength={10} required />
+                        <label id='clRg' className="labels text-sm rounded-md" htmlFor="cRg">Contact Number</label>
                     </div>
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="cRg">Contact Number</label>
-                        <input id='cRg' type="tel" name="phoneNumber" value={data.phoneNumber} placeholder='Enter Your Contact No' onChange={change} className='block outline-cyan-500 w-full px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="dobRg">Date of Birth</label>
-                        <input className="block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300" type="date" id="dobRg" name="dob" value={data.dob} onChange={change} required />
-                    </div>
-                </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="gRg">Gender</label>
-                        <select name="gender" onChange={change} id="gRg" title='Your Gender' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
-                            <option value="" className='text-gray-800'>Select Gender</option>
+                <div className='flex gap-4'>
+                    <div className='flex w-1/3 relative'>
+                        <select name="gender" onChange={change} id="gRg" title='Your Gender' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                            <option value="" className='hidden'></option>
                             <option value="male" className='text-gray-800'>Male</option>
                             <option value="female" className='text-gray-800'>Female</option>
                             <option value="others" className='text-gray-800'>Others</option>
                         </select>
+                        <label className="labels text-sm rounded-md" htmlFor="gRg">Gender</label>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="bRg">Blood Group</label>
-                        <select id='bRg' name="bloodGroup" value={data.bloodGroup} title='Your Blood Group' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
-                            <option value="" className='text-gray-800'>Select Blood Group</option>
+                    <div className='flex w-1/3 relative'>
+                        <input className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none date-input' type="date" id="dobRg" name="dob" value={data.dob}  onChange={change} required />
+                        <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 left-4 px-1 bg-[#1c1c1f]" htmlFor="dobRg">Date of Birth</label>
+                    </div>
+                    <div className='flex w-1/3 relative'>
+                        <select id='bRg' name="bloodGroup" value={data.bloodGroup} title='Your Blood Group' onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                            <option value="" className='hidden'></option>
                             <option value="A+" className='text-gray-800'>A+</option>
                             <option value="B+" className='text-gray-800'>B+</option>
                             <option value="O+" className='text-gray-800'>O+</option>
@@ -229,54 +253,53 @@ const Register = (props) => {
                             <option value="AB+" className='text-gray-800'>AB+</option>
                             <option value="AB-" className='text-gray-800'>AB-</option>
                         </select>
+                        <label className="labels text-sm rounded-md" htmlFor="bRg">Blood Group</label>
                     </div>
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="stateRg">State</label>
-                        <select name="state" onChange={change} id="stateRg" title='Your State' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
-                            <option value="" className='text-gray-800'>Select State</option>
+                <div className='flex gap-4 w-full'>
+                    <div className='flex w-1/4 relative'>
+                        <select name="state" onChange={change} id="stateRg" title='Your State' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                            <option value="" className='hidden'></option>
                         </select>
+                        <label className="labels text-sm rounded-md" htmlFor="stateRg">State</label>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="districtRg">District</label>
-                        <select name="district" onChange={change} id="districtRg" title='Your District' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
-                            <option value="" className='text-gray-800'>Select District</option>
+                    <div className='flex w-1/4 relative'>
+                        <select name="district" onChange={change} id="districtRg" title='Your District' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                            <option value="" className='hidden'></option>
                         </select>
+                        <label className="labels text-sm rounded-md" htmlFor="districtRg">District</label>
+                    </div>
+                    <div className='flex w-1/4 relative'>
+                        <select name="city" onChange={change} id="cityRg" title='Your City' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                            <option value="" className='hidden'></option>
+                        </select>
+                        <label className="labels text-sm rounded-md" htmlFor="cityRg">City</label>
+                    </div>
+                    <div className='flex w-1/4 relative'>
+                        <select name="pin" onChange={change} id="pinRg" title='Your Pincode' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                            <option value="" className='hidden'></option>
+                        </select>
+                        <label className="labels text-sm rounded-md" htmlFor="pinRg">Pincode</label>
                     </div>
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="cityRg">City</label>
-                        <select name="city" onChange={change} id="cityRg" title='Your City' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
-                            <option value="" className='text-gray-800'>Select City</option>
-                        </select>
+                <div className='flex gap-4'>
+                    <div className='flex w-1/2 relative'>
+                        <input id='pwRg' type="password" name="password" value={data.password} onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
+                        <label id='plRg' className="labels text-sm rounded-md" htmlFor="pwRg">Password</label>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="pinRg">Pincode</label>
-                        <select name="pin" onChange={change} id="pinRg" title='Your Pincode' className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required>
-                            <option value="" className='text-gray-800'>Select Pincode</option>
-                        </select>
+                    <div className='flex w-1/2 relative'>
+                        <input id='cpwRg' type="password" name="cpassword" value={password} onChange={changeP} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
+                        <label id='cplRg' className="labels text-sm rounded-md" htmlFor="cpwRg">Confirm Password</label>
                     </div>
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="pwRg">Password</label>
-                        <input id='pwRg' type="password" name="password" value={data.password} placeholder='Create a Password' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="cpwRg">Confirm Password</label>
-                        <input id='cpwRg' type="password" name="cpassword" value={password} placeholder='Confirm Your Password' onChange={changeP} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
-                    </div>
-                </div>
-                <div className='flex gap-1'>
-                    <input type="checkbox" id="available" checked={isChecked} onChange={handleCheckboxChange} className='accent-cyan-500'/>
+                <div className='flex gap-1 items-center'>
+                    <input type="checkbox" id="available" checked={isChecked} onChange={handleCheckboxChange} className='accent-cyan-500' />
                     <label htmlFor="available" className='text-white'>Available to Donate ? </label>
+                    <div className='text-gray-400 text-sm'>This will allow others to see your contact information.</div>
                 </div>
-                <div className='text-gray-300'>This will allow others to see your contact information.</div>
                 <button type="submit" className='px-4 w-full py-2 rounded-md hover:shadow-md bg-[#b9003a] text-white hover:bg-[#e2034b]'>Register</button>
             </div>
-            <div className='p-3 text-sm text-white'>Already have an account? <Link href={"/login"} className='underline text-white'>Login</Link></div>
+            <div className='p-2 text-sm text-gray-400'>Already have an account? <Link href={"/login"} className='underline text-white'>Login</Link></div>
         </form>
     )
 }

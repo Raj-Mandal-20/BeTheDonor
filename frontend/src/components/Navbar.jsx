@@ -1,18 +1,21 @@
-
+"use client";
 import React from 'react'
 import Link from 'next/link'
-import { cookies } from 'next/headers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faArrowRightFromBracket,
-  faArrowRightToBracket,
-  faGear
+  faUser
+} from "@fortawesome/free-regular-svg-icons";
+import {
+  faRightFromBracket,
+  faRightToBracket,
+  faUserPlus
 } from "@fortawesome/free-solid-svg-icons";
+import { usePathname } from 'next/navigation'
 
-const Navbar = async () => {
-
+const Navbar = (props) => {
+  const pathname = usePathname();
   return (
-    <div className='flex items-center justify-evenly p-5 bg-[#051a39]'>
+    <div className='flex items-center justify-evenly sticky h-20 w-full top-0 z-10 bg-[#161618] border-b-gray-800 border-b'>
       <div className="gap-1 flex items-center justify-center ">
         <div className="flex items-center space-x-2 text-white">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -22,17 +25,28 @@ const Navbar = async () => {
           <span className="text-2xl text-red-500 italic font-semibold">Be-The-Donor</span>
         </div>
       </div>
-
-      <div className='flex gap-8 items-center small:hidden'>
-        <Link href={"/"} className='text-white'>Home</Link>
-        <Link href={"/allrequest"} className='text-white'>All Requets</Link>
-        <Link href={"/myprofile"} className='text-white'>My Profile</Link>
+      <div className='flex gap-8 items-center h-full'>
+        <Link href={"/"} className={`${pathname === '/' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Home</Link>
+        <Link href={"/allrequest"} className={`${pathname === '/allrequest' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Requests</Link>
+        <Link href={"/donors"} className={`${pathname === '/donors' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Donors</Link>
+        <Link href={"/camps"} className={`${pathname === '/camps' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Camps</Link>
       </div>
-      {(cookies().has('usertoken')) ?
-        <Link href={"/logout"} className='text-white border-solid border-red-500 rounded-lg border-2 px-3 py-2 bg-red-500 hover:bg-red-400 hover:border-red-400 hover:text-red-950'>logout</Link> :
+      {(props.cookie) ?
         <div className='flex gap-3'>
-          <Link href={"/login"} className='text-white border-solid border-red-500 rounded-lg border-2 px-3 py-2 bg-red-500 hover:bg-red-400 hover:border-red-400 hover:text-red-950'>login</Link>
-          <Link href={"/register"} className='text-[#2fdde6] border-solid border-[#2fdde6] red-500 rounded-lg border-2 px-3 py-2 hover:bg-[#2fdde6] hover:text-blue-950'>Register</Link>
+          <Link href={"/myprofile"} className='text-[#2fdde6] border-solid border-[#2fdde6] rounded-lg border-2 px-3 py-2 hover:bg-[#2fdde6] hover:text-blue-950'>
+            <FontAwesomeIcon icon={faUser} />
+          </Link>
+          <Link href={"/logout"} className='text-red-600 border-solid border-red-600 rounded-lg border-2 px-3 py-2 hover:bg-red-600 hover:text-white'>
+            <FontAwesomeIcon icon={faRightFromBracket} />
+          </Link>
+        </div> :
+        <div className='flex gap-3'>
+          <Link href={"/login"} className='text-[#2fdde6] border-solid border-[#2fdde6] rounded-lg border-2 px-3 py-2 hover:bg-[#2fdde6] hover:text-blue-950'>
+            <FontAwesomeIcon icon={faRightToBracket} />
+          </Link>
+          <Link href={"/register"} className='text-red-600 border-solid border-red-600 rounded-lg border-2 px-3 py-2 hover:bg-red-600 hover:text-white'>
+            <FontAwesomeIcon icon={faUserPlus} />
+          </Link>
         </div>
       }
     </div>

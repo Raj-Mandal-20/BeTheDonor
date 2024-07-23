@@ -68,9 +68,9 @@ const Login = (props) => {
     }
 
     return (
-        <div className='p-4 text-white flex flex-col gap-5 items-center rounded-lg shadow-lg card-gradient'>
+        <div className='p-4 text-white border border-gray-800 bg-[#1c1c1f] shadow-black flex flex-col gap-5 items-center rounded-lg shadow-lg card-gradient'>
             <LoadingBar
-                color='#3b82f6'
+                color='#b9003a'
                 progress={progress}
                 onLoaderFinished={() => setProgress(0)}
             />
@@ -88,17 +88,17 @@ const Login = (props) => {
             />
             <h1 className='p-1 text-2xl font-bold text-white'>User Login</h1>
             <form onSubmit={submit} className='flex flex-col gap-5 p-5'>
-                <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="emailLog">E-Mail</label>
-                    <input id='emailLog' type="email" name="email" value={data.email} placeholder='Enter Your Email Address' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+                <div className='flex relative'>
+                    <input id='emailLog' type="email" name="email" value={data.email} onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
+                    <label id='elLog' className="labels text-sm rounded-md" htmlFor="emailLog">E-Mail Address</label>
                 </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="pwLog">Password</label>
-                    <input id='pwLog' type="password" name="password" value={data.password} placeholder='Enter Your Password' onChange={change} className='block w-full outline-cyan-500 px-4 py-2 rounded-md bg-white text-gray-800 border border-gray-300' required />
+                <div className='flex relative'>
+                    <input id='pwLog' type="password" name="password" value={data.password} onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
+                    <label className="labels text-sm rounded-md" htmlFor="pwLog">Password</label>
                 </div>
                 <button type="submit" className='px-4 w-full py-2 rounded-md hover:shadow-md bg-[#b9003a] text-white hover:bg-[#e2034b]'>Login</button>
             </form>
-            <div className='p-3 text-sm text-white'>Don&apos;t have an account? <Link href={"/register"} className='underline'>Register</Link></div>
+            <div className='p-2 text-sm text-gray-400'>Don&apos;t have an account? <Link href={"/register"} className='underline text-white'>Register</Link></div>
         </div>
     )
 }
