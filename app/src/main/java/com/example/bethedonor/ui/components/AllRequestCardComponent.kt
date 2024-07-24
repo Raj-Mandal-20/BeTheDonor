@@ -1,6 +1,5 @@
 package com.example.bethedonor.ui.components
 
-import android.hardware.lights.Light
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.TweenSpec
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.FlowRowOverflow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,20 +23,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Bloodtype
-import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bethedonor.R
-import com.example.bethedonor.model.RequestCardDetails
+import com.example.bethedonor.data.dataModels.RequestCardDetails
 import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.Gray2
 import com.example.bethedonor.ui.theme.activeColor1
@@ -66,7 +59,6 @@ import com.example.bethedonor.ui.theme.bloodRed
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.bloodRed3
 import com.example.bethedonor.ui.theme.lightRed
-import java.util.concurrent.Flow
 
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -191,6 +183,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
+                        modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
@@ -210,7 +203,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
-                        FlowRow(maxLines = 2, maxItemsInEachRow = 4) {
+                        FlowRow(modifier = Modifier.padding(top = 4.dp), maxLines = 2, maxItemsInEachRow = 2) {
 //                        Icon(
 //                            imageVector = Icons.Outlined.MyLocation,
 //                            contentDescription = "location", tint = Gray1,
@@ -238,6 +231,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                         }
                     }
                     Column(
+                        modifier = Modifier,
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {

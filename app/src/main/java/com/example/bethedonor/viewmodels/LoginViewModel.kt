@@ -1,17 +1,75 @@
 package com.example.bethedonor.viewmodels
 
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.bethedonor.data.uievent.LoginUIEvent
-import com.example.bethedonor.data.uistate.LoginUiState
-import com.example.bethedonor.data.validationRules.Validator
+import androidx.lifecycle.viewModelScope
+import com.example.bethedonor.data.api.LogInResponse
+import com.example.bethedonor.data.api.RetrofitClient
+import com.example.bethedonor.data.preferences.PreferencesManager
+import com.example.bethedonor.data.repository.UserRepositoryImp
+import com.example.bethedonor.domain.usecase.LogInUserUseCase
+import com.example.bethedonor.ui.utils.uievent.LoginUIEvent
+import com.example.bethedonor.ui.utils.uistate.LoginUiState
+import com.example.bethedonor.ui.utils.validationRules.Validator
+import kotlinx.coroutines.launch
 
-class LoginViewModel() : ViewModel() {
+class LoginViewModel(application: Application) : AndroidViewModel(application){
+
     private val TAG = LoginViewModel::class.simpleName
 
+    //*
+    private val preferencesManager = PreferencesManager(getApplication())
+    //*
     var loginUIState = mutableStateOf(LoginUiState())
     var requestInProgress = mutableStateOf(false)
+
+    private val _loginResponse = MutableLiveData<Result<LogInResponse>>()
+    val loginResponse: LiveData<Result<LogInResponse>> = _loginResponse
+    private val apiService = RetrofitClient.instance
+    private val userRepository = UserRepositoryImp(apiService)
+    private val logInUserUseCase = LogInUserUseCase(userRepository)
+
+    fun logInUser(onLogin: (String, String) -> Unit?) {
+        requestInProgress.value = true
+        val email = loginUIState.value.emailId
+        val password = loginUIState.value.password
+        viewModelScope.launch {
+            try {
+                val response = logInUserUseCase.execute(email, password)
+                _loginResponse.value = Result.success(response)
+                Log.d("Response", response.toString())
+                response.token?.let {
+                    preferencesManager.jwtToken = it
+                    preferencesManager.userId = response.userId
+                }
+            } catch (e: Exception) {
+                _loginResponse.value = Result.failure(e)
+                Log.e("Error", e.toString())
+            } finally {
+                requestInProgress.value = false
+                onLogin(preferencesManager.userId ?: "", preferencesManager.jwtToken ?: "")
+            }
+        }
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return preferencesManager.jwtToken != null
+    }
+    fun getUserId(): String {
+        return preferencesManager.userId.toString()
+    }
+
+    fun getToken(): String {
+        return preferencesManager.jwtToken.toString()
+    }
+
     fun onEvent(event: LoginUIEvent) {
         when (event) {
             is LoginUIEvent.EmailValueChangeEvent -> {
@@ -24,7 +82,7 @@ class LoginViewModel() : ViewModel() {
             is LoginUIEvent.PasswordValueChangeEvent -> {
                 loginUIState.value = loginUIState.value.copy(
                     password = event.password,
-                    passwordErrorState = Validator.validatePassword(event.password)
+                    //passwordErrorState = Validator.validatePassword(event.password)
                 )
             }
 
@@ -36,7 +94,7 @@ class LoginViewModel() : ViewModel() {
 
     fun validateWithRulesForLogIn(): Boolean {
         return loginUIState.value.emailIdErrorState.status
-                && loginUIState.value.passwordErrorState.status
+               // && loginUIState.value.passwordErrorState.status
     }
 
     fun printState() {
@@ -44,112 +102,6 @@ class LoginViewModel() : ViewModel() {
         Log.d(TAG, loginUIState.value.toString())
     }
 
-//    fun login(
-//        onProcessResult: (status: Boolean, message: String, isUnverifiedEmail: Boolean) -> Unit,
-//        dataBase: FirebaseFirestore
-//    ) {
-//        printState()
-//        loginUser(
-//            email = loginUIState.value.emailId,
-//            password = loginUIState.value.password,
-//            onProcessResult = onProcessResult,
-//            dataBase = dataBase
-//        )
-//    }
-
-//    private fun loginUser(
-//        email: String,
-//        password: String,
-//        onProcessResult: (status: Boolean, message: String, isUnverifiedEmail: Boolean) -> Unit,
-//        dataBase: FirebaseFirestore
-//    ) {
-//        requestInProgress.value = true
-//        val auth = FirebaseAuth.getInstance()
-//        auth.currentUser?.reload()
-//        //-------
-//
-//        auth.signInWithEmailAndPassword(email, password)
-//            .addOnCompleteListener {
-//                Log.d(
-//                    "SignIn",
-//                    "${auth.currentUser?.email} is verified ${auth.currentUser?.isEmailVerified}"
-//                )
-//                if (it.isSuccessful) {
-//                    val user = auth.currentUser
-//                    Log.d(
-//                        "signInWithEmailAndPassword",
-//                        "Input:$email and currentUser:${user?.email}"
-//                    )
-//                    if (user != null) {
-//                        val userId = user.uid
-//                        dataBase.collection("users").document(userId)
-//                            .get()
-//                            .addOnSuccessListener { document ->
-//                                Log.d("document", "$document")
-//                                if (document != null) {
-//                                    val isAdmin = document.getBoolean("admin") ?: true
-//                                    Log.d(
-//                                        "AdminSignIn",
-//                                        "UserId:${user.uid} isAdmin ${document.getBoolean("admin")}"
-//                                    )
-//                                    // Now you can check if the user is admin or not
-//                                    if (!isAdmin) {
-//                                        if (user.isEmailVerified) {
-//                                            onProcessResult(
-//                                                true,
-//                                                "Successfully loged in",
-//                                                false
-//                                            )
-//                                        } else {
-//                                            onProcessResult(
-//                                                false,
-//                                                "Please Verify the Email ID",
-//                                                true
-//                                            )
-//                                        }
-//                                    } else {
-//                                        onProcessResult(
-//                                            false,
-//                                            "No User Found with this credentials!",
-//                                            false
-//                                        )
-//                                    }
-//
-//                                } else {
-//                                    onProcessResult(
-//                                        false,
-//                                        "No User Found with this credentials!",
-//                                        false
-//                                    )
-//                                }
-//                            }
-//                            .addOnFailureListener { it ->
-//                                onProcessResult(
-//                                    false,
-//                                    it.message.toString(),
-//                                    false
-//                                )
-//                            }
-//                    }
-//                } else {
-//                    onProcessResult(false, it.exception?.message.toString(), false)
-//                }
-//                requestInProgress.value = false
-//            }
-//    }
-//
-//    //    fun signOut() {
-////        val auth = FirebaseAuth.getInstance()
-////        auth.signOut()
-////        resetUiState()
-////    }
-//    fun sendEmailVerification(
-//        mainViewModel: MainViewModel,
-//        onProcessResult: (status: Boolean, message: String) -> Unit
-//    ) {
-//        val auth = FirebaseAuth.getInstance()
-//        mainViewModel.sendVerificationEmail(auth.currentUser, onProcessResult)
-//    }
 
     fun resetUiState() {
         loginUIState.value = LoginUiState()

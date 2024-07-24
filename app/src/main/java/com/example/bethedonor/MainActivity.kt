@@ -6,15 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.bethedonor.navigation.Destination
 import com.example.bethedonor.navigation.NavigationStack
 import com.example.bethedonor.ui.theme.BeTheDonorTheme
-import kotlinx.serialization.Serializable
+import com.example.bethedonor.viewmodels.LoginViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +24,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-                    NavigationStack(navController = navController , startDestination = Destination.Registration )
+                    // Initialize the ViewModel
+                    val loginViewModel: LoginViewModel = viewModel()
+
+                    // Check if the user is logged in and determine the start destination
+                    val isUserLoggedIn = loginViewModel.isUserLoggedIn()
+                    val userID= loginViewModel.getUserId()
+                    val authToken=loginViewModel.getToken();
+                    NavigationStack(
+                        navController = rememberNavController(),
+                        startDestination = if (isUserLoggedIn) Destination.Home(loginViewModel.getUserId()) else Destination.Login,
+                        isUserLoggedIn = isUserLoggedIn,
+                        userId=userID,
+                        authToken=authToken
+                    )
                 }
             }
         }

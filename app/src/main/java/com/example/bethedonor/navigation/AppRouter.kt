@@ -1,25 +1,27 @@
 package com.example.bethedonor.navigation
 
 import kotlinx.serialization.Serializable
-
 @Serializable
 sealed class Destination {
     @Serializable
-    object Registration : Destination()
+    data object Registration : Destination()
 
     @Serializable
-    object Login : Destination()
+    data object Login : Destination()
 
     @Serializable
-    object Home : Destination()
+    data class Home(val userId:String) : Destination()
 
     @Serializable
-    object AllRequest : Destination()
+    data class AllRequest(val userId:String) : Destination()
 
     @Serializable
-    object CreateRequest : Destination()
+    data class CreateRequest(val userId:String) : Destination()
 
     @Serializable
-    object Profile : Destination()
+    data class History(val userId:String) : Destination()
+
+    @Serializable
+    data class Profile(val userId:String ) : Destination()
 }
 

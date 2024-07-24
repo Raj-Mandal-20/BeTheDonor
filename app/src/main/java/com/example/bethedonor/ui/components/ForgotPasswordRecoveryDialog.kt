@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.bethedonor.data.uievent.ForgotPasswordUiEvent
+import com.example.bethedonor.ui.utils.uievent.ForgotPasswordUiEvent
 import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.teal
 import com.example.bethedonor.viewmodels.ForgotPasswordViewModel

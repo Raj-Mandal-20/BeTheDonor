@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.arpitkatiyarprojects.countrypicker.CountryPickerOutlinedTextField
 import com.arpitkatiyarprojects.countrypicker.models.CountryDetails
 import com.arpitkatiyarprojects.countrypicker.models.PickerTextStyles
-import com.example.bethedonor.data.validationRules.ValidationResult
+import com.example.bethedonor.ui.utils.validationRules.ValidationResult
 import com.example.bethedonor.ui.theme.ErrorColor
 import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.teal
@@ -56,7 +56,6 @@ fun PhoneNumberEditText(
     val focusRequester = remember { FocusRequester() }
     Row(
         modifier = modifier
-            .padding(end = 4.dp)
             .clip(shape = RoundedCornerShape(8.dp))
     ) {
         // Dropdown menu for selecting country code

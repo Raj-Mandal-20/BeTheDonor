@@ -3,31 +3,79 @@ package com.example.bethedonor.viewmodels
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.util.packInts
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.bethedonor.data.State
-import com.example.bethedonor.data.statesWithCities
-import com.example.bethedonor.data.uievent.RegistrationUIEvent
-import com.example.bethedonor.data.uistate.RegistrationUiState
-import com.example.bethedonor.data.validationRules.Validator
+import androidx.lifecycle.viewModelScope
+import com.example.bethedonor.data.api.RegistrationResponse
+import com.example.bethedonor.data.api.RetrofitClient
+import com.example.bethedonor.data.repository.UserRepositoryImp
+import com.example.bethedonor.domain.model.User
+import com.example.bethedonor.domain.usecase.RegistrationUserUseCase
+import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
+import com.example.bethedonor.ui.utils.uistate.RegistrationUiState
+import com.example.bethedonor.ui.utils.validationRules.Validator
 import com.example.bethedonor.utils.AreaData
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 
-class RegistrationViewModel : ViewModel() {
+class RegistrationViewModel() : ViewModel() {
     private val TAG = RegistrationViewModel::class.simpleName
 
-    val areaData: MutableState<AreaData?> = mutableStateOf(null)
+    private val areaData: MutableState<AreaData?> = mutableStateOf(null)
 
     var registrationUIState = mutableStateOf(RegistrationUiState())
-    val stateList = statesWithCities
+
+    //*** api_service and registration use case ***
+    private val _registrationResponse = MutableLiveData<Result<RegistrationResponse>>()
+    val registrationResponse: LiveData<Result<RegistrationResponse>> = _registrationResponse
+    private val apiService = RetrofitClient.instance
+    private val userRepository = UserRepositoryImp(apiService)
+    private val registrationUserUseCase = RegistrationUserUseCase(userRepository)
+
+    fun registerUser(onRegister: () -> Unit?) {
+        requestInProgress.value=true
+        val dob = SimpleDateFormat("dd/MM/yyyy").parse(registrationUIState.value.age)!!
+        val user = User(
+            registrationUIState.value.name,
+            registrationUIState.value.emailId,
+            registrationUIState.value.phoneNo,
+            dob,
+            registrationUIState.value.gender,
+            registrationUIState.value.bloodGroup,
+            registrationUIState.value.state,
+            registrationUIState.value.district,
+            registrationUIState.value.city,
+            registrationUIState.value.pinCode,
+            registrationUIState.value.password,
+            registrationUIState.value.checkedAvailabilityStatus
+        )
+        viewModelScope.launch {
+            try {
+                //val response = userRepository.registerUser(user)
+
+                val response = registrationUserUseCase.execute(user)
+                _registrationResponse.value = Result.success(response)
+                Log.d("Response", response.toString())
+            } catch (e: Exception) {
+                 e.stackTrace
+                _registrationResponse.value = Result.failure(e)
+            }
+            finally {
+                requestInProgress.value=false
+                onRegister()
+            }
+        }
+    }
 
     // Initialize selectedState
     var selectedState: MutableState<String?> = mutableStateOf(null)
     var selectedDistrict: MutableState<String?> = mutableStateOf(null)
     var selectedCity: MutableState<String?> = mutableStateOf(null)
     var selectedPinCode: MutableState<String?> = mutableStateOf(null)
-    var availableToDonate:MutableState<Boolean> = mutableStateOf(true)
-    var requestInProgress = mutableStateOf(true)
+    var availableToDonate: MutableState<Boolean> = mutableStateOf(true)
+    var requestInProgress = mutableStateOf(false)
 
     fun setAreaData(data: AreaData?) {
         areaData.value = data
@@ -50,7 +98,8 @@ class RegistrationViewModel : ViewModel() {
 
     fun getPinCodeList(): List<String> {
         return selectedCity.value?.let {
-            areaData.value?.states?.get(selectedState.value)?.get(selectedDistrict.value)?.get(it)
+            areaData.value?.states?.get(selectedState.value)?.get(selectedDistrict.value)
+                ?.get(it)
         }?.let { listOf(it) } ?: emptyList()
     }
 
@@ -76,8 +125,8 @@ class RegistrationViewModel : ViewModel() {
         selectedPinCode.value = pinCode
     }
 
-    fun setAvailableToDonate(value:Boolean){
-        availableToDonate.value=value
+    fun setAvailableToDonate(value: Boolean) {
+        availableToDonate.value = value
     }
 
     fun onEvent(event: RegistrationUIEvent) {
@@ -182,36 +231,25 @@ class RegistrationViewModel : ViewModel() {
         }
     }
 
-//    fun registration(
-//        onProcessResult: (status: Boolean, message: String) -> Unit,
-//        dataBase: FirebaseFirestore,
-//        mainViewModel: MainViewModel
-//    ) {
-//        printState()
-//        createUserInFirebase(
-//            name = registrationUIState.value.name,
-//            email = registrationUIState.value.emailId,
-//            password = registrationUIState.value.confirmPassword,
-//            profession = registrationUIState.value.profession,
-//            onProcessResult = onProcessResult,
-//            dataBase = dataBase,
-//            mainViewModel = mainViewModel
-//        )
-//    }
-
 
     fun validateWithRulesForRegister(): Boolean {
-        return registrationUIState.value.nameErrorState.status
-                && registrationUIState.value.emailIdErrorState.status
-                && registrationUIState.value.phoneNoErrorState.status
-                && registrationUIState.value.ageErrorState.status
-                && registrationUIState.value.genderErrorState.status
-                && registrationUIState.value.bloodGroupErrorState.status
-                && registrationUIState.value.stateErrorState.status
-                && registrationUIState.value.cityErrorState.status
-                && registrationUIState.value.pinCodeErrorState.status
-                && registrationUIState.value.passwordErrorState.status
-                && registrationUIState.value.confirmPasswordState.status
+      //  if (availableToDonate.value)
+            return registrationUIState.value.nameErrorState.status
+                    && registrationUIState.value.emailIdErrorState.status
+                    && registrationUIState.value.phoneNoErrorState.status
+                    && registrationUIState.value.ageErrorState.status
+                    && registrationUIState.value.genderErrorState.status
+                    && registrationUIState.value.bloodGroupErrorState.status
+                    && registrationUIState.value.stateErrorState.status
+                    && registrationUIState.value.cityErrorState.status
+                    && registrationUIState.value.pinCodeErrorState.status
+                    && registrationUIState.value.passwordErrorState.status
+                    && registrationUIState.value.confirmPasswordState.status
+
+//        return registrationUIState.value.nameErrorState.status
+//                && registrationUIState.value.emailIdErrorState.status
+//                && registrationUIState.value.phoneNoErrorState.status
+//                && registrationUIState.value.passwordErrorState.status
     }
 
 
@@ -219,54 +257,6 @@ class RegistrationViewModel : ViewModel() {
         Log.d(TAG, "Inside_printState")
         Log.d(TAG, registrationUIState.value.toString())
     }
-
-//    private fun createUserInFirebase(
-//        name: String,
-//        email: String,
-//        password: String,
-//        profession: String,
-//        onProcessResult: (status: Boolean, message: String) -> Unit,
-//        dataBase: FirebaseFirestore,
-//        mainViewModel: MainViewModel
-//    ) {
-//        requestInProgress.value = true
-//        val auth = FirebaseAuth.getInstance()
-//        auth
-//            .createUserWithEmailAndPassword(email, password)
-//            .addOnCompleteListener { task ->
-//                requestInProgress.value = false
-//                if (task.isSuccessful) {
-//                    mainViewModel.sendVerificationEmail(auth.currentUser, onProcessResult)
-//                    saveUserData(name, email, profession, auth.currentUser!!.uid, dataBase)
-//                }
-//
-//                Log.d("addOnCompleteListener", "Inside onComplete listener")
-//            }
-//            .addOnFailureListener { exception ->
-//                requestInProgress.value = false
-//                onProcessResult(false, exception.message.toString())
-//                Log.d("addOnFailureListener", exception.stackTraceToString())
-//            }
-//    }
-//
-//    private fun saveUserData(
-//        name: String,
-//        email: String,
-//        profession: String,
-//        userId: String,
-//        dataBase: FirebaseFirestore
-//    ) {
-//        val newUser = UserDataModel(name = name, emailID = email, profession = profession)
-//        dataBase.collection("users")
-//            .document(userId)
-//            .set(newUser)
-//            .addOnSuccessListener { it ->
-//                Log.d("addOnSuccessListener", "Data Saved")
-//            }
-//            .addOnFailureListener {
-//                Log.d("addOnFailureListener ", it.message.toString())
-//            }
-//    }
 
 
     fun resetUiState() {

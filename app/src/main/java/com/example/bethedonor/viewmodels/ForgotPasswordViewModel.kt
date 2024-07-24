@@ -2,9 +2,9 @@ package com.example.bethedonor.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.bethedonor.data.uievent.ForgotPasswordUiEvent
-import com.example.bethedonor.data.uistate.ForgetPasswordUiState
-import com.example.bethedonor.data.validationRules.Validator
+import com.example.bethedonor.ui.utils.uievent.ForgotPasswordUiEvent
+import com.example.bethedonor.ui.utils.uistate.ForgetPasswordUiState
+import com.example.bethedonor.ui.utils.validationRules.Validator
 
 class ForgotPasswordViewModel() : ViewModel() {
     private val TAG = ForgotPasswordViewModel::class.simpleName
