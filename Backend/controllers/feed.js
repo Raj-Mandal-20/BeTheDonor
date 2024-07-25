@@ -284,3 +284,18 @@ exports.isDonated = async (req, res, next) => {
   }
  
 };
+
+exports.donatedHistory = async (req, res, next) => {
+  try {
+    const donors = await Donor.find({ userId: req.userId });
+    console.log(donors);
+    res.status(200).json({
+      donors: donors,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
