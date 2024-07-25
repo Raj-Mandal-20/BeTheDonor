@@ -35,19 +35,17 @@ exports.createRequest = async (req, res, next) => {
       userId: userId,
       deadline: deadline,
       district: district,
-      donationCenter : donationCenter
+      donationCenter: donationCenter,
     });
 
     const user = await User.findById(userId);
     user.requests.push(request);
 
-
-
     await user.save();
 
     // notify all pepole
-    const users = await User.find({available : true, _id : {$ne : userId}});
-    const recipients = users.map(user => user.email);
+    const users = await User.find({ available: true, _id: { $ne: userId } });
+    const recipients = users.map((user) => user.email);
     console.log(recipients);
     await notifyAll(bloodGroup, recipients);
 
@@ -65,8 +63,6 @@ exports.createRequest = async (req, res, next) => {
     next(err);
   }
 };
-
-
 
 async function notifyAll(bloodGroup, recipients) {
   const transporter = nodemailer.createTransport({
@@ -87,7 +83,7 @@ async function notifyAll(bloodGroup, recipients) {
     html: `
       <h2> A Patient Needed (${bloodGroup}) Blood, do you want to contribute? </h2>
     `,
-    bcc : recipients.join(",")
+    bcc: recipients.join(","),
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -99,8 +95,7 @@ async function notifyAll(bloodGroup, recipients) {
   });
 }
 
-
-async function sendDonationEmail(userEmail){
+async function sendDonationEmail(userEmail) {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     host: "smtp.gmail.com",
@@ -128,9 +123,7 @@ async function sendDonationEmail(userEmail){
       console.log("Email sent: ", info.response);
     }
   });
-
 }
-
 
 exports.allBloodRequest = async (req, res, next) => {
   try {
@@ -157,8 +150,7 @@ exports.donationEmail = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-}
-
+};
 
 exports.fetchUserDetails = async (req, res, next) => {
   try {
@@ -209,18 +201,18 @@ exports.acceptDonation = async (req, res, next) => {
   try {
     // donor increases
     // one time accept
-    
+
     const requestId = req.body.requestId;
     const bloodRequest = await Request.findById(requestId);
 
-    console.log('Request Id = ',requestId);
+    console.log("Request Id = ", requestId);
     // check if the user is already donated
     const donorExists = await Donor.findOne({
       requestId: requestId,
       userId: req.userId,
     });
 
-    console.log('donor loggs',donorExists);
+    console.log("donor loggs", donorExists);
 
     if (donorExists) {
       const error = new Error("You have already donated for this request!");
@@ -258,12 +250,10 @@ exports.acceptDonation = async (req, res, next) => {
 };
 
 exports.isDonated = async (req, res, next) => {
-
-  try{
-
+  try {
     const requestId = req.query.requestId;
     const userId = req.userId;
-  
+
     const donor = await Donor.findOne({ requestId: requestId, userId: userId });
     console.log(donor);
     if (!donor) {
@@ -274,13 +264,75 @@ exports.isDonated = async (req, res, next) => {
     res.status(200).json({
       isDonated: donor.isDonated,
     });
-
-  }
-  catch(err){
+  } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
- 
+};
+
+exports.donatedHistory = async (req, res, next) => {
+  try {
+    const donors = await Donor.find({ userId: req.userId });
+    console.log(donors);
+    res.status(200).json({
+      donors: donors,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.closeAccount = async (req, res, next) => {
+  try {
+    await Request.deleteMany({ userId: req.userId });
+    await Donor.deleteMany({ userId: req.userId });
+    await User.deleteOne({ _id: req.userId });
+
+    res.status(200).json({
+      message: "Account Closed Successfully",
+      isAccountClosed: true,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const sectionId = req.params.sectionId;
+    const user = await User.findById({ _id: req.userId });
+    if (sectionId === "1") {
+      user.name = req.body.name;
+      user.available = req.body.available;
+    } 
+    else if (sectionId === "2") {
+      user.phoneNumber = req.body.phoneNumber;
+      user.gender = req.body.gender;
+      user.bloodGroup = req.body.bloodGroup;
+      user.dob = req.body.dob;
+    }
+    else if (sectionId === "3") {
+      user.state = req.body.state;
+      user.district = req.body.district;
+      user.city = req.body.city;
+      user.pin = req.body.pin;
+    }
+    await user.save();
+    res.status(200).json({
+      message: "Profile Updated Successfully",
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
