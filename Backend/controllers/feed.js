@@ -299,3 +299,22 @@ exports.donatedHistory = async (req, res, next) => {
     next(err);
   }
 }
+
+exports.closeAccount = async (req, res, next) => {
+     try{
+        await Request.deleteMany({ userId : req.body.userId});
+        await Donor.deleteMany({ userId : req.body.userId});
+        await User.deleteOne({_id : req.body.userId});
+
+        res.status(200).json({
+          message : "Account Closed Successfully",
+          isAccountClosed : true
+        });
+     }
+     catch(err){
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+     }
+}
