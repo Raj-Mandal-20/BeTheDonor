@@ -10,7 +10,7 @@ router.get("/my-profile", isAuth, feedController.myProfile);
 router.get("/request-history", isAuth, feedController.requestHistory);
 router.get("/donor", isAuth, feedController.isDonated);
 router.post("/donation", isAuth, feedController.acceptDonation);
-router.post("/donation-history", feedController.donatedHistory);
+router.get("/donation-history", isAuth, feedController.donatedHistory);
 router.delete('/closeAccount', isAuth, feedController.closeAccount);
 router.put('/updateProfile/:sectionId',isAuth, feedController.updateProfile);
 
