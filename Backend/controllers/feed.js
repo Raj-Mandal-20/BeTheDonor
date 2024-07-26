@@ -274,11 +274,18 @@ exports.isDonated = async (req, res, next) => {
 
 exports.donatedHistory = async (req, res, next) => {
   try {
-    const donors = await Donor.find({ userId: req.userId });
-    console.log(donors);
+    const user = await User.findById(req.body.userId);
+    let donates = await Promise.all(
+      user.donates.map(async (reqId) => {
+        const request = await Request.findById(reqId);
+        console.log(request);
+        return request;
+      })
+    );
     res.status(200).json({
-      donors: donors,
+      donates: donates
     });
+
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
