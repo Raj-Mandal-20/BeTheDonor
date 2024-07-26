@@ -274,7 +274,7 @@ exports.isDonated = async (req, res, next) => {
 
 exports.donatedHistory = async (req, res, next) => {
   try {
-    const user = await User.findById(req.body.userId);
+    const user = await User.findById(req.userId);
     let donates = await Promise.all(
       user.donates.map(async (reqId) => {
         const request = await Request.findById(reqId);
