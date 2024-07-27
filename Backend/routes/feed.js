@@ -11,7 +11,8 @@ router.get("/request-history", isAuth, feedController.requestHistory);
 router.get("/donor", isAuth, feedController.isDonated);
 router.post("/donation", isAuth, feedController.acceptDonation);
 router.get("/donation-history", isAuth, feedController.donatedHistory);
-router.delete('/closeAccount', isAuth, feedController.closeAccount);
-router.put('/updateProfile/:sectionId',isAuth, feedController.updateProfile);
+router.delete("/closeAccount", isAuth, feedController.closeAccount);
+router.put("/updateProfile/:sectionId", isAuth, feedController.updateProfile);
+router.get("/donorlist/:requestId", isAuth, feedController.donarList);
 
 module.exports = router;

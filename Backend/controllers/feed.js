@@ -343,3 +343,40 @@ exports.updateProfile = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.donarList = async(req, res, next) => {
+  try {
+    const requestId = req.params.requestId;
+    const requestBody = await Request.findById({ _id: requestId });
+    console.log(requestBody.donors);
+
+    let donors = await Promise.all(
+      requestBody.donors.map(async (donorId) => {
+        const donor = await Donor.findById({ _id : donorId});
+        const user = await User.findById({ _id : donor.userId});
+        return {
+          name : user.name,
+          email : user.email,
+          state : user.state,
+          city : user.city,
+          district : user.district,
+          pin : user.pin,
+          phoneNumber : user.phoneNumber,
+          blooodGroup : user.bloodGroup
+        }
+      })
+    );
+    
+    res.status(200).json({
+      donors: donors,
+      message : 'Fetched Donors List Successfully',
+      statusCode : 200
+    });
+
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
