@@ -2,7 +2,8 @@ import React from 'react'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation';
 import { getHost } from '../actions';
-import BloodRequest from '@/components/BloodRequest';
+import SearchRequests from '@/components/SearchRequests';
+import data from "../../data.json";
 
 const fetchRequests = async () => {
   const cookieStore = cookies();
@@ -12,9 +13,17 @@ const fetchRequests = async () => {
       "Content-Type": "application/json",
       Authorization: "Bearer " + cookieStore.get("usertoken").value,
     },
-  });
+  }, { cache: 'no-store' });
   const res = await requests.json();
   return res.allBloodRequest;
+};
+
+const countDonors = async (allBloodRequest) => {
+  let obj = {};
+  for (let request of allBloodRequest) {
+    obj[request._id] = request.donors?.length;
+  }
+  return obj;
 };
 
 const page = async () => {
@@ -23,19 +32,9 @@ const page = async () => {
   }
   let host = await getHost();
   let allBloodRequest = await fetchRequests();
+  let donors = await countDonors(allBloodRequest);
   return (
-    <div className={`bg-[#051a39] p-10 flex flex-wrap gap-8 justify-center items-center min-h-screen`}>
-      {
-        allBloodRequest?.length > 0 ? (
-          allBloodRequest.map((request, index) => (
-            <BloodRequest key={index} request={request} HOST={host} />
-          ))
-        ) : (
-          <div className="text-white text-2xl h-[23rem]">
-            No Blood Requests
-          </div>
-        )}
-    </div>
+    <SearchRequests allBloodRequest={allBloodRequest} donors={donors} host={host} data={data} />
   )
 }
 

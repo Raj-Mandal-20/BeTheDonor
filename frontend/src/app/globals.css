@@ -2,40 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-.card-gradient {
+body {
+  inset: 0;
+  /* background: linear-gradient(135deg, #323235 0%, #141418 75%); */
+  /* [#39393b] */
+  /* font-family: 'Inter', sans-serif; */
+}
+
+/* .card-gradient {
   background: linear-gradient(to bottom right, #1b3363, #122141);
 }
 
 .card {
-  background: linear-gradient(to bottom right, #d80445, #85022b);
-}
-
-/* body {
-  font-family: 'Inter', sans-serif;
+  font-family: Arial, sans-serif;
 } */
 
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161618;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c1c1f;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b9003a;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
 @keyframes blinkO {
-  0%, 100% {
+
+  0%,
+  100% {
     fill: #00ff00;
   }
+
   50% {
     fill: #006256;
   }
 }
 
 @keyframes blinkC {
-  0%, 100% {
+
+  0%,
+  100% {
     fill: rgb(247, 78, 78);
   }
+
   50% {
     fill: rgb(196, 4, 4);
   }
 }
 
 @keyframes blinkL {
-  0%, 100% {
+
+  0%,
+  100% {
     color: white;
   }
+
   50% {
     color: grey;
   }
@@ -54,14 +86,11 @@
 }
 
 .logo-circle {
-  background-color: #051a39;
+  /* background-color: #051a39; */
+  background-color: #b9003a;
   border-radius: 50%;
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-/* .no-scroll {
-    overflow: hidden;
-} */
