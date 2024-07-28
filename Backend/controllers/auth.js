@@ -224,7 +224,7 @@ exports.signin = (req, res, next) => {
           userId: loadedUser._id.toString(),
         },
         process.env.SECRET_KEY,
-        { expiresIn: "1h" }
+        { expiresIn: "30d" }
       );
       req.userId = loadedUser._id;
       res.status(200).json({
