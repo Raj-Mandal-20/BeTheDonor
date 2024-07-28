@@ -23,6 +23,7 @@ const BloodRequest = (props) => {
   const createdAt = new Date(props.request.createdAt).toDateString();
   const lastDate = new Date(props.request.deadline).toDateString();
   const [status, setStatus] = useState(true);
+  const [logo, setLogo] = useState('');
 
   const fetchUser = async () => {
     setLoading(true);
@@ -75,7 +76,22 @@ const BloodRequest = (props) => {
   useEffect(() => {
     fetchUser();
   }, [props.request]);
+
+  useEffect(() => {
+    if (!user.name) return;
+    let logo = '';
+    let temp = user.name.trim().split(" ");
+    let index = 0;
+    for (let e of temp) {
+      if (index == 2) break;
+      logo = logo + e[0];
+      index++;
+    }
+    setLogo(logo.toUpperCase());
+  }, [user]);
+
   const accept = async (e) => {
+    document.getElementById("abRq").disabled = true;
     e.preventDefault();
     props.setProgress(10);
     let res = await fetch(`${props.HOST}/v1/donation`, {
@@ -103,6 +119,7 @@ const BloodRequest = (props) => {
       props.setProgress(75);
       props.setDonors({ ...props.donors, [props.request._id]: newCard.bloodRequest.donors?.length });
       setAccepted(true);
+      document.getElementById("abRq").disabled = false;
       props.setProgress(100);
     } else {
       props.setProgress(50);
@@ -116,6 +133,7 @@ const BloodRequest = (props) => {
         progress: undefined,
         theme: "dark",
       });
+      document.getElementById("abRq").disabled = false;
       props.setProgress(100)
     }
   };
@@ -123,7 +141,7 @@ const BloodRequest = (props) => {
   return (
     <>
       {loading && (
-        <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[658.4px] max-w-lg text-white w-[20rem] ${props.i % 2 === 0 ? 'justify-self-end' : 'justify-self-start'} flex justify-center items-center`}>
+        <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[618.4px] text-white w-[20rem] flex justify-center items-center`}>
           <MoonLoader
             color={"white"}
             loading={loading}
@@ -134,7 +152,7 @@ const BloodRequest = (props) => {
         </div>
       )}
       {!loading && (
-        <div id={`${props.i}`} className={`card h-fit bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col text-white w-[20rem] ${props.i % 2 === 0 ? 'justify-self-end' : 'justify-self-start'} `}>
+        <div className={`card h-fit bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col text-white w-[20rem] `}>
           <div className="flex flex-col gap-2 items-center w-full bg-[#39393b] p-4">
             <div className="w-full flex justify-end">
               {
@@ -177,20 +195,8 @@ const BloodRequest = (props) => {
               }
             </div>
             <div className="flex flex-col justify-center items-center gap-2 w-full">
-              <div className="logo-circle">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path>
-                  <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path>
-                </svg>
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                <span className="text-gray-500 text-2xl font-bold">{logo}</span>
               </div>
               <div className="text-2xl font-bold flex text-center">{user.name}</div>
               {accepted || (currentUser == props.request.userId) ?
@@ -257,7 +263,7 @@ const BloodRequest = (props) => {
                 (accepted ?
                   <button className="px-4 py-2 w-full bg-red-300 text-black hover:cursor-not-allowed">Accepted By You</button>
                   :
-                  <button onClick={accept} className="px-4 py-2 w-full bg-green-300 text-black hover:bg-green-200">Accept Request</button>
+                  <button id="abRq" onClick={accept} className="px-4 py-2 w-full bg-green-300 text-black hover:bg-green-200">Accept Request</button>
                 ) :
                 <button className="px-4 py-2 w-full bg-orange-300 text-black hover:cursor-not-allowed">Request Closed</button>
             )}

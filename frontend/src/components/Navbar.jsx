@@ -26,14 +26,14 @@ const Navbar = (props) => {
         </div>
       </div>
       <div className='flex gap-8 items-center h-full'>
-        <Link href={"/"} className={`${pathname === '/' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Home</Link>
-        <Link href={"/allrequest"} className={`${pathname === '/allrequest' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Requests</Link>
-        <Link href={"/donors"} className={`${pathname === '/donors' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Donors</Link>
-        <Link href={"/camps"} className={`${pathname === '/camps' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center`}>Camps</Link>
+        <Link href={"/"} className={`${pathname === '/' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'}  h-full content-center hover:text-red-500`}>Home</Link>
+        <Link href={"/allrequest"} className={`${pathname === '/allrequest' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'} hover:text-red-500 h-full content-center`}>Requests</Link>
+        <Link href={"/donors"} className={`${pathname === '/donors' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'} hover:text-red-500 h-full content-center`}>Donors</Link>
+        <Link href={"/camps"} className={`${pathname === '/camps' ? 'border-b-2 text-red-500 border-red-600' : 'text-white'} hover:text-red-500 h-full content-center`}>Camps</Link>
       </div>
       {(props.cookie) ?
         <div className='flex gap-3'>
-          <Link href={"/myprofile"} className='text-[#2fdde6] border-solid border-[#2fdde6] rounded-lg border-2 px-3 py-2 hover:bg-[#2fdde6] hover:text-blue-950'>
+          <Link href={"/myprofile/dashboard"} className='text-[#2fdde6] border-solid border-[#2fdde6] rounded-lg border-2 px-3 py-2 hover:bg-[#2fdde6] hover:text-blue-950'>
             <FontAwesomeIcon icon={faUser} />
           </Link>
           <Link href={"/logout"} className='text-red-600 border-solid border-red-600 rounded-lg border-2 px-3 py-2 hover:bg-red-600 hover:text-white'>

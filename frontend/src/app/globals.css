@@ -33,53 +33,6 @@ body {
   background: #b9003a;
 }
 
-.labels {
-  position: absolute;
-  top: 50%;
-  left: 8px;
-  padding: 0px 8px;
-  pointer-events: none;
-  color: white;
-  transform: translateY(-50%);
-  transition: 0.3s;
-}
-
-.inputs:focus~.labels,
-.inputs:valid~.labels {
-  top: 0;
-  background-color: #1c1c1f;
-}
-
-#emailLog:focus~.labels,
-#emailLog:invalid~#elLog {
-  top: 0;
-  background-color: #1c1c1f;
-}
-
-#emailRg:focus~.labels,
-#emailRg:invalid~#elRg {
-  top: 0;
-  background-color: #1c1c1f;
-}
-
-#cRg:focus~.labels,
-#cRg:invalid~#clRg {
-  top: 0;
-  background-color: #1c1c1f;
-}
-
-#pwRg:focus~.labels,
-#pwRg:invalid~#plRg {
-  top: 0;
-  background-color: #1c1c1f;
-}
-
-#cpwRg:focus~.labels,
-#cpwRg:invalid~#cplRg {
-  top: 0;
-  background-color: #1c1c1f;
-}
-
 .date-input::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }

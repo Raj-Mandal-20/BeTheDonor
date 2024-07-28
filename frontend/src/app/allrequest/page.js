@@ -13,7 +13,7 @@ const fetchRequests = async () => {
       "Content-Type": "application/json",
       Authorization: "Bearer " + cookieStore.get("usertoken").value,
     },
-  });
+  }, { cache: 'no-store' });
   const res = await requests.json();
   return res.allBloodRequest;
 };
@@ -34,7 +34,7 @@ const page = async () => {
   let allBloodRequest = await fetchRequests();
   let donors = await countDonors(allBloodRequest);
   return (
-    <SearchRequests allBloodRequest={allBloodRequest} donors={donors} host={host} data={data}/>
+    <SearchRequests allBloodRequest={allBloodRequest} donors={donors} host={host} data={data} />
   )
 }
 

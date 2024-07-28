@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import { parseCookies } from 'nookies'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingBar from 'react-top-loading-bar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -29,6 +29,7 @@ const Request = (props) => {
     }, [props.data])
 
     const submit = async (e) => {
+        document.getElementById('sbRQ').disabled = true;
         e.preventDefault();
         setProgress(10)
         let response = await fetch(`${props.HOST}/v1/create-request`, {
@@ -45,7 +46,7 @@ const Request = (props) => {
         if (!res.bloodRequest) {
             toast.error(res.message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -53,12 +54,13 @@ const Request = (props) => {
                 progress: undefined,
                 theme: "dark",
             });
-            setProgress(100)
+            document.getElementById('sbRQ').disabled = false;
+            setProgress(100);
         }
         else {
             toast.success(res.message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -68,8 +70,9 @@ const Request = (props) => {
             });
             document.getElementById('req').style.display = 'none';
             document.getElementById('reqb').style.display = 'flex';
-            setProgress(100)
-            push("/myprofile");
+            document.getElementById('sbRQ').disabled = false;
+            setProgress(100);
+            setTimeout(() => { push("/myprofile/myrequests") }, 2000);
         }
     }
 
@@ -152,18 +155,6 @@ const Request = (props) => {
 
     return (
         <div className="">
-            <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
             <LoadingBar
                 color='#b9003a'
                 progress={progress}
@@ -181,44 +172,44 @@ const Request = (props) => {
                     <form onSubmit={submit}>
                         <div className="flex flex-col gap-8 py-8 w-full">
                             <div className='flex relative'>
-                                <input id='dcRQ' type="text" name="donationCenter" value={data.donationCenter} onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
-                                <label className="labels text-sm rounded-md" htmlFor="dcRQ">Donation Center</label>
+                                <input id='dcRQ' type="text" name="donationCenter" value={data.donationCenter} onChange={change} className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
+                                <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="dcRQ">Donation Center</label>
                             </div>
                             <div className="flex gap-4">
                                 <div className='flex w-1/2 relative'>
-                                    <select name="state" onChange={change} id="stateRQ" title='Center State' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                                    <select name="state" onChange={change} id="stateRQ" title='Center State' className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
                                         <option value="" className='hidden'></option>
                                     </select>
-                                    <label className="labels text-sm rounded-md" htmlFor="stateRQ">State</label>
+                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="stateRQ">State</label>
                                 </div>
                                 <div className='flex w-1/2 relative'>
-                                    <select name="district" onChange={change} id="districtRQ" title='Center District' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                                    <select name="district" onChange={change} id="districtRQ" title='Center District' className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
                                         <option value="" className='hidden'></option>
                                     </select>
-                                    <label className="labels text-sm rounded-md" htmlFor="districtRQ">District</label>
-                                </div>
-                            </div>
-                            <div className="flex gap-4">
-                                <div className='flex w-1/2 relative'>
-                                    <select name="city" onChange={change} id="cityRQ" title='Center City' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
-                                        <option value="" className='hidden'></option>
-                                    </select>
-                                    <label className="labels text-sm rounded-md" htmlFor="cityRQ">City</label>
-                                </div>
-                                <div className='flex w-1/2 relative'>
-                                    <select name="pin" onChange={change} id="pinRQ" title='Center Pincode' className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
-                                        <option value="" className='hidden'></option>
-                                    </select>
-                                    <label className="labels text-sm rounded-md" htmlFor="pinRQ">Pincode</label>
+                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="districtRQ">District</label>
                                 </div>
                             </div>
                             <div className="flex gap-4">
                                 <div className='flex w-1/2 relative'>
-                                    <input className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none date-input' type="number" min={1} id="bloodUnitRQ" name="bloodUnit" value={data.bloodUnit} onChange={change} required />
-                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 left-4 px-1 bg-[#1c1c1f]" htmlFor="bloodUnitRQ">Blood Unit</label>
+                                    <select name="city" onChange={change} id="cityRQ" title='Center City' className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                                        <option value="" className='hidden'></option>
+                                    </select>
+                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="cityRQ">City</label>
                                 </div>
                                 <div className='flex w-1/2 relative'>
-                                    <select id='bloodGroupRQ' title='Required Blood Group' name="bloodGroup" value={data.bloodGroup} onChange={change} className='block inputs w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                                    <select name="pin" onChange={change} id="pinRQ" title='Center Pincode' className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                                        <option value="" className='hidden'></option>
+                                    </select>
+                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="pinRQ">Pincode</label>
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className='flex w-1/2 relative'>
+                                    <input className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' type="number" min={1} max={15} id="bloodUnitRQ" name="bloodUnit" value={data.bloodUnit} onChange={change} required />
+                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="bloodUnitRQ">Blood Unit</label>
+                                </div>
+                                <div className='flex w-1/2 relative'>
+                                    <select id='bloodGroupRQ' title='Required Blood Group' name="bloodGroup" value={data.bloodGroup} onChange={change} className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
                                         <option value="any" className='text-gray-800'>Any Group</option>
                                         <option value="A+" className='text-gray-800'>A+</option>
                                         <option value="B+" className='text-gray-800'>B+</option>
@@ -229,16 +220,16 @@ const Request = (props) => {
                                         <option value="O-" className='text-gray-800'>O-</option>
                                         <option value="AB-" className='text-gray-800'>AB-</option>
                                     </select>
-                                    <label className="labels text-sm rounded-md" htmlFor="bloodGroupRQ">Blood Group</label>
+                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="bloodGroupRQ">Blood Group</label>
                                 </div>
                             </div>
                             <div className='flex relative'>
                                 <input className='block w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none date-input' type="date" id="deadlineRQ" name="deadline" value={data.deadline} onChange={change} required />
-                                <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 left-4 px-1 bg-[#1c1c1f]" htmlFor="deadlineRQ">Deadline</label>
+                                <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="deadlineRQ">Deadline</label>
                             </div>
                         </div>
                         <div className="mt-4 flex justify-between w-full">
-                            <button className="px-4 w-full py-2 rounded-md hover:shadow-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="submit">Submit</button>
+                            <button id='sbRQ' className="px-4 w-full py-2 rounded-md hover:shadow-md bg-[#b9003a] text-white hover:bg-[#e2034b]" type="submit">Submit</button>
                         </div>
                     </form>
                 </div>
