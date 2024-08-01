@@ -55,9 +55,11 @@ import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.Gray2
 import com.example.bethedonor.ui.theme.activeColor1
 import com.example.bethedonor.ui.theme.activeColor2
+import com.example.bethedonor.ui.theme.bgDarkBlue2
 import com.example.bethedonor.ui.theme.bloodRed
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.bloodRed3
+import com.example.bethedonor.ui.theme.bloodTrashparent
 import com.example.bethedonor.ui.theme.lightRed
 
 
@@ -75,9 +77,9 @@ fun AllRequestCard(details: RequestCardDetails) {
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(2.dp, Gray2),
+        border = BorderStroke(1.dp, bloodTrashparent),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
+            defaultElevation = 6.dp
         ),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
@@ -86,7 +88,7 @@ fun AllRequestCard(details: RequestCardDetails) {
         Box(
             modifier = Modifier
                 .background(
-                    gradientBrush
+                   bgDarkBlue2
                 ), contentAlignment = Alignment.Center
         )
         {
@@ -141,7 +143,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Row {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
                                     Icon(
                                         imageVector = Icons.Outlined.Email,
                                         contentDescription = "Email Icon",
@@ -155,7 +157,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(4.dp)) // Add some space between email and phone details
-                                Row {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
                                     Icon(
                                         imageVector = Icons.Outlined.Phone,
                                         contentDescription = "Phone Icon",

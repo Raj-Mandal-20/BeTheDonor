@@ -101,7 +101,6 @@ fun SelectStateDistrictCityField(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
-                .padding(start = 4.dp)
         )
         ExposedDropdownMenu(
             expanded = expanded,

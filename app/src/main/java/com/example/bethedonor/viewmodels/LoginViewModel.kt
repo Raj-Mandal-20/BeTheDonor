@@ -36,7 +36,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
     private val userRepository = UserRepositoryImp(apiService)
     private val logInUserUseCase = LogInUserUseCase(userRepository)
 
-    fun logInUser(onLogin: (String, String) -> Unit?) {
+    fun logInUser(onLogin: () -> Unit?) {
         requestInProgress.value = true
         val email = loginUIState.value.emailId
         val password = loginUIState.value.password
@@ -54,7 +54,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
                 Log.e("Error", e.toString())
             } finally {
                 requestInProgress.value = false
-                onLogin(preferencesManager.userId ?: "", preferencesManager.jwtToken ?: "")
+                onLogin()
             }
         }
     }

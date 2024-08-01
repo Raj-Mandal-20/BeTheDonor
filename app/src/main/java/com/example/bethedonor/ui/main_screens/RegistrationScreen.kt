@@ -50,7 +50,7 @@ import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.fadeBlue1
 import com.example.bethedonor.ui.theme.fadeBlue2
-import com.example.bethedonor.utils.bloodGroupList
+import com.example.bethedonor.utils.bloodGroupList1
 import com.example.bethedonor.utils.genderList
 import com.example.bethedonor.utils.readJsonFromAssets
 import com.example.bethedonor.viewmodels.RegistrationViewModel
@@ -61,7 +61,7 @@ fun RegistrationScreen(
     registrationViewModel: RegistrationViewModel = viewModel(),
 ) {
     val context = LocalContext.current
-    val bloodGroupsList = bloodGroupList
+    val bloodGroupsList = bloodGroupList1
     val genderList = genderList
     val areaData = readJsonFromAssets(context, "Location.json")
 
@@ -120,7 +120,6 @@ fun RegistrationScreen(
                                     )
                                     registrationViewModel.printState()
                                     registrationViewModel.registrationUIState.value.nameErrorState
-
                                 },
                                 recheckFiled = recheckFiled
                             )
@@ -188,7 +187,7 @@ fun RegistrationScreen(
                                     label = "DOB",
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(start = 4.dp)
+                                        .padding()
                                 )
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,

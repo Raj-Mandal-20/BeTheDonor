@@ -14,7 +14,7 @@ import com.example.bethedonor.ui.theme.teal
 @Composable
 fun SimpleTextWithSpan(text1: String, spanText: String,onTextClicked: (String)->Unit) {
     val annotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = Color.DarkGray)) {
+        withStyle(style = SpanStyle(color = Color.Gray)) {
             append(text1)
         }
         withStyle(

@@ -50,7 +50,7 @@ import com.example.bethedonor.viewmodels.LoginViewModel
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel = viewModel(),
-    onLoginNavigate: (String,String) -> Unit,
+    onLoginNavigate: () -> Unit,
     onRegisterNavigate: () -> Unit
 ) {
     val context = LocalContext.current
@@ -149,11 +149,11 @@ fun LoginScreen(
                                         recheckFiled = true
                                         if (loginViewModel.validateWithRulesForLogIn()) {
                                             loginViewModel.logInUser(
-                                                onLogin = {uId,authToken->
+                                                onLogin = {
                                                     loginResponse?.let {
                                                         if (it.isSuccess) {
                                                             if (it.getOrNull()?.statusCode == null && it.getOrNull()?.message != "timeout") {
-                                                               onLoginNavigate(uId,authToken)
+                                                               onLoginNavigate()
                                                             }
                                                             Toast.makeText(
                                                                 context,

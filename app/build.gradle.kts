@@ -80,7 +80,5 @@ dependencies {
     implementation (libs.logging.interceptor)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation (libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.navigation.compose.v253)
-
-
+    implementation (libs.accompanist.systemuicontroller)
 }

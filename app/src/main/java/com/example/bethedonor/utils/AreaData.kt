@@ -21,3 +21,4 @@ fun readJsonFromAssets(context: Context, fileName: String): AreaData? {
         null
     }
 }
+

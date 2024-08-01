@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BeTheDonor</string>
+    <string name="title_activity_before_log_in">BeforeLogInActivity</string>
 </resources>

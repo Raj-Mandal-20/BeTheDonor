@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,9 +34,6 @@ import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.teal
 
 
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectionField(
@@ -43,10 +41,10 @@ fun SelectionField(
     onSelection: (String) -> ValidationResult,
     recheckFiled: Boolean = false,
     modifier: Modifier,
-    label: String
+    label: String,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf("") }
+    var selectedOptionIndex by remember { mutableIntStateOf(0) }
     var isErrorState by rememberSaveable {
         mutableStateOf(false)
     }
@@ -57,13 +55,13 @@ fun SelectionField(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-       modifier
+        modifier
             .fillMaxWidth(0.5f)
             .clip(shape = RoundedCornerShape(8.dp)),
     ) {
         OutlinedTextField(
             readOnly = true,
-            label = { Text(text =label,fontSize = 14.sp) },
+            label = { Text(text = label, fontSize = 14.sp) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
@@ -85,7 +83,7 @@ fun SelectionField(
             textStyle = TextStyle(color = Color.White),
             shape = RoundedCornerShape(16.dp),
             isError = if (recheckFiled) {
-                val result = onSelection(selectedOptionText)
+                val result = onSelection(options[selectedOptionIndex])
                 supportingTextState = result.errorComment
                 isErrorState = !result.status
                 isErrorState
@@ -99,7 +97,7 @@ fun SelectionField(
                     )
                 }
             },
-            value = selectedOptionText,
+            value = options[selectedOptionIndex],
             onValueChange = {},
             modifier = Modifier
                 .menuAnchor()
@@ -112,7 +110,7 @@ fun SelectionField(
                     text = { Text(text = option) },
                     onClick = {
                         expanded = false
-                        selectedOptionText=option
+                        selectedOptionIndex = options.indexOf(option)
                         onSelection(option)
                     }
                 )
