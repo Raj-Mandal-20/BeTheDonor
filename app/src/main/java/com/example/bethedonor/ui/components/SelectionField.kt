@@ -44,7 +44,7 @@ fun SelectionField(
     label: String,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionIndex by remember { mutableIntStateOf(0) }
+    var selectedOptionIndex by remember { mutableIntStateOf(-1) }
     var isErrorState by rememberSaveable {
         mutableStateOf(false)
     }
@@ -97,7 +97,7 @@ fun SelectionField(
                     )
                 }
             },
-            value = options[selectedOptionIndex],
+            value = if(selectedOptionIndex>=0) options[selectedOptionIndex] else "",
             onValueChange = {},
             modifier = Modifier
                 .menuAnchor()

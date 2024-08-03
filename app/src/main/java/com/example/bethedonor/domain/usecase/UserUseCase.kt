@@ -1,10 +1,12 @@
 package com.example.bethedonor.domain.usecase
 
 import android.util.Log
-import com.example.bethedonor.data.api.LogInRequest
+import com.example.bethedonor.data.api.AccountResponse
+import com.example.bethedonor.data.api.BloodRequestsResponse
 import com.example.bethedonor.data.api.LogInResponse
 import com.example.bethedonor.data.api.ProfileResponse
 import com.example.bethedonor.data.api.RegistrationResponse
+import com.example.bethedonor.data.api.UserResponse
 import com.example.bethedonor.domain.model.User
 import com.example.bethedonor.domain.repository.UserRepository
 
@@ -67,6 +69,7 @@ class LogInUserUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+
 class GetUserProfileUseCase(private val userRepository: UserRepository) {
     suspend fun execute(token: String): ProfileResponse {
         return try {
@@ -84,6 +87,70 @@ class GetUserProfileUseCase(private val userRepository: UserRepository) {
             }
         } catch (e: Exception) {
             ProfileResponse(message = e.message ?: "Unknown error")
+        }
+    }
+}
+
+class GetAllBloodRequestsUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String): BloodRequestsResponse {
+        return try {
+            val response = userRepository.getAllBloodRequests(token)
+            Log.d("responseBloodReq", response.toString())
+            if (response.isSuccessful) {
+                //   Log.d("responseBloodReqBody", response.body().toString())
+                response.body() ?: BloodRequestsResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, BloodRequestsResponse::class.java)
+                BloodRequestsResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("errorFromGetAllBloodRequests", e.message.toString())
+            BloodRequestsResponse(message = e.message ?: "Unknown error")
+        }
+    }
+}
+
+class FetchUserDetailsUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, userId: String): UserResponse {
+        return try {
+            val response = userRepository.fetchUserByUserId(token, userId)
+            if (response.isSuccessful) {
+                response.body() ?: UserResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, UserResponse::class.java)
+                UserResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("errorFromFetchUserDetails", e.message.toString())
+            UserResponse(message = e.message ?: "Unknown error")
+        }
+    }
+}
+
+class CloseAccountUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String): AccountResponse {
+        return try {
+            val response = userRepository.closeAccount(token)
+            if (response.isSuccessful) {
+                response.body() ?: AccountResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, AccountResponse::class.java)
+                AccountResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            AccountResponse(message = e.message ?: "Unknown error")
         }
     }
 }

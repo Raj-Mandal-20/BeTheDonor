@@ -83,6 +83,7 @@ fun EditText(
             focusedLeadingIconColor = Color.White,
             unfocusedLeadingIconColor = Color.Gray,
             focusedTrailingIconColor = Color.White,
+            unfocusedTrailingIconColor = Color.Gray,
             errorLabelColor = ErrorColor,
             errorBorderColor = ErrorColor,
             errorLeadingIconColor = ErrorColor,

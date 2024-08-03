@@ -20,7 +20,7 @@ import com.example.bethedonor.ui.theme.bloodRed3
 
 
 @Composable
-fun ButtonComponent(text: String = "Click", onButtonClick: () -> Unit, isEnable: Boolean = false) {
+fun ButtonComponent(text: String, onButtonClick: () -> Unit, isEnable: Boolean = false) {
     Box {
         Button(
             onClick = { onButtonClick() },

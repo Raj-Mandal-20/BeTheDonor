@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -28,7 +29,12 @@ import androidx.compose.ui.unit.sp
 import com.example.bethedonor.ui.utils.validationRules.ValidationResult
 import com.example.bethedonor.ui.theme.ErrorColor
 import com.example.bethedonor.ui.theme.Gray1
+import com.example.bethedonor.ui.theme.bgDarkBlue
+import com.example.bethedonor.ui.theme.bgDarkBlue2
+import com.example.bethedonor.ui.theme.darkGray
+import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.theme.teal
+import com.example.bethedonor.ui.utils.commons.linearGradientBrush
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +62,7 @@ fun SelectStateDistrictCityField(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
         modifier
-            .clip(shape = RoundedCornerShape(8.dp)),
+            .clip(shape = RoundedCornerShape(8.dp))
     ) {
         OutlinedTextField(
             readOnly = true,
@@ -106,11 +112,11 @@ fun SelectStateDistrictCityField(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             scrollState = rememberScrollState(),
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(fadeBlue11)
         ) {
             options.forEach { option: String ->
                 DropdownMenuItem(
-                    text = { Text(text = option, color = Color.Black) },
+                    text = { Text(text = option, color = Color.White) },
                     onClick = {
                         expanded = false
                         // selectedOptionText=option

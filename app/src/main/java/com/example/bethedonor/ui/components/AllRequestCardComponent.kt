@@ -33,6 +33,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -120,28 +121,24 @@ fun AllRequestCard(details: RequestCardDetails) {
                                 modifier = Modifier.size(30.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.width(20.dp))
+                        Spacer(modifier = Modifier.width(16.dp))
                         Column(
-                            verticalArrangement = Arrangement.Center,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalAlignment = Alignment.Start
                         ) {
-                            Text(
-                                text = "Chayandev Bera",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-//                            Text(
-//                                text = " ${Icons.Filled.Email} ${details.emailId} | ${Icons.Filled.Phone} ${details.phoneNo}",
-//                                fontSize = 16.sp,
-//                                fontWeight = FontWeight.SemiBold,
-//                                color = Color.White
-//                            )
-                            //  if (details.isAcceptor)
+                            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+                                Text(
+                                    text = details.name,
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    modifier = Modifier.fillMaxWidth(0.72f)
+                                )
+                               RoundedBoxWithIconAndText(open =details.isOpen)
+                            }
                             Column(
                                 horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
                                     Icon(
@@ -151,12 +148,11 @@ fun AllRequestCard(details: RequestCardDetails) {
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Text(
-                                        text = details.emailId,
+                                        text = if(details.isAcceptor || details.isMyCreation) details.emailId else "xyz@gmail.com",
                                         color = Gray1,
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(4.dp)) // Add some space between email and phone details
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
                                     Icon(
                                         imageVector = Icons.Outlined.Phone,
@@ -165,7 +161,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Text(
-                                        text = details.phoneNo,
+                                        text = if(details.isAcceptor || details.isMyCreation) details.phoneNo else "xxxxxxxxxx",
                                         color = Gray1,
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
                                     )
@@ -174,7 +170,6 @@ fun AllRequestCard(details: RequestCardDetails) {
 
                         }
                     }
-                    RoundedBoxWithIconAndText(modifier = Modifier, details.isOpen)
                 }
                 // Spacer(modifier = Modifier.height(16.dp))
                 //  HorizontalDivider(color = Color.LightGray)
@@ -245,7 +240,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                         Spacer(modifier = Modifier.height(4.dp))
                         BloodUnitAndAcceptorCountComponent(
                             painterResource(id = R.drawable.ic_blood_drop),
-                            count = details.bloodUnit,
+                            count = details.bloodUnit.toInt(),
                             labelTExt = "Blood Units"
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -288,11 +283,12 @@ fun AllRequestCard(details: RequestCardDetails) {
                         colors = ButtonColors(
                             containerColor = Color.White,
                             contentColor = Color.Black,
-                            disabledContentColor = Color.Black,
-                            disabledContainerColor = Color.White
-                        )
+                            disabledContentColor = Color.DarkGray,
+                            disabledContainerColor = Color.LightGray
+                        ),
+                        enabled = details.isOpen && !details.isMyCreation && !details.isAcceptor
                     ) {
-                        Text(text = "Accept Donation", fontWeight = FontWeight.SemiBold)
+                        Text(text = if (details.isMyCreation) "Your Request" else if(details.isAcceptor) "Accepted" else if(details.isOpen) "Accept Donation" else "Request Closed", fontWeight = FontWeight.SemiBold)
                     }
 
                     Row(
@@ -307,7 +303,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "2 days ago",
+                            text = "${details.postDate} days ago",
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
                                 color = Color.LightGray
@@ -412,12 +408,14 @@ fun AllRequestCardPreview() {
             phoneNo = "6549680439",
             address = "West Bengal, Kolkata\n Dhapa, 700105",
             exactPlace = "NRS",
-            bloodUnit = 10,
+            bloodUnit = "10",
             bloodGroup = "B+",
             noOfAcceptors = 20,
             dueDate = "Sun July 2024",
             postDate = "Fri July 2024",
             isOpen = true,
+            isAcceptor = false,
+            isMyCreation = false
         )
     )
 }

@@ -1,7 +1,6 @@
 package com.example.bethedonor.ui.main_screens
 
 import PhoneNumberEditText
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,8 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,11 +45,13 @@ import com.example.bethedonor.ui.components.SimpleTextWithSpan
 import com.example.bethedonor.ui.components.SubGreetText
 import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.bgDarkBlue
-import com.example.bethedonor.ui.theme.fadeBlue1
-import com.example.bethedonor.ui.theme.fadeBlue2
+import com.example.bethedonor.ui.utils.commons.linearGradientBrush
 import com.example.bethedonor.utils.bloodGroupList1
 import com.example.bethedonor.utils.genderList
-import com.example.bethedonor.utils.readJsonFromAssets
+import com.example.bethedonor.utils.getCityList
+import com.example.bethedonor.utils.getDistrictList
+import com.example.bethedonor.utils.getPinCodeList
+import com.example.bethedonor.utils.getStateDataList
 import com.example.bethedonor.viewmodels.RegistrationViewModel
 
 @Composable
@@ -63,12 +62,12 @@ fun RegistrationScreen(
     val context = LocalContext.current
     val bloodGroupsList = bloodGroupList1
     val genderList = genderList
-    val areaData = readJsonFromAssets(context, "Location.json")
+//    val areaData = readJsonFromAssets(context, "Location.json")
+//    registrationViewModel.setAreaData(areaData)
 
-    registrationViewModel.setAreaData(areaData)
     val registrationResponse by registrationViewModel.registrationResponse.observeAsState()
 
-    Log.d("JSON", areaData?.states.toString())
+    // Log.d("JSON", areaData?.states.toString())
     var recheckFiled by remember {
         mutableStateOf(false)
     }
@@ -84,11 +83,7 @@ fun RegistrationScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(fadeBlue1, fadeBlue2),
-                            start = Offset.Zero,
-                            end = Offset.Infinite
-                        )
+                        linearGradientBrush()
                     ), contentAlignment = Alignment.Center
             )
             {
@@ -237,7 +232,7 @@ fun RegistrationScreen(
                                 ) {
                                     SelectStateDistrictCityField(
                                         label = "State",
-                                        options = registrationViewModel.getStateDataList(),
+                                        options = getStateDataList(),
                                         selectedValue = registrationViewModel.selectedState.value,
                                         onSelection = {
                                             registrationViewModel.onEvent(
@@ -256,7 +251,7 @@ fun RegistrationScreen(
                                     )
                                     SelectStateDistrictCityField(
                                         label = "District",
-                                        options = registrationViewModel.getDistrictList(),
+                                        options = getDistrictList(selectedState = registrationViewModel.selectedState.value),
                                         selectedValue = registrationViewModel.selectedDistrict.value,
                                         onSelection = {
                                             registrationViewModel.onEvent(
@@ -281,7 +276,10 @@ fun RegistrationScreen(
                                 ) {
                                     SelectStateDistrictCityField(
                                         label = "City",
-                                        options = registrationViewModel.getCityList(),
+                                        options = getCityList(
+                                            selectedState = registrationViewModel.selectedState.value,
+                                            selectedDistrict = registrationViewModel.selectedDistrict.value
+                                        ),
                                         selectedValue = registrationViewModel.selectedCity.value,
                                         onSelection = {
                                             registrationViewModel.onEvent(
@@ -313,7 +311,11 @@ fun RegistrationScreen(
 //                                )
                                     SelectStateDistrictCityField(
                                         label = "Zip",
-                                        options = registrationViewModel.getPinCodeList(),
+                                        options = getPinCodeList(
+                                            selectedState = registrationViewModel.selectedState.value,
+                                            selectedDistrict = registrationViewModel.selectedDistrict.value,
+                                            selectedCity = registrationViewModel.selectedCity.value
+                                        ),
                                         selectedValue = registrationViewModel.selectedPinCode.value,
                                         onSelection = {
                                             registrationViewModel.onEvent(
@@ -387,8 +389,8 @@ fun RegistrationScreen(
                                         registrationViewModel.registerUser(onRegister = {
                                             registrationResponse?.let {
                                                 if (it.isSuccess) {
-                                                    if(it.getOrNull()?.statusCode ==null && it.getOrNull()?.message!="timeout"){
-                                                       onRegisterNavigate()
+                                                    if (it.getOrNull()?.statusCode == null && it.getOrNull()?.message != "timeout") {
+                                                        onRegisterNavigate()
                                                     }
                                                     Toast.makeText(
                                                         context,
@@ -419,7 +421,7 @@ fun RegistrationScreen(
                                 "Already have an account? ",
                                 "Login",
                                 onTextClicked = {
-                                   onRegisterNavigate()
+                                    onRegisterNavigate()
                                 })
                         }
                     }

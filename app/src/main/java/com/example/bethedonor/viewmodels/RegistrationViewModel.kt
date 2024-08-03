@@ -15,16 +15,12 @@ import com.example.bethedonor.domain.usecase.RegistrationUserUseCase
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.utils.uistate.RegistrationUiState
 import com.example.bethedonor.ui.utils.validationRules.Validator
-import com.example.bethedonor.utils.AreaData
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 
 class RegistrationViewModel() : ViewModel() {
     private val TAG = RegistrationViewModel::class.simpleName
-
-    private val areaData: MutableState<AreaData?> = mutableStateOf(null)
-
     var registrationUIState = mutableStateOf(RegistrationUiState())
 
     //*** api_service and registration use case ***
@@ -77,31 +73,31 @@ class RegistrationViewModel() : ViewModel() {
     var availableToDonate: MutableState<Boolean> = mutableStateOf(true)
     var requestInProgress = mutableStateOf(false)
 
-    fun setAreaData(data: AreaData?) {
-        areaData.value = data
-    }
+//    fun setAreaData(data: AreaData?) {
+//        areaData.value = data
+//    }
 
-    fun getStateDataList(): List<String> {
-        return areaData.value?.states?.keys?.toList() ?: emptyList()
-    }
-
-    fun getDistrictList(): List<String> {
-        return selectedState.value?.let { areaData.value?.states?.get(it)?.keys?.toList() }
-            ?: emptyList()
-    }
-
-    fun getCityList(): List<String> {
-        return selectedDistrict.value?.let {
-            areaData.value?.states?.get(selectedState.value)?.get(it)?.keys?.toList()
-        } ?: emptyList()
-    }
-
-    fun getPinCodeList(): List<String> {
-        return selectedCity.value?.let {
-            areaData.value?.states?.get(selectedState.value)?.get(selectedDistrict.value)
-                ?.get(it)
-        }?.let { listOf(it) } ?: emptyList()
-    }
+//    fun getStateDataList(): List<String> {
+//        return areaData.value?.states?.keys?.toList() ?: emptyList()
+//    }
+//
+//    fun getDistrictList(): List<String> {
+//        return selectedState.value?.let { areaData.value?.states?.get(it)?.keys?.toList() }
+//            ?: emptyList()
+//    }
+//
+//    fun getCityList(): List<String> {
+//        return selectedDistrict.value?.let {
+//            areaData.value?.states?.get(selectedState.value)?.get(it)?.keys?.toList()
+//        } ?: emptyList()
+//    }
+//
+//    fun getPinCodeList(): List<String> {
+//        return selectedCity.value?.let {
+//            areaData.value?.states?.get(selectedState.value)?.get(selectedDistrict.value)
+//                ?.get(it)
+//        }?.let { listOf(it) } ?: emptyList()
+//    }
 
     fun selectState(state: String) {
         selectedState.value = state

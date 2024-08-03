@@ -102,6 +102,7 @@ fun PhoneNumberEditText(
                 focusedLeadingIconColor = Color.White,
                 focusedTrailingIconColor = Color.White,
                 unfocusedLeadingIconColor = Color.Gray,
+                unfocusedTrailingIconColor = Color.Gray,
                 errorLabelColor = ErrorColor,
                 errorBorderColor = ErrorColor,
                 errorLeadingIconColor = ErrorColor,

@@ -15,6 +15,8 @@ import com.example.bethedonor.navigation.AfterLogInNavigationStack
 import com.example.bethedonor.ui.theme.BeTheDonorTheme
 import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.fadeBlue11
+import com.example.bethedonor.utils.readJsonFromAssets
+import com.example.bethedonor.utils.setAreaData
 import com.example.bethedonor.viewmodels.HomeViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -27,6 +29,7 @@ class AfterLogInActivity : ComponentActivity() {
                 SideEffect {
                     systemUiController.setSystemBarsColor(fadeBlue11, darkIcons = false)
                 }
+
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
