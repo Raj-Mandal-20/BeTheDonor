@@ -11,6 +11,7 @@ import com.example.bethedonor.data.api.RegistrationResponse
 import com.example.bethedonor.data.api.RetrofitClient
 import com.example.bethedonor.data.repository.UserRepositoryImp
 import com.example.bethedonor.domain.model.User
+import com.example.bethedonor.domain.model.UserBase
 import com.example.bethedonor.domain.usecase.RegistrationUserUseCase
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.utils.uistate.RegistrationUiState
@@ -31,21 +32,24 @@ class RegistrationViewModel() : ViewModel() {
     private val registrationUserUseCase = RegistrationUserUseCase(userRepository)
 
     fun registerUser(onRegister: () -> Unit?) {
-        requestInProgress.value=true
+        requestInProgress.value = true
         val dob = SimpleDateFormat("dd/MM/yyyy").parse(registrationUIState.value.age)!!
-        val user = User(
+        val userBase = UserBase(
             registrationUIState.value.name,
-            registrationUIState.value.emailId,
             registrationUIState.value.phoneNo,
             dob,
             registrationUIState.value.gender,
             registrationUIState.value.bloodGroup,
             registrationUIState.value.state,
-            registrationUIState.value.district,
             registrationUIState.value.city,
+            registrationUIState.value.district,
             registrationUIState.value.pinCode,
             registrationUIState.value.password,
             registrationUIState.value.checkedAvailabilityStatus
+        )
+        val user = User(
+            registrationUIState.value.emailId,
+            userBase
         )
         viewModelScope.launch {
             try {
@@ -55,11 +59,10 @@ class RegistrationViewModel() : ViewModel() {
                 _registrationResponse.value = Result.success(response)
                 Log.d("Response", response.toString())
             } catch (e: Exception) {
-                 e.stackTrace
+                e.stackTrace
                 _registrationResponse.value = Result.failure(e)
-            }
-            finally {
-                requestInProgress.value=false
+            } finally {
+                requestInProgress.value = false
                 onRegister()
             }
         }
@@ -229,18 +232,18 @@ class RegistrationViewModel() : ViewModel() {
 
 
     fun validateWithRulesForRegister(): Boolean {
-      //  if (availableToDonate.value)
-            return registrationUIState.value.nameErrorState.status
-                    && registrationUIState.value.emailIdErrorState.status
-                    && registrationUIState.value.phoneNoErrorState.status
-                    && registrationUIState.value.ageErrorState.status
-                    && registrationUIState.value.genderErrorState.status
-                    && registrationUIState.value.bloodGroupErrorState.status
-                    && registrationUIState.value.stateErrorState.status
-                    && registrationUIState.value.cityErrorState.status
-                    && registrationUIState.value.pinCodeErrorState.status
-                    && registrationUIState.value.passwordErrorState.status
-                    && registrationUIState.value.confirmPasswordState.status
+        //  if (availableToDonate.value)
+        return registrationUIState.value.nameErrorState.status
+                && registrationUIState.value.emailIdErrorState.status
+                && registrationUIState.value.phoneNoErrorState.status
+                && registrationUIState.value.ageErrorState.status
+                && registrationUIState.value.genderErrorState.status
+                && registrationUIState.value.bloodGroupErrorState.status
+                && registrationUIState.value.stateErrorState.status
+                && registrationUIState.value.cityErrorState.status
+                && registrationUIState.value.pinCodeErrorState.status
+                && registrationUIState.value.passwordErrorState.status
+                && registrationUIState.value.confirmPasswordState.status
 
 //        return registrationUIState.value.nameErrorState.status
 //                && registrationUIState.value.emailIdErrorState.status

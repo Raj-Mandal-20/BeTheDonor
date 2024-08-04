@@ -36,6 +36,8 @@ fun EditText(
     onFiledValueChanged: (value: String) -> ValidationResult,
     recheckFiled: Boolean = false,
     value: String="",
+    enable:Boolean=true,
+    readOnly: Boolean = false
 ) {
     var textValue by rememberSaveable {
         mutableStateOf(value)
@@ -50,6 +52,7 @@ fun EditText(
         mutableStateOf("")
     }
     OutlinedTextField(
+        readOnly=readOnly,
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(8.dp)),

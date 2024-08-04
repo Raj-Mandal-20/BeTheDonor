@@ -45,3 +45,10 @@ fun getInitials(name: String): String {
         }  // For multiple parts, take the first letter of each
     }
 }
+
+fun getCountryCode(phNo:String):String{
+    return phNo.substring(0, 3)
+}
+fun getPhoneNoWithoutCountryCode(phNo:String):String{
+    return phNo.substring(3, phNo.length)
+}

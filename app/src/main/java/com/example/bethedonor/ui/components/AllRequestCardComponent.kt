@@ -138,9 +138,9 @@ fun AllRequestCard(details: RequestCardDetails) {
                             }
                             Column(
                                 horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth(1f)){
                                     Icon(
                                         imageVector = Icons.Outlined.Email,
                                         contentDescription = "Email Icon",
@@ -153,7 +153,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
                                     )
                                 }
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start){
                                     Icon(
                                         imageVector = Icons.Outlined.Phone,
                                         contentDescription = "Phone Icon",

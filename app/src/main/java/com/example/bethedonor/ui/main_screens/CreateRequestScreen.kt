@@ -58,7 +58,7 @@ fun CreateRequestScreen(
     innerPaddingValues: PaddingValues,
     uId: String,
     onDone: () -> Unit,
-    createRequestViewModel: CreateRequestViewModel = viewModel()
+    createRequestViewModel: CreateRequestViewModel
 ) {
     val context = LocalContext.current
     val bloodGroupsList = bloodGroupList2

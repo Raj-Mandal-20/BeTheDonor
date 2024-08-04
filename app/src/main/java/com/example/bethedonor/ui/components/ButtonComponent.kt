@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,7 +28,6 @@ fun ButtonComponent(text: String, onButtonClick: () -> Unit, isEnable: Boolean =
             //   enabled = isEnable,
             modifier = Modifier
                 .fillMaxWidth()
-                .size(50.dp)
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
@@ -35,7 +35,7 @@ fun ButtonComponent(text: String, onButtonClick: () -> Unit, isEnable: Boolean =
                         )
                     ), shape = ButtonDefaults.shape
                 )
-                .height(ButtonDefaults.MinHeight),
+                .padding(vertical = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         ) {
             Text(

@@ -8,9 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.bethedonor.data.api.BloodRequest
 import com.example.bethedonor.data.api.RetrofitClient
 import com.example.bethedonor.data.api.UserProfile
+import com.example.bethedonor.data.api.UserResponse
 import com.example.bethedonor.data.repository.UserRepositoryImp
 import com.example.bethedonor.domain.usecase.FetchUserDetailsUseCase
 import com.example.bethedonor.domain.usecase.GetAllBloodRequestsUseCase
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +25,20 @@ data class BloodRequestWithUser(
 )
 
 class AllRequestViewModel() : ViewModel() {
+    private val _recomposeTime = MutableStateFlow(-1L)
+    val recomposeTime: StateFlow<Long> = _recomposeTime
+
+    fun updateRecomposeTime() {
+        _recomposeTime.value += 1
+    }
+
+    fun shouldFetch(): Boolean {
+        return (_recomposeTime.value % 3).toInt() == 0;
+    }
+
+    private val _currentUserDetails = MutableStateFlow<Result<UserResponse>?>(null)
+    val currentUserDetails: StateFlow<Result<UserResponse>?> = _currentUserDetails
+
     private val _allBloodRequestResponse = MutableLiveData<Result<List<BloodRequestWithUser>>>()
     private val allBloodRequestResponse: LiveData<Result<List<BloodRequestWithUser>>> =
         _allBloodRequestResponse
@@ -61,15 +78,19 @@ class AllRequestViewModel() : ViewModel() {
             try {
                 val response = getAllBloodRequestsUseCase.execute(token)
                 if (response.bloodRequests != null) {
-                    val bloodRequestWithUsers = response.bloodRequests.map { bloodRequest ->
-                        val userResponse =
-                            fetchUserDetailsUseCase.execute(token, bloodRequest.userId)
-                        if (userResponse.user == null) {
-                            throw Exception("Failed to fetch user details for request: ${bloodRequest.userId}")
+                    // Use async to fetch user details in parallel
+                    val bloodRequestWithUsersDeferred = response.bloodRequests.map { bloodRequest ->
+                        async {
+                            val userResponse =
+                                fetchUserDetailsUseCase.execute(token, bloodRequest.userId)
+                            if (userResponse.user == null) {
+                                throw Exception("Failed to fetch user details for request: ${bloodRequest.userId}")
+                            }
+                            BloodRequestWithUser(bloodRequest, userResponse.user)
                         }
-                        val user = userResponse.user
-                        BloodRequestWithUser(bloodRequest, user)
                     }
+                    // Await all async calls
+                    val bloodRequestWithUsers = bloodRequestWithUsersDeferred.awaitAll()
                     _allBloodRequestResponse.value = Result.success(bloodRequestWithUsers)
                     _allBloodRequestResponseList.value = Result.success(bloodRequestWithUsers)
                 } else {
@@ -81,6 +102,20 @@ class AllRequestViewModel() : ViewModel() {
                 _allBloodRequestResponseList.value = Result.failure(e)
             } finally {
                 isRequestFetching.value = false
+            }
+        }
+    }
+
+    fun fetchCurrentUserDetails(token: String, userId: String) {
+        viewModelScope.launch {
+            try {
+                val response = fetchUserDetailsUseCase.execute(token, userId)
+                _currentUserDetails.value = Result.success(response)
+                Log.d("currentUserDetails", response.toString())
+                Log.d("currentUserDetails", response.user.toString())
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _currentUserDetails.value = Result.failure(e)
             }
         }
     }

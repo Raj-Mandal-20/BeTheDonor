@@ -1,6 +1,5 @@
 package com.example.bethedonor.ui.main_screens
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ import androidx.navigation.NavController
 import com.example.bethedonor.data.dataModels.RequestCardDetails
 import com.example.bethedonor.ui.components.AllRequestCard
 import com.example.bethedonor.ui.components.FilterItemComponent
+import com.example.bethedonor.ui.components.Retry
 import com.example.bethedonor.ui.components.SearchBarComponent
 import com.example.bethedonor.ui.temporay_screen.LoadingScreen
 import com.example.bethedonor.ui.theme.bgDarkBlue
@@ -46,6 +48,11 @@ import com.example.bethedonor.utils.getPinCodeList
 import com.example.bethedonor.utils.getStateDataList
 import com.example.bethedonor.utils.isDeadlinePassed
 import com.example.bethedonor.viewmodels.AllRequestViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,13 +61,15 @@ fun AllRequestScreen(
     innerPadding: PaddingValues,
     token: String,
     userId: String,
-    allRequestViewModel: AllRequestViewModel = viewModel()
+    allRequestViewModel: AllRequestViewModel
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val allBloodRequestResponseList by allRequestViewModel.allBloodRequestResponseList.collectAsState(
         null
     )
+    val currentUserDetails by allRequestViewModel.currentUserDetails.collectAsState(null)
+
     val isLoading by allRequestViewModel.isRequestFetching.collectAsState()
     val searchText by allRequestViewModel.searchText.collectAsState()
     val filterState by allRequestViewModel.filterState.collectAsState()
@@ -70,10 +79,21 @@ fun AllRequestScreen(
     val isSheetVisible by allRequestViewModel.isSheetVisible.collectAsState()
     val sheetState = rememberModalBottomSheetState()
 
+    //*** Recomposition Count ***//
+    allRequestViewModel.updateRecomposeTime()
+    val recomposeTime by allRequestViewModel.recomposeTime.collectAsState()
+    //**********
+
     //   val isSearching by allRequestViewModel.isSearching.collectAsState()
     LaunchedEffect(Unit) {
-        allRequestViewModel.getAllBloodRequest(token)
+        if (allRequestViewModel.shouldFetch())
+            networkCall(
+                token = token,
+                userId = userId,
+                allRequestViewModel = allRequestViewModel,
+            )
     }
+
     Scaffold(topBar = {
         TopAppBarComponent(
             searchText,
@@ -104,6 +124,19 @@ fun AllRequestScreen(
                                     items = bloodRequestsWithUsers,
                                     key = { requestWithUser -> requestWithUser.bloodRequest.id }
                                 ) { requestWithUser ->
+                                    val isDonnor = remember {
+                                        mutableStateOf(false)
+                                    }
+                                    currentUserDetails?.fold(
+                                        onSuccess = { userResponse ->
+                                            isDonnor.value =
+                                                userResponse.user?.donates?.contains(requestWithUser.bloodRequest.id)
+                                                    ?: false
+                                        }, onFailure = {
+                                            //
+                                        }
+                                    )
+
                                     val cardDetails = RequestCardDetails(
                                         name = requestWithUser.user.name ?: "",
                                         emailId = requestWithUser.user.email ?: "",
@@ -116,9 +149,7 @@ fun AllRequestScreen(
                                         dueDate = formatDate(requestWithUser.bloodRequest.deadline),
                                         postDate = "${dateDiffInDays(requestWithUser.bloodRequest.createdAt)}",
                                         isOpen = !isDeadlinePassed(requestWithUser.bloodRequest.deadline),
-                                        isAcceptor = requestWithUser.bloodRequest.donors.contains(
-                                            userId
-                                        ),
+                                        isAcceptor = isDonnor.value,
                                         isMyCreation = requestWithUser.bloodRequest.userId == userId
                                     )
                                     AllRequestCard(details = cardDetails)
@@ -129,11 +160,9 @@ fun AllRequestScreen(
                             }
                         },
                         onFailure = { exception ->
-                            Toast.makeText(
-                                context,
-                                exception.message ?: "An error occurred",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Retry(message = exception.message.toString()) {
+
+                            }
                         }
                     )
                 }
@@ -224,6 +253,26 @@ fun TopAppBarComponent(
     }
 }
 
+fun networkCall(token: String, userId: String, allRequestViewModel: AllRequestViewModel) {
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            // Launch both network calls in parallel using async
+            val getAllBloodRequestDeferred = async {
+                allRequestViewModel.getAllBloodRequest(token)
+            }
+            val fetchCurrentUserDetailsDeferred = async {
+                allRequestViewModel.fetchCurrentUserDetails(token, userId)
+            }
+            // Await the results of both calls
+            awaitAll(getAllBloodRequestDeferred, fetchCurrentUserDetailsDeferred)
+            // Handle any additional logic if needed after both calls are complete
+        } catch (e: Exception) {
+            // Handle any exceptions that occur during the network calls
+            e.printStackTrace()
+        }
+    }
+}
+
 @Preview
 @Composable
 fun AllRequestScreenPreview() {
@@ -231,6 +280,7 @@ fun AllRequestScreenPreview() {
         navController = NavController(LocalContext.current),
         innerPadding = PaddingValues(0.dp),
         token = "",
-        userId = ""
+        userId = "",
+        allRequestViewModel = viewModel()
     )
 }

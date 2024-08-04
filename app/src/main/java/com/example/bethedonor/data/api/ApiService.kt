@@ -8,6 +8,9 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Query
 import java.util.Date
 
 data class RegistrationRequest(
@@ -44,7 +47,7 @@ data class LogInResponse(
 
 data class ProfileResponse(
     val myProfile: UserProfile? = null,
-    val message: String = "",
+    val message: String? = null,
     val statusCode: String? = null
 )
 
@@ -98,7 +101,7 @@ data class BloodRequest(
     val createdAt: Date,
     val updatedAt: Date,
     @SerializedName("__v")
-    val v: Int? = null
+    val v: Int? = null,
 )
 
 data class UserIdRequest(val userId: String)
@@ -108,6 +111,28 @@ data class UserResponse(
     val message: String = "",
     val statusCode: String? = null
 )
+
+data class UpdateProfileRequest(
+    val phoneNumber: String? = null,
+    val gender: String? = null,
+    val state: String? = null,
+    val district: String? = null,
+    val city: String? = null,
+    val pin: String? = null,
+    val available: Boolean? = null
+)
+
+data class EditProfileResponse(
+    val message: String? = null,
+    val statusCode: String? = null
+)
+
+data class IsDonatedResponse(
+    val message: String? = null,
+    val isDonated: Boolean,
+    val statusCode: String? = null
+)
+
 
 interface ApiService {
     @POST("auth/signup")
@@ -132,4 +157,17 @@ interface ApiService {
     suspend fun closeAccount(
         @Header("Authorization") token: String,
     ): Response<AccountResponse>
+
+    @PUT("v1/updateProfile/{sectionId}")
+    suspend fun updateProfile(
+        @Path("sectionId") sectionId: String,
+        @Header("Authorization") token: String,
+        @Body request: UpdateProfileRequest
+    ): Response<EditProfileResponse>
+
+    @GET("donor")
+    suspend fun isDonated(
+        @Header("Authorization") token: String,
+        @Query("requestId") requestId: String
+    ): Response<IsDonatedResponse>
 }

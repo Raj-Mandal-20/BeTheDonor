@@ -42,9 +42,10 @@ fun SelectionField(
     recheckFiled: Boolean = false,
     modifier: Modifier,
     label: String,
+    index: Int = -1
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionIndex by remember { mutableIntStateOf(-1) }
+    var selectedOptionIndex by remember { mutableIntStateOf(index) }
     var isErrorState by rememberSaveable {
         mutableStateOf(false)
     }
@@ -56,7 +57,6 @@ fun SelectionField(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
         modifier
-            .fillMaxWidth(0.5f)
             .clip(shape = RoundedCornerShape(8.dp)),
     ) {
         OutlinedTextField(

@@ -33,7 +33,8 @@ fun PhoneNumberEditText(
     recheckField: Boolean = false,
     value: String = "",
     code: (value: String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    countryCode:String="in"
 ) {
 
     var isTrailingIconVisible by rememberSaveable {
@@ -62,7 +63,8 @@ fun PhoneNumberEditText(
         CountryPickerOutlinedTextField(
             mobileNumber = mobileNumber,
             modifier = Modifier
-                .weight(1f),
+                .weight(1f)
+            ,
             label = {
                 Text(text = "Ph no")
             },
@@ -82,6 +84,8 @@ fun PhoneNumberEditText(
                     )
                 }
             },
+            countriesList = listOf("in"),
+            defaultCountryCode = countryCode,
             onMobileNumberChange = {
                 mobileNumber = it
                 isTrailingIconVisible = mobileNumber.isNotEmpty()

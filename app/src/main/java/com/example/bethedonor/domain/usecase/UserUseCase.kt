@@ -3,14 +3,18 @@ package com.example.bethedonor.domain.usecase
 import android.util.Log
 import com.example.bethedonor.data.api.AccountResponse
 import com.example.bethedonor.data.api.BloodRequestsResponse
+import com.example.bethedonor.data.api.EditProfileResponse
+import com.example.bethedonor.data.api.IsDonatedResponse
 import com.example.bethedonor.data.api.LogInResponse
 import com.example.bethedonor.data.api.ProfileResponse
 import com.example.bethedonor.data.api.RegistrationResponse
 import com.example.bethedonor.data.api.UserResponse
 import com.example.bethedonor.domain.model.User
+import com.example.bethedonor.domain.model.UserUpdate
 import com.example.bethedonor.domain.repository.UserRepository
 
 import com.google.gson.Gson
+
 
 class RegistrationUserUseCase(private val userRepository: UserRepository) {
     suspend fun execute(user: User): RegistrationResponse {
@@ -151,6 +155,51 @@ class CloseAccountUseCase(private val userRepository: UserRepository) {
             }
         } catch (e: Exception) {
             AccountResponse(message = e.message ?: "Unknown error")
+        }
+    }
+}
+
+class UpdateProfileUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(
+        sectionId: String,
+        token: String,
+        userUpdate: UserUpdate
+    ): EditProfileResponse {
+        return try {
+            val response = userRepository.updateProfile(sectionId, token, userUpdate)
+            if (response.isSuccessful) {
+                response.body() ?: EditProfileResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, EditProfileResponse::class.java)
+                EditProfileResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            EditProfileResponse(message = e.message ?: "Unknown error")
+        }
+    }
+
+}
+
+class CheckIsDonatedUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, requestId: String): IsDonatedResponse {
+        return try {
+            val response = userRepository.checkIsDonated(token, requestId)
+            if (response.isSuccessful) {
+                response.body() ?: IsDonatedResponse(isDonated = false)
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, IsDonatedResponse::class.java)
+                errorResponse
+            }
+        } catch (e: Exception) {
+            IsDonatedResponse(
+                isDonated = false,
+                message = e.message ?: "Unknown error"
+            ) // Handle the exception and return a default response
         }
     }
 }

@@ -12,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.example.bethedonor.ui.theme.bgDarkBlue
+import com.example.bethedonor.viewmodels.HomeViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController, innerPadding: PaddingValues, userId: String) {
+fun HomeScreen(navController: NavHostController, innerPadding: PaddingValues, userId: String,homeViewModel: HomeViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize(), contentAlignment = Alignment.Center

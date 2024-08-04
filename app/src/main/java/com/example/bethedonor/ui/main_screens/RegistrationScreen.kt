@@ -132,12 +132,6 @@ fun RegistrationScreen(
                                 },
                                 recheckFiled = recheckFiled
                             )
-                            //
-//                            Row(
-//                                verticalAlignment = Alignment.CenterVertically,
-//                                horizontalArrangement = Arrangement.Center,
-//                                modifier = Modifier.fillMaxWidth()
-//                            ) {
                             var code by remember { mutableStateOf("") }
                             PhoneNumberEditText(
                                 onFieldValueChanged = {
@@ -202,7 +196,7 @@ fun RegistrationScreen(
                                             registrationViewModel.registrationUIState.value.genderErrorState
                                         },
                                         //  recheckFiled = recheckFiled,
-                                        modifier = Modifier
+                                        modifier = Modifier.fillMaxWidth(0.5f)
                                             .weight(1f)
                                             .padding(end = 4.dp)
 
@@ -219,7 +213,7 @@ fun RegistrationScreen(
                                             registrationViewModel.registrationUIState.value.bloodGroupErrorState
                                         },
                                         //   recheckFiled = recheckFiled,
-                                        modifier = Modifier
+                                        modifier = Modifier.fillMaxWidth(0.5f)
                                             .weight(1f)
                                             .padding(start = 4.dp)
 

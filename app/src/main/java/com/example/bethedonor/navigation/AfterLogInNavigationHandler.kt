@@ -17,15 +17,17 @@ import com.example.bethedonor.ui.main_screens.HistoryScreen
 import com.example.bethedonor.ui.main_screens.HomeScreen
 import com.example.bethedonor.ui.main_screens.ProfileScreen
 import com.example.bethedonor.ui.utils.uievent.BottomNavItem
+import com.example.bethedonor.viewmodels.MainViewModel
 
 @Composable
 fun AfterLogInNavigationStack(
     navController: NavHostController,
     userId: String,
     token: String,
-    onLogOut: () -> Unit
+    onLogOut: () -> Unit,
+    mainViewModel: MainViewModel
 ) {
-  //  val selectedDestination = remember { mutableStateOf(BottomNavItem.Home.route) }
+    //  val selectedDestination = remember { mutableStateOf(BottomNavItem.Home.route) }
 
     // Obtain the current back stack entry as a State
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -75,18 +77,29 @@ fun AfterLogInNavigationStack(
         NavHost(
             navController = navController,
             startDestination = Destination.Home(userId),
-          //  Modifier.padding(innerPadding.calculateTopPadding()*0, 0.dp, 0.dp, 0.dp)
+            //  Modifier.padding(innerPadding.calculateTopPadding()*0, 0.dp, 0.dp, 0.dp)
         ) {
             composable<Destination.Home> {
-                HomeScreen(navController = navController, innerPadding, userId)
+                HomeScreen(
+                    navController = navController,
+                    innerPadding,
+                    userId,
+                    mainViewModel.homeViewModel
+                )
             }
             composable<Destination.AllRequest> {
-                AllRequestScreen(navController = navController, innerPadding=innerPadding, token = token, userId = userId)
+                AllRequestScreen(
+                    navController = navController,
+                    innerPadding = innerPadding,
+                    token = token,
+                    userId = userId,
+                    mainViewModel.allRequestViewModel
+                )
             }
             composable<Destination.CreateRequest> {
                 CreateRequestScreen(navController = navController, innerPadding, userId, onDone = {
                     navController.popBackStack()
-                })
+                }, mainViewModel.createRequestViewModel)
             }
             composable<Destination.History> {
                 HistoryScreen(navController = navController, userId)
@@ -95,7 +108,8 @@ fun AfterLogInNavigationStack(
                 ProfileScreen(
                     token,
                     innerPadding = innerPadding,
-                    onLogOutNavigate = onLogOut
+                    onLogOutNavigate = onLogOut,
+                    profileViewmodel = mainViewModel.profileViewModel
                 )
             }
         }
