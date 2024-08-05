@@ -39,6 +39,7 @@ import com.example.bethedonor.ui.components.DOBSelectField
 import com.example.bethedonor.ui.components.EditText
 import com.example.bethedonor.ui.components.GreetingText
 import com.example.bethedonor.ui.components.PasswordFiled
+import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.SelectStateDistrictCityField
 import com.example.bethedonor.ui.components.SelectionField
 import com.example.bethedonor.ui.components.SimpleTextWithSpan
@@ -408,7 +409,7 @@ fun RegistrationScreen(
                                         ).show()
                                     }
                                 },
-                                isEnable = registrationViewModel.validateWithRulesForRegister()
+                                isEnable = registrationViewModel.validateWithRulesForRegister() && !registrationViewModel.requestInProgress.value
                             )
                             Spacer(modifier = Modifier.size(16.dp))
                             SimpleTextWithSpan(
@@ -423,7 +424,7 @@ fun RegistrationScreen(
 
                 }
                 if (registrationViewModel.requestInProgress.value) {
-                    CircularProgressIndicator(color = bgDarkBlue, trackColor = Gray1)
+                   ProgressIndicatorComponent()
                 }
             }
         }

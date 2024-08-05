@@ -68,6 +68,7 @@ import com.example.bethedonor.data.api.ProfileResponse
 import com.example.bethedonor.ui.components.AvailabilityCheckerField
 import com.example.bethedonor.ui.components.ButtonComponent
 import com.example.bethedonor.ui.components.EditText
+import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.Retry
 import com.example.bethedonor.ui.components.SelectStateDistrictCityField
 import com.example.bethedonor.ui.components.SelectionField
@@ -331,6 +332,7 @@ fun ProfileScreen(
                         })
                         SpacerComponent(16.dp)
                         ButtonComponent(
+                            isEnable = !profileViewmodel.requestInProgress.value,
                             text = "Delete Account",
                             onButtonClick = {
                                 profileViewmodel.deleteAccount(token = authToken) { result ->
@@ -546,11 +548,7 @@ fun ProfileScreen(
         }
 
         if (profileViewmodel.requestInProgress.value) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(48.dp),
-                color = teal,
-                trackColor = Gray1
-            )
+            ProgressIndicatorComponent()
         }
 
         if (profileData?.myProfile == null && profileData?.message != null && !profileViewmodel.requestInProgress.value) {
@@ -588,7 +586,7 @@ private fun networkCall(
 
 
 @Composable
-fun ButtonElement(label: String, onClick: () -> Unit) {
+fun ButtonElement(label: String, onClick: () -> Unit,isEnable: Boolean =true) {
     Button(
         onClick = onClick,
         colors = ButtonColors(

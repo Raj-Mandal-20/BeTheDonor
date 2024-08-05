@@ -39,6 +39,7 @@ import com.example.bethedonor.ui.components.EditText
 import com.example.bethedonor.ui.components.ForgotPassword
 import com.example.bethedonor.ui.components.GreetingText
 import com.example.bethedonor.ui.components.PasswordFiled
+import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.SimpleTextWithSpan
 import com.example.bethedonor.ui.components.SubGreetText
 import com.example.bethedonor.ui.theme.Gray1
@@ -144,7 +145,7 @@ fun LoginScreen(
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 ButtonComponent(
-                                    "Login",
+                                    text = "Login",
                                     onButtonClick = {
                                         recheckFiled = true
                                         if (loginViewModel.validateWithRulesForLogIn()) {
@@ -177,7 +178,7 @@ fun LoginScreen(
                                             ).show()
                                         }
                                     },
-                                    loginViewModel.validateWithRulesForLogIn()
+                                    isEnable = loginViewModel.validateWithRulesForLogIn() && !loginViewModel.requestInProgress.value
                                 )
                                 Spacer(modifier = Modifier.size(16.dp))
                                 SimpleTextWithSpan(
@@ -191,7 +192,7 @@ fun LoginScreen(
 
                     }
                     if (loginViewModel.requestInProgress.value)
-                        CircularProgressIndicator(color = teal, trackColor = Gray1)
+                        ProgressIndicatorComponent()
                 }
 
             }

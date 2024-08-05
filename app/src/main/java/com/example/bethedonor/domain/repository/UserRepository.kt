@@ -1,5 +1,6 @@
 package com.example.bethedonor.domain.repository
 
+import com.example.bethedonor.data.api.AcceptDonationResponse
 import com.example.bethedonor.data.api.AccountResponse
 import com.example.bethedonor.data.api.BloodRequestsResponse
 import com.example.bethedonor.data.api.EditProfileResponse
@@ -23,5 +24,7 @@ interface UserRepository {
         token: String,
         userUpdate: UserUpdate
     ): Response<EditProfileResponse>
+
     suspend fun checkIsDonated(token: String, requestId: String): Response<IsDonatedResponse>
+    suspend fun acceptDonation(token: String, request: String): Response<AcceptDonationResponse>
 }

@@ -1,5 +1,6 @@
 package com.example.bethedonor.ui.main_screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,8 +27,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,6 +67,7 @@ fun AllRequestScreen(
     userId: String,
     allRequestViewModel: AllRequestViewModel
 ) {
+    allRequestViewModel.updateAuthToken(token)
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val allBloodRequestResponseList by allRequestViewModel.allBloodRequestResponseList.collectAsState(
@@ -79,12 +84,13 @@ fun AllRequestScreen(
     val isSheetVisible by allRequestViewModel.isSheetVisible.collectAsState()
     val sheetState = rememberModalBottomSheetState()
 
+    var retryFlag by remember { mutableStateOf(false) }
+
     //*** Recomposition Count ***//
     allRequestViewModel.updateRecomposeTime()
     val recomposeTime by allRequestViewModel.recomposeTime.collectAsState()
     //**********
 
-    //   val isSearching by allRequestViewModel.isSearching.collectAsState()
     LaunchedEffect(Unit) {
         if (allRequestViewModel.shouldFetch())
             networkCall(
@@ -94,17 +100,19 @@ fun AllRequestScreen(
             )
     }
 
-    Scaffold(topBar = {
-        TopAppBarComponent(
-            searchText,
-            allRequestViewModel,
-            filterState,
-            filterDistrict,
-            filterCity,
-            filterPin
-        )
-
-    }, containerColor = bgDarkBlue) { it ->
+    Scaffold(
+        topBar = {
+            TopAppBarComponent(
+                searchText,
+                allRequestViewModel,
+                filterState,
+                filterDistrict,
+                filterCity,
+                filterPin
+            )
+        },
+        containerColor = bgDarkBlue
+    ) { padding ->
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.padding(
@@ -114,66 +122,86 @@ fun AllRequestScreen(
         ) {
             Surface(color = bgDarkBlue) {
                 allBloodRequestResponseList?.let { result ->
-                    result.fold(
-                        onSuccess = { bloodRequestsWithUsers ->
-                            LazyColumn {
-                                item {
-                                    Spacer(modifier = Modifier.height(it.calculateTopPadding() + 8.dp))
-                                }
-                                items(
-                                    items = bloodRequestsWithUsers,
-                                    key = { requestWithUser -> requestWithUser.bloodRequest.id }
-                                ) { requestWithUser ->
-                                    val isDonnor = remember {
-                                        mutableStateOf(false)
-                                    }
-                                    currentUserDetails?.fold(
-                                        onSuccess = { userResponse ->
+                    val bloodRequestsWithUsers = if (result.isSuccess) {
+                        result.getOrNull()
+                    } else {
+                        retryFlag = true
+                        listOf()
+                    }
+                    bloodRequestsWithUsers?.let {
+                        LazyColumn {
+                            item {
+                                Spacer(modifier = Modifier.height(padding.calculateTopPadding() + 8.dp))
+                            }
+                            items(
+                                items = bloodRequestsWithUsers,
+                                key = { requestWithUser -> requestWithUser.bloodRequest.id }
+                            ) { requestWithUser ->
+                                val isDonnor = remember { mutableStateOf(false) }
+
+                                currentUserDetails?.let { userResult ->
+                                    if (userResult.isSuccess) {
+                                        userResult.getOrNull()?.let { userResponse ->
                                             isDonnor.value =
                                                 userResponse.user?.donates?.contains(requestWithUser.bloodRequest.id)
                                                     ?: false
-                                        }, onFailure = {
-                                            //
                                         }
-                                    )
-
-                                    val cardDetails = RequestCardDetails(
-                                        name = requestWithUser.user.name ?: "",
-                                        emailId = requestWithUser.user.email ?: "",
-                                        phoneNo = requestWithUser.user.phoneNumber ?: "",
-                                        address = "${requestWithUser.bloodRequest.state}, ${requestWithUser.bloodRequest.district}, ${requestWithUser.bloodRequest.city},${requestWithUser.bloodRequest.pin}",
-                                        exactPlace = requestWithUser.bloodRequest.donationCenter,
-                                        bloodUnit = requestWithUser.bloodRequest.bloodUnit,
-                                        bloodGroup = requestWithUser.bloodRequest.bloodGroup,
-                                        noOfAcceptors = requestWithUser.bloodRequest.donors.size,
-                                        dueDate = formatDate(requestWithUser.bloodRequest.deadline),
-                                        postDate = "${dateDiffInDays(requestWithUser.bloodRequest.createdAt)}",
-                                        isOpen = !isDeadlinePassed(requestWithUser.bloodRequest.deadline),
-                                        isAcceptor = isDonnor.value,
-                                        isMyCreation = requestWithUser.bloodRequest.userId == userId
-                                    )
-                                    AllRequestCard(details = cardDetails)
+                                    }
                                 }
-                                item {
-                                    Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+
+                                val cardDetails = RequestCardDetails(
+                                    name = requestWithUser.user.name ?: "",
+                                    emailId = requestWithUser.user.email ?: "",
+                                    phoneNo = requestWithUser.user.phoneNumber ?: "",
+                                    address = "${requestWithUser.bloodRequest.state}, ${requestWithUser.bloodRequest.district}, ${requestWithUser.bloodRequest.city},${requestWithUser.bloodRequest.pin}",
+                                    exactPlace = requestWithUser.bloodRequest.donationCenter,
+                                    bloodUnit = requestWithUser.bloodRequest.bloodUnit,
+                                    bloodGroup = requestWithUser.bloodRequest.bloodGroup,
+                                    noOfAcceptors = requestWithUser.bloodRequest.donors.size,
+                                    dueDate = formatDate(requestWithUser.bloodRequest.deadline),
+                                    postDate = "${dateDiffInDays(requestWithUser.bloodRequest.createdAt)}",
+                                    isOpen = !isDeadlinePassed(requestWithUser.bloodRequest.deadline),
+                                    isAcceptor = isDonnor.value,
+                                    isMyCreation = requestWithUser.bloodRequest.userId == userId
+                                )
+                                AllRequestCard(
+                                    details = cardDetails,
+                                    allRequestViewModel,
+                                    token = token,
+                                    id=requestWithUser.bloodRequest.id
+                                ) {
+                                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        },
-                        onFailure = { exception ->
-                            Retry(message = exception.message.toString()) {
-
+                            item {
+                                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
                             }
                         }
-                    )
+                    } ?: EmptyStateComponent()
                 }
             }
             if (isLoading) {
                 LoadingScreen()
+                retryFlag = false
+            }
+            if (retryFlag) {
+                Retry(message = "Something Went Wrong") {
+                    retryFlag = false
+                    networkCall(
+                        token = token,
+                        userId = userId,
+                        allRequestViewModel = allRequestViewModel,
+                    )
+                }
             }
         }
     }
 }
 
+@Composable
+fun EmptyStateComponent() {
+    Text(text = "Empty", color = Color.White)
+}
 
 @Composable
 fun TopAppBarComponent(

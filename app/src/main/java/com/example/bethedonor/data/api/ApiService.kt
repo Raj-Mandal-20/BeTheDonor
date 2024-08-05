@@ -132,8 +132,14 @@ data class IsDonatedResponse(
     val isDonated: Boolean,
     val statusCode: String? = null
 )
-
-
+data class AcceptDonationResponse(
+    val message: String,
+    val bloodRequest: BloodRequest?=null,
+    val statusCode: String?=null
+)
+data class AcceptDonationRequest(
+    val requestId: String
+)
 interface ApiService {
     @POST("auth/signup")
     suspend fun register(@Body request: RegistrationRequest): Response<ResponseBody>
@@ -170,4 +176,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Query("requestId") requestId: String
     ): Response<IsDonatedResponse>
+
+    @POST("v1/donation")
+    suspend fun acceptDonation(
+        @Header("Authorization") token: String,
+        @Body request: AcceptDonationRequest
+    ): Response<AcceptDonationResponse>
 }

@@ -1,7 +1,9 @@
 package com.example.bethedonor.domain.usecase
 
 import android.util.Log
+import com.example.bethedonor.data.api.AcceptDonationResponse
 import com.example.bethedonor.data.api.AccountResponse
+import com.example.bethedonor.data.api.BloodRequest
 import com.example.bethedonor.data.api.BloodRequestsResponse
 import com.example.bethedonor.data.api.EditProfileResponse
 import com.example.bethedonor.data.api.IsDonatedResponse
@@ -200,6 +202,29 @@ class CheckIsDonatedUseCase(private val userRepository: UserRepository) {
                 isDonated = false,
                 message = e.message ?: "Unknown error"
             ) // Handle the exception and return a default response
+        }
+    }
+}
+
+class AcceptDonationUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, requestId: String): AcceptDonationResponse {
+        return try {
+            val response = userRepository.acceptDonation(token, requestId)
+            if (response.isSuccessful) {
+                response.body() ?: AcceptDonationResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, AcceptDonationResponse::class.java)
+                AcceptDonationResponse(
+                    message = errorResponse.message,
+                    bloodRequest = errorResponse.bloodRequest
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            AcceptDonationResponse(
+                message = e.message ?: "Unknown error"
+            )
         }
     }
 }

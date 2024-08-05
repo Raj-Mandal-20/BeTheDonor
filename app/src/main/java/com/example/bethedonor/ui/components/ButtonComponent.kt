@@ -21,9 +21,10 @@ import com.example.bethedonor.ui.theme.bloodRed3
 
 
 @Composable
-fun ButtonComponent(text: String, onButtonClick: () -> Unit, isEnable: Boolean = false) {
+fun ButtonComponent(text: String, onButtonClick: () -> Unit, isEnable: Boolean = true) {
     Box {
         Button(
+            enabled = isEnable,
             onClick = { onButtonClick() },
             //   enabled = isEnable,
             modifier = Modifier

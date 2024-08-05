@@ -1,5 +1,6 @@
 package com.example.bethedonor.ui.components
 
+import android.media.session.MediaSession.Token
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.TweenSpec
@@ -32,16 +33,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
@@ -53,7 +60,6 @@ import androidx.compose.ui.unit.sp
 import com.example.bethedonor.R
 import com.example.bethedonor.data.dataModels.RequestCardDetails
 import com.example.bethedonor.ui.theme.Gray1
-import com.example.bethedonor.ui.theme.Gray2
 import com.example.bethedonor.ui.theme.activeColor1
 import com.example.bethedonor.ui.theme.activeColor2
 import com.example.bethedonor.ui.theme.bgDarkBlue2
@@ -62,17 +68,31 @@ import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.bloodRed3
 import com.example.bethedonor.ui.theme.bloodTrashparent
 import com.example.bethedonor.ui.theme.lightRed
+import com.example.bethedonor.viewmodels.AllRequestViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun AllRequestCard(details: RequestCardDetails) {
+fun AllRequestCard(
+    details: RequestCardDetails,
+    viewModel: AllRequestViewModel,
+    token: String,
+    id: String,
+    onDonationClickResponse: (String) -> Unit
+) {
     val gradientColors = listOf(bloodRed2, bloodRed3)
     val gradientBrush = Brush.linearGradient(
         colors = gradientColors,
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
     )
+    val donorCount = remember {
+        mutableIntStateOf(details.noOfAcceptors)
+    }
+    val isAcceptor = remember {
+        mutableStateOf(details.isAcceptor)
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -89,7 +109,7 @@ fun AllRequestCard(details: RequestCardDetails) {
         Box(
             modifier = Modifier
                 .background(
-                   bgDarkBlue2
+                    bgDarkBlue2
                 ), contentAlignment = Alignment.Center
         )
         {
@@ -126,7 +146,11 @@ fun AllRequestCard(details: RequestCardDetails) {
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalAlignment = Alignment.Start
                         ) {
-                            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 Text(
                                     text = details.name,
                                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -134,13 +158,17 @@ fun AllRequestCard(details: RequestCardDetails) {
                                     color = Color.White,
                                     modifier = Modifier.fillMaxWidth(0.72f)
                                 )
-                               RoundedBoxWithIconAndText(open =details.isOpen)
+                                RoundedBoxWithIconAndText(open = details.isOpen)
                             }
                             Column(
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth(1f)){
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Start,
+                                    modifier = Modifier.fillMaxWidth(1f)
+                                ) {
                                     Icon(
                                         imageVector = Icons.Outlined.Email,
                                         contentDescription = "Email Icon",
@@ -148,12 +176,15 @@ fun AllRequestCard(details: RequestCardDetails) {
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Text(
-                                        text = if(details.isAcceptor || details.isMyCreation) details.emailId else "xyz@gmail.com",
+                                        text = if (details.isAcceptor || details.isMyCreation) details.emailId else "xyz@gmail.com",
                                         color = Gray1,
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
                                     )
                                 }
-                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start){
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
                                     Icon(
                                         imageVector = Icons.Outlined.Phone,
                                         contentDescription = "Phone Icon",
@@ -161,7 +192,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                                         modifier = Modifier.size(18.dp)
                                     )
                                     Text(
-                                        text = if(details.isAcceptor || details.isMyCreation) details.phoneNo else "xxxxxxxxxx",
+                                        text = if (details.isAcceptor || details.isMyCreation) details.phoneNo else "xxxxxxxxxx",
                                         color = Gray1,
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
                                     )
@@ -200,7 +231,11 @@ fun AllRequestCard(details: RequestCardDetails) {
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
-                        FlowRow(modifier = Modifier.padding(top = 4.dp), maxLines = 2, maxItemsInEachRow = 2) {
+                        FlowRow(
+                            modifier = Modifier.padding(top = 4.dp),
+                            maxLines = 2,
+                            maxItemsInEachRow = 2
+                        ) {
 //                        Icon(
 //                            imageVector = Icons.Outlined.MyLocation,
 //                            contentDescription = "location", tint = Gray1,
@@ -246,7 +281,7 @@ fun AllRequestCard(details: RequestCardDetails) {
                         Spacer(modifier = Modifier.height(4.dp))
                         BloodUnitAndAcceptorCountComponent(
                             painterResource(id = R.drawable.ic_acceptor),
-                            count = details.noOfAcceptors,
+                            count = donorCount.value,
                             labelTExt = "Acceptor(s)"
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -278,7 +313,17 @@ fun AllRequestCard(details: RequestCardDetails) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            viewModel.acceptDonation(token = token, requestId = id) { response ->
+                                if (response.isSuccess) {
+                                    if (response.getOrNull()?.bloodRequest != null) {
+                                        isAcceptor.value = true
+                                        donorCount.intValue += 1
+                                    }
+                                }
+                                onDonationClickResponse(response.getOrNull()?.message.toString())
+                            }
+                        },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonColors(
                             containerColor = Color.White,
@@ -286,9 +331,12 @@ fun AllRequestCard(details: RequestCardDetails) {
                             disabledContentColor = Color.DarkGray,
                             disabledContainerColor = Color.LightGray
                         ),
-                        enabled = details.isOpen && !details.isMyCreation && !details.isAcceptor
+                        enabled = details.isOpen && !details.isMyCreation && !isAcceptor.value
                     ) {
-                        Text(text = if (details.isMyCreation) "Your Request" else if(details.isAcceptor) "Accepted" else if(details.isOpen) "Accept Donation" else "Request Closed", fontWeight = FontWeight.SemiBold)
+                        Text(
+                            text = if (details.isMyCreation) "Your Request" else if (isAcceptor.value) "Accepted" else if (details.isOpen) "Accept Donation" else "Request Closed",
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
 
                     Row(
@@ -311,6 +359,15 @@ fun AllRequestCard(details: RequestCardDetails) {
                         )
                     }
                 }
+            }
+            if (viewModel.requestingToAccept.collectAsState().value) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    strokeWidth = 2.dp,
+                    strokeCap = StrokeCap.Round,
+                    trackColor = bgDarkBlue2,
+                    color = bloodRed
+                )
             }
         }
     }
@@ -415,7 +472,11 @@ fun AllRequestCardPreview() {
             postDate = "Fri July 2024",
             isOpen = true,
             isAcceptor = false,
-            isMyCreation = false
-        )
+            isMyCreation = false,
+        ),
+        onDonationClickResponse = {},
+        token = "",
+        id = "",
+        viewModel = AllRequestViewModel()
     )
 }

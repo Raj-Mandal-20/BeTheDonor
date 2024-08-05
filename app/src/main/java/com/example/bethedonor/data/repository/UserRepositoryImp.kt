@@ -1,5 +1,7 @@
 package com.example.bethedonor.data.repository
 
+import com.example.bethedonor.data.api.AcceptDonationRequest
+import com.example.bethedonor.data.api.AcceptDonationResponse
 import com.example.bethedonor.data.api.AccountResponse
 import com.example.bethedonor.data.api.ApiService
 import com.example.bethedonor.data.api.BloodRequestsResponse
@@ -80,4 +82,8 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
         return apiService.isDonated("Bearer $token", requestId)
     }
 
+    override suspend fun acceptDonation(token: String, requestId: String): Response<AcceptDonationResponse> {
+        val request = AcceptDonationRequest(requestId)
+        return apiService.acceptDonation("Bearer $token", request)
+    }
 }

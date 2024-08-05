@@ -5,11 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bethedonor.data.api.AcceptDonationResponse
 import com.example.bethedonor.data.api.BloodRequest
 import com.example.bethedonor.data.api.RetrofitClient
 import com.example.bethedonor.data.api.UserProfile
 import com.example.bethedonor.data.api.UserResponse
 import com.example.bethedonor.data.repository.UserRepositoryImp
+import com.example.bethedonor.domain.usecase.AcceptDonationUseCase
 import com.example.bethedonor.domain.usecase.FetchUserDetailsUseCase
 import com.example.bethedonor.domain.usecase.GetAllBloodRequestsUseCase
 import kotlinx.coroutines.async
@@ -27,6 +29,12 @@ data class BloodRequestWithUser(
 class AllRequestViewModel() : ViewModel() {
     private val _recomposeTime = MutableStateFlow(-1L)
     val recomposeTime: StateFlow<Long> = _recomposeTime
+
+    private val authToken = MutableStateFlow("")
+
+    fun updateAuthToken(token: String) {
+        authToken.value = token
+    }
 
     fun updateRecomposeTime() {
         _recomposeTime.value += 1
@@ -52,8 +60,9 @@ class AllRequestViewModel() : ViewModel() {
     private val userRepository = UserRepositoryImp(apiService)
     private val getAllBloodRequestsUseCase = GetAllBloodRequestsUseCase(userRepository)
     private val fetchUserDetailsUseCase = FetchUserDetailsUseCase(userRepository)
+    private val acceptDonationUseCase = AcceptDonationUseCase(userRepository)
     val isRequestFetching = MutableStateFlow(false)
-
+    val requestingToAccept =MutableStateFlow(false)
     private val _isSheetVisible = MutableStateFlow(false)
     val isSheetVisible: StateFlow<Boolean> = _isSheetVisible
 
@@ -116,6 +125,24 @@ class AllRequestViewModel() : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 _currentUserDetails.value = Result.failure(e)
+            }
+        }
+    }
+
+    fun acceptDonation(
+        token: String,
+        requestId: String,
+        onResult: (Result<AcceptDonationResponse>) -> Unit
+    ) {
+        requestingToAccept.value=true
+        viewModelScope.launch {
+            try {
+                val response = acceptDonationUseCase.execute(token, requestId)
+                onResult(Result.success(response))
+            } catch (e: Exception) {
+                onResult(Result.failure(e))
+            } finally {
+                requestingToAccept.value=false
             }
         }
     }

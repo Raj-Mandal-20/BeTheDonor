@@ -19,7 +19,6 @@
             android:name=".activity.BeforeLogInActivity"
             android:exported="true"
             android:enableOnBackInvokedCallback="true"
-            android:label="@string/title_activity_before_log_in"
             android:theme="@style/Theme.BeTheDonor"
             tools:targetApi="tiramisu">
             <intent-filter>
