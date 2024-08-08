@@ -22,6 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bethedonor.ui.theme.Gray1
+import com.example.bethedonor.ui.theme.Gray2
 import com.example.bethedonor.ui.theme.fadeBlue1
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +65,7 @@ fun SearchBarComponent(
         placeholder = {
             Text(
                 text = "Search",
-                style = TextStyle(color = Color.Gray, fontSize = 16.sp)
+                style = TextStyle(color = Gray1, fontSize = 16.sp)
             )
         },
         shape = RoundedCornerShape(8.dp),
@@ -77,8 +79,8 @@ fun SearchBarComponent(
             cursorColor = Color.White,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedLeadingIconColor = Color.Gray,
-            focusedLeadingIconColor = Color.Gray,
+            unfocusedLeadingIconColor = Gray1,
+            focusedLeadingIconColor = Gray1,
             unfocusedTrailingIconColor = Color.White,
             focusedTrailingIconColor = Color.White
         ),

@@ -33,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.bethedonor.ui.theme.Gray1
+import com.example.bethedonor.ui.theme.Gray3
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.utils.uievent.BottomNavItem
@@ -149,11 +151,11 @@ fun BottomNavBarItem(
                 contentDescription = item.label,
                 modifier = Modifier
                     .size(30.dp),
-                tint = if (selected == item.route) bloodRed2 else Color.Gray,
+                tint = if (selected == item.route) bloodRed2 else Gray3,
             )
             Text(
                 text = item.label,
-                color = if (selected == item.route) bloodRed2 else Color.Gray,
+                color = if (selected == item.route) bloodRed2 else Gray3,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold
                 //modifier = Modifier.padding(top = 8.dp) // Reduced padding to decrease space

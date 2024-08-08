@@ -8,13 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bethedonor.data.api.AccountResponse
 import com.example.bethedonor.data.api.ProfileResponse
 import com.example.bethedonor.data.api.RetrofitClient
 import com.example.bethedonor.data.preferences.PreferencesManager
 import com.example.bethedonor.data.repository.UserRepositoryImp
-import com.example.bethedonor.domain.model.UserBase
 import com.example.bethedonor.domain.model.UserUpdate
 import com.example.bethedonor.domain.usecase.CloseAccountUseCase
 import com.example.bethedonor.domain.usecase.GetUserProfileUseCase
@@ -44,21 +42,21 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             is RegistrationUIEvent.DistrictValueChangeEvent -> {
                 updateProfileUiState.value = updateProfileUiState.value.copy(
                     district = event.district,
-                    cityErrorState = Validator.validateDistrict(event.district)
+                    cityErrorState = Validator.validateString(event.district)
                 )
             }
 
             is RegistrationUIEvent.CityValueChangeEvent -> {
                 updateProfileUiState.value = updateProfileUiState.value.copy(
                     city = event.city,
-                    cityErrorState = Validator.validateCity(event.city)
+                    cityErrorState = Validator.validateString(event.city)
                 )
             }
 
             is RegistrationUIEvent.GenderValueChangeEvent -> {
                 updateProfileUiState.value = updateProfileUiState.value.copy(
                     gender = event.gender,
-                    genderErrorState = Validator.validateGender(event.gender)
+                    genderErrorState = Validator.validateString(event.gender)
                 )
             }
 
@@ -72,7 +70,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             is RegistrationUIEvent.StateValueChangeEvent -> {
                 updateProfileUiState.value = updateProfileUiState.value.copy(
                     state = event.state,
-                    stateErrorState = Validator.validateState(event.state)
+                    stateErrorState = Validator.validateString(event.state)
                 )
             }
 
@@ -84,14 +82,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
             is RegistrationUIEvent.PasswordValueChangeEvent -> {}
             is RegistrationUIEvent.ConfirmPasswordValueChangeEvent -> {}
-            is RegistrationUIEvent.AgeValueChangeEvent -> {}
+            is RegistrationUIEvent.DateValueChangeEvent -> {}
             is RegistrationUIEvent.BloodGroupValueChangeEvent -> {}
             is RegistrationUIEvent.NameValueChangeEvent -> {}
             is RegistrationUIEvent.EmailValueChangeEvent -> {}
             RegistrationUIEvent.RegistrationButtonClick -> {
                 //  printState()
             }
-
+            is RegistrationUIEvent.BloodUnitValueChangeEvent -> {}
+            is RegistrationUIEvent.DonationCenterValueChangeEvent -> {}
         }
     }
 
@@ -100,6 +99,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         return updateProfileUiState.value.phoneNoErrorState.status
                 && updateProfileUiState.value.genderErrorState.status
                 && updateProfileUiState.value.stateErrorState.status
+                && updateProfileUiState.value.districtErrorState.status
                 && updateProfileUiState.value.cityErrorState.status
                 && updateProfileUiState.value.pinCodeErrorState.status
     }

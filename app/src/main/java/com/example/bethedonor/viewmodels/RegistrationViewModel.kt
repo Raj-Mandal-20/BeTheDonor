@@ -33,7 +33,7 @@ class RegistrationViewModel() : ViewModel() {
 
     fun registerUser(onRegister: () -> Unit?) {
         requestInProgress.value = true
-        val dob = SimpleDateFormat("dd/MM/yyyy").parse(registrationUIState.value.age)!!
+        val dob = SimpleDateFormat("dd/MM/yyyy").parse(registrationUIState.value.date)!!
         val userBase = UserBase(
             registrationUIState.value.name,
             registrationUIState.value.phoneNo,
@@ -168,9 +168,9 @@ class RegistrationViewModel() : ViewModel() {
                 )
             }
 
-            is RegistrationUIEvent.AgeValueChangeEvent -> {
+            is RegistrationUIEvent.DateValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
-                    age = event.age,
+                    date = event.age,
                     ageErrorState = Validator.validateAge(event.age)
                 )
             }
@@ -178,28 +178,28 @@ class RegistrationViewModel() : ViewModel() {
             is RegistrationUIEvent.BloodGroupValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
                     bloodGroup = event.bloodGroup,
-                    bloodGroupErrorState = Validator.validateBloodGroup(event.bloodGroup)
+                    bloodGroupErrorState = Validator.validateString(event.bloodGroup)
                 )
             }
 
             is RegistrationUIEvent.DistrictValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
                     district = event.district,
-                    cityErrorState = Validator.validateDistrict(event.district)
+                    cityErrorState = Validator.validateString(event.district)
                 )
             }
 
             is RegistrationUIEvent.CityValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
                     city = event.city,
-                    cityErrorState = Validator.validateCity(event.city)
+                    cityErrorState = Validator.validateString(event.city)
                 )
             }
 
             is RegistrationUIEvent.GenderValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
                     gender = event.gender,
-                    genderErrorState = Validator.validateGender(event.gender)
+                    genderErrorState = Validator.validateString(event.gender)
                 )
             }
 
@@ -213,7 +213,7 @@ class RegistrationViewModel() : ViewModel() {
             is RegistrationUIEvent.StateValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
                     state = event.state,
-                    stateErrorState = Validator.validateState(event.state)
+                    stateErrorState = Validator.validateString(event.state)
                 )
             }
 
@@ -227,6 +227,8 @@ class RegistrationViewModel() : ViewModel() {
                 printState()
             }
 
+            is RegistrationUIEvent.BloodUnitValueChangeEvent -> {}
+            is RegistrationUIEvent.DonationCenterValueChangeEvent -> {}
         }
     }
 

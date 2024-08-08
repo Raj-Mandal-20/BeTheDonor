@@ -34,9 +34,9 @@ import java.util.Calendar
 import java.util.Locale
 
 @Composable
-fun DOBSelectField(
+fun CalendarSelectField(
     onFieldValueChanged: (value: String) -> ValidationResult,
-    recheckField: Boolean,
+    recheckField: Boolean = false,
     value: String = "",
     modifier: Modifier,
     label: String = "DOB"
@@ -72,7 +72,14 @@ fun DOBSelectField(
             .clickable { datePickerDialog.show() },
         label = { Text(text = label, fontSize = 14.sp) },
         trailingIcon = {
-            IconButton(onClick = { datePickerDialog.show() }) {
+            IconButton(onClick = {
+                if (label != "DOB") {
+                    val today = Calendar.getInstance()
+                    datePickerDialog.datePicker.minDate = today.timeInMillis
+                }
+                datePickerDialog.show()
+
+            }) {
                 Icon(
                     imageVector = Icons.Default.DateRange,
                     contentDescription = "Select Date",

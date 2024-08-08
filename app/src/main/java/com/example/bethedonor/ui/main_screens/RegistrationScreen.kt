@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.components.AvailabilityCheckerField
 import com.example.bethedonor.ui.components.ButtonComponent
-import com.example.bethedonor.ui.components.DOBSelectField
+import com.example.bethedonor.ui.components.CalendarSelectField
 import com.example.bethedonor.ui.components.EditText
 import com.example.bethedonor.ui.components.GreetingText
 import com.example.bethedonor.ui.components.PasswordFiled
@@ -44,8 +43,6 @@ import com.example.bethedonor.ui.components.SelectStateDistrictCityField
 import com.example.bethedonor.ui.components.SelectionField
 import com.example.bethedonor.ui.components.SimpleTextWithSpan
 import com.example.bethedonor.ui.components.SubGreetText
-import com.example.bethedonor.ui.theme.Gray1
-import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.utils.commons.linearGradientBrush
 import com.example.bethedonor.utils.bloodGroupList1
 import com.example.bethedonor.utils.genderList
@@ -165,10 +162,10 @@ fun RegistrationScreen(
 //                                )
                             // }
                             if (registrationViewModel.availableToDonate.value) {
-                                DOBSelectField(
+                                CalendarSelectField(
                                     onFieldValueChanged = {
                                         registrationViewModel.onEvent(
-                                            RegistrationUIEvent.AgeValueChangeEvent(it)
+                                            RegistrationUIEvent.DateValueChangeEvent(it)
                                         )
                                         registrationViewModel.printState()
                                         registrationViewModel.registrationUIState.value.ageErrorState

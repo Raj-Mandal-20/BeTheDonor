@@ -63,6 +63,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bethedonor.data.api.ProfileResponse
 import com.example.bethedonor.ui.components.AvailabilityCheckerField
@@ -392,7 +393,7 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .padding(vertical = 20.dp, horizontal = 20.dp)
+                        .padding(top = 16.dp,bottom = innerPadding.calculateBottomPadding(), start = 16.dp, end = 16.dp)
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                 ) {

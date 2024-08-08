@@ -4,7 +4,7 @@ sealed class RegistrationUIEvent {
     data class NameValueChangeEvent(val name: String) : RegistrationUIEvent()
     data class EmailValueChangeEvent(val emailId: String) : RegistrationUIEvent()
     data class PhoneNoChangeEvent(val phoneNo: String) : RegistrationUIEvent()
-    data class AgeValueChangeEvent(val age: String) : RegistrationUIEvent()
+    data class DateValueChangeEvent(val age: String) : RegistrationUIEvent()
     data class GenderValueChangeEvent(val gender: String) : RegistrationUIEvent()
     data class BloodGroupValueChangeEvent(val bloodGroup: String) : RegistrationUIEvent()
     data class StateValueChangeEvent(val state: String) : RegistrationUIEvent()
@@ -15,6 +15,7 @@ sealed class RegistrationUIEvent {
     data class ConfirmPasswordValueChangeEvent(val confirmPassword: String) : RegistrationUIEvent()
     data class AvailabilityCheckerValueChangeEvent(val status: Boolean) :
         RegistrationUIEvent()
-
+    data class DonationCenterValueChangeEvent(val center: String) : RegistrationUIEvent()
+    data class BloodUnitValueChangeEvent(val unit: String) : RegistrationUIEvent()
     data object RegistrationButtonClick : RegistrationUIEvent()
 }
