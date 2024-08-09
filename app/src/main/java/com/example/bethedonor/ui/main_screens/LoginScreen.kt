@@ -46,6 +46,7 @@ import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.fadeBlue1
 import com.example.bethedonor.ui.theme.fadeBlue2
 import com.example.bethedonor.ui.theme.teal
+import com.example.bethedonor.ui.utils.validationRules.ValidationResult
 import com.example.bethedonor.viewmodels.LoginViewModel
 
 @Composable
@@ -127,8 +128,8 @@ fun LoginScreen(
                                             )
                                         )
                                         loginViewModel.printState()
-
-                                      loginViewModel.loginUIState.value.passwordErrorState
+                                       ValidationResult(true)
+                                     // loginViewModel.loginUIState.value.passwordErrorState
                                     },
                                     recheckFiled = recheckFiled
                                 )

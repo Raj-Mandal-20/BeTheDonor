@@ -1,6 +1,7 @@
 package com.example.bethedonor.ui.main_screens
 
 import PhoneNumberEditText
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +45,7 @@ import com.example.bethedonor.ui.components.SelectionField
 import com.example.bethedonor.ui.components.SimpleTextWithSpan
 import com.example.bethedonor.ui.components.SubGreetText
 import com.example.bethedonor.ui.utils.commons.linearGradientBrush
+import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.utils.bloodGroupList1
 import com.example.bethedonor.utils.genderList
 import com.example.bethedonor.utils.getCityList
@@ -194,7 +196,8 @@ fun RegistrationScreen(
                                             registrationViewModel.registrationUIState.value.genderErrorState
                                         },
                                         //  recheckFiled = recheckFiled,
-                                        modifier = Modifier.fillMaxWidth(0.5f)
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.5f)
                                             .weight(1f)
                                             .padding(end = 4.dp)
 
@@ -211,7 +214,8 @@ fun RegistrationScreen(
                                             registrationViewModel.registrationUIState.value.bloodGroupErrorState
                                         },
                                         //   recheckFiled = recheckFiled,
-                                        modifier = Modifier.fillMaxWidth(0.5f)
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.5f)
                                             .weight(1f)
                                             .padding(start = 4.dp)
 
@@ -377,6 +381,7 @@ fun RegistrationScreen(
                                 onButtonClick = {
                                     //signupViewModel.registration()
                                     //   recheckFiled = true
+                                    Log.d("validity",registrationViewModel.validateWithRulesForRegister().toString())
                                     if (registrationViewModel.validateWithRulesForRegister()) {
                                         registrationViewModel.registerUser(onRegister = {
                                             registrationResponse?.let {
@@ -384,26 +389,20 @@ fun RegistrationScreen(
                                                     if (it.getOrNull()?.statusCode == null && it.getOrNull()?.message != "timeout") {
                                                         onRegisterNavigate()
                                                     }
-                                                    Toast.makeText(
+                                                    showToast(
                                                         context,
-                                                        it.getOrNull()?.message,
-                                                        Toast.LENGTH_LONG
-                                                    ).show()
+                                                        it.getOrNull()?.message.toString(),
+                                                    )
                                                 } else {
-                                                    Toast.makeText(
+                                                    showToast(
                                                         context,
-                                                        it.exceptionOrNull()?.message,
-                                                        Toast.LENGTH_LONG
-                                                    ).show()
+                                                        it.exceptionOrNull()?.message.toString()
+                                                    )
                                                 }
                                             }
                                         })
                                     } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Fill all the required fields!",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        showToast(context, "Fill all the required fields!")
                                     }
                                 },
                                 isEnable = registrationViewModel.validateWithRulesForRegister() && !registrationViewModel.requestInProgress.value
@@ -421,7 +420,7 @@ fun RegistrationScreen(
 
                 }
                 if (registrationViewModel.requestInProgress.value) {
-                   ProgressIndicatorComponent()
+                    ProgressIndicatorComponent()
                 }
             }
         }

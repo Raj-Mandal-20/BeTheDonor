@@ -1,10 +1,22 @@
 package com.example.bethedonor.utils
 
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Date
+import java.util.Locale
+
+fun String.toDate(format: String = "dd/MM/yyyy"): Date? {
+    return try {
+        SimpleDateFormat(format, Locale.getDefault()).parse(this)
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        null
+    }
+}
 
 fun formatDate(date: Date?): String {
     val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")

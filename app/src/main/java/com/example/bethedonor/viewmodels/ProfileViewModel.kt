@@ -8,12 +8,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.bethedonor.data.api.AccountResponse
-import com.example.bethedonor.data.api.ProfileResponse
 import com.example.bethedonor.data.api.RetrofitClient
+import com.example.bethedonor.data.dataModels.AccountResponse
+import com.example.bethedonor.data.dataModels.ProfileResponse
 import com.example.bethedonor.data.preferences.PreferencesManager
 import com.example.bethedonor.data.repository.UserRepositoryImp
-import com.example.bethedonor.domain.model.UserUpdate
+import com.example.bethedonor.data.dataModels.UserUpdate
 import com.example.bethedonor.domain.usecase.CloseAccountUseCase
 import com.example.bethedonor.domain.usecase.GetUserProfileUseCase
 import com.example.bethedonor.domain.usecase.UpdateProfileUseCase
@@ -176,7 +176,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 e.printStackTrace()
                 val result = Result.failure<ProfileResponse>(e)
                 _profileResponse.value = result
-
             } finally {
                 requestInProgress.value = false
                 onProfileFetched()

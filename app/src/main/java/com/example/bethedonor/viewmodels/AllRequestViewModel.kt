@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bethedonor.data.api.AcceptDonationResponse
-import com.example.bethedonor.data.api.BloodRequest
 import com.example.bethedonor.data.api.RetrofitClient
-import com.example.bethedonor.data.api.UserProfile
-import com.example.bethedonor.data.api.UserResponse
+import com.example.bethedonor.data.dataModels.AcceptDonationResponse
+import com.example.bethedonor.data.dataModels.BloodRequest
+import com.example.bethedonor.data.dataModels.UserProfile
+import com.example.bethedonor.data.dataModels.UserResponse
 import com.example.bethedonor.data.repository.UserRepositoryImp
 import com.example.bethedonor.domain.usecase.AcceptDonationUseCase
 import com.example.bethedonor.domain.usecase.FetchUserDetailsUseCase

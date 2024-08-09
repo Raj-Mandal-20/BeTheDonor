@@ -2,7 +2,6 @@ package com.example.bethedonor.ui.main_screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -38,14 +36,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.bethedonor.data.dataModels.RequestCardDetails
+import com.example.bethedonor.domain.model.RequestCardDetails
 import com.example.bethedonor.ui.components.AllRequestCard
 import com.example.bethedonor.ui.components.FilterItemComponent
 import com.example.bethedonor.ui.components.Retry
 import com.example.bethedonor.ui.components.SearchBarComponent
 import com.example.bethedonor.ui.temporay_screen.LoadingScreen
 import com.example.bethedonor.ui.theme.bgDarkBlue
-import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.utils.dateDiffInDays
 import com.example.bethedonor.utils.formatDate
@@ -118,10 +115,6 @@ fun AllRequestScreen(
     ) { padding ->
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.padding(
-                start = 8.dp,
-                end = 8.dp,
-            )
         ) {
             Surface(color = bgDarkBlue) {
                 allBloodRequestResponseList?.let { result ->
@@ -171,13 +164,13 @@ fun AllRequestScreen(
                                     details = cardDetails,
                                     allRequestViewModel,
                                     token = token,
-                                    id=requestWithUser.bloodRequest.id
+                                    id = requestWithUser.bloodRequest.id
                                 ) {
                                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                                 }
                             }
                             item {
-                                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
+                                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()+8.dp))
                             }
                         }
                     } ?: EmptyStateComponent()
@@ -234,9 +227,12 @@ fun TopAppBarComponent(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                SearchBarComponent(searchQuery = searchText, onSearchQueryChange = {
-                    allRequestViewModel.onSearchTextChange(it)
-                }, modifier = Modifier.fillMaxWidth()//.border(1.dp, bloodRed2, shape = RoundedCornerShape(8.dp)))
+                SearchBarComponent(
+                    searchQuery = searchText,
+                    onSearchQueryChange = {
+                        allRequestViewModel.onSearchTextChange(it)
+                    },
+                    modifier = Modifier.fillMaxWidth()//.border(1.dp, bloodRed2, shape = RoundedCornerShape(8.dp)))
                 )
             }
             Row(

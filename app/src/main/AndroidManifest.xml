@@ -16,7 +16,7 @@
         android:theme="@style/Theme.BeTheDonor"
         tools:targetApi="tiramisu" >
         <activity
-            android:name=".activity.BeforeLogInActivity"
+            android:name=".BeforeLogInActivity"
             android:exported="true"
             android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.BeTheDonor"
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AfterLogInActivity"
+            android:name=".AfterLogInActivity"
             android:exported="true"
             android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.BeTheDonor"

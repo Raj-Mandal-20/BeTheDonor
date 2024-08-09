@@ -1,24 +1,25 @@
 package com.example.bethedonor.data.repository
 
-import com.example.bethedonor.data.api.AcceptDonationRequest
-import com.example.bethedonor.data.api.AcceptDonationResponse
-import com.example.bethedonor.data.api.AccountResponse
+
 import com.example.bethedonor.data.api.ApiService
-import com.example.bethedonor.data.api.BloodRequestsResponse
-import com.example.bethedonor.data.api.EditProfileResponse
-import com.example.bethedonor.data.api.IsDonatedResponse
-import com.example.bethedonor.data.api.LogInRequest
-import com.example.bethedonor.data.api.ProfileResponse
-import com.example.bethedonor.data.api.RegistrationRequest
-import com.example.bethedonor.data.api.UpdateProfileRequest
-import com.example.bethedonor.data.api.UserIdRequest
-import com.example.bethedonor.data.api.UserResponse
-import com.example.bethedonor.domain.model.User
-import com.example.bethedonor.domain.model.UserUpdate
+import com.example.bethedonor.data.dataModels.AcceptDonationRequest
+import com.example.bethedonor.data.dataModels.AcceptDonationResponse
+import com.example.bethedonor.data.dataModels.AccountResponse
+import com.example.bethedonor.data.dataModels.BackendResponse
+import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.IsDonatedResponse
+import com.example.bethedonor.data.dataModels.LogInRequest
+import com.example.bethedonor.data.dataModels.NewBloodRequest
+import com.example.bethedonor.data.dataModels.ProfileResponse
+import com.example.bethedonor.data.dataModels.RegistrationRequest
+import com.example.bethedonor.data.dataModels.UpdateProfileRequest
+import com.example.bethedonor.data.dataModels.User
+import com.example.bethedonor.data.dataModels.UserIdRequest
+import com.example.bethedonor.data.dataModels.UserResponse
+import com.example.bethedonor.data.dataModels.UserUpdate
 import com.example.bethedonor.domain.repository.UserRepository
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.util.Date
 
 class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     override suspend fun registerUser(user: User): Response<ResponseBody> {
@@ -65,7 +66,7 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
         sectionId: String,
         token: String,
         userUpdate: UserUpdate
-    ): Response<EditProfileResponse> {
+    ): Response<BackendResponse> {
         val request = UpdateProfileRequest(
             userUpdate.phoneNumber,
             userUpdate.gender,
@@ -85,5 +86,12 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     override suspend fun acceptDonation(token: String, requestId: String): Response<AcceptDonationResponse> {
         val request = AcceptDonationRequest(requestId)
         return apiService.acceptDonation("Bearer $token", request)
+    }
+
+    override suspend fun createRequest(
+        token: String,
+        request: NewBloodRequest
+    ): Response<BackendResponse> {
+        return apiService.createRequest("Bearer $token", request)
     }
 }

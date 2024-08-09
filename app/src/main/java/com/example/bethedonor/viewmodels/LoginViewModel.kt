@@ -10,8 +10,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bethedonor.data.api.LogInResponse
 import com.example.bethedonor.data.api.RetrofitClient
+import com.example.bethedonor.data.dataModels.LogInResponse
 import com.example.bethedonor.data.preferences.PreferencesManager
 import com.example.bethedonor.data.repository.UserRepositoryImp
 import com.example.bethedonor.domain.usecase.LogInUserUseCase

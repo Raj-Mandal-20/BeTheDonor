@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.bethedonor.data.dataModels.DonnerDetails
+import com.example.bethedonor.domain.model.DonnerDetails
 import com.example.bethedonor.ui.theme.Gray2
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.lightBloodRed1

@@ -65,7 +65,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bethedonor.data.api.ProfileResponse
+import com.example.bethedonor.data.dataModels.BackendResponse
+import com.example.bethedonor.data.dataModels.ProfileResponse
 import com.example.bethedonor.ui.components.AvailabilityCheckerField
 import com.example.bethedonor.ui.components.ButtonComponent
 import com.example.bethedonor.ui.components.EditText
@@ -393,7 +394,12 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .padding(top = 16.dp,bottom = innerPadding.calculateBottomPadding(), start = 16.dp, end = 16.dp)
+                        .padding(
+                            top = 16.dp,
+                            bottom = innerPadding.calculateBottomPadding(),
+                            start = 16.dp,
+                            end = 16.dp
+                        )
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                 ) {
@@ -587,7 +593,7 @@ private fun networkCall(
 
 
 @Composable
-fun ButtonElement(label: String, onClick: () -> Unit,isEnable: Boolean =true) {
+fun ButtonElement(label: String, onClick: () -> Unit, isEnable: Boolean = true) {
     Button(
         onClick = onClick,
         colors = ButtonColors(

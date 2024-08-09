@@ -1,4 +1,4 @@
-package com.example.bethedonor.data.dataModels
+package com.example.bethedonor.domain.model
 
 data class RequestCardDetails(
     val name: String,

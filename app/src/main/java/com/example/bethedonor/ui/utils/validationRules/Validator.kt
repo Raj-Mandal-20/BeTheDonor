@@ -64,21 +64,21 @@ object Validator {
     }
 
 
-//    fun validateGender(gender: String): ValidationResult {
-//        return if (gender.isEmpty()) {
-//            ValidationResult(false, "*required")
-//        } else {
-//            ValidationResult(true, "")
-//        }
-//    }
-//
-//    fun validateBloodGroup(bloodGroup: String): ValidationResult {
-//        return if (bloodGroup.isEmpty()) {
-//            ValidationResult(false, "*required")
-//        } else {
-//            ValidationResult(true, "")
-//        }
-//    }
+    fun validateGender(gender: String): ValidationResult {
+        return if (gender.isEmpty()) {
+            ValidationResult(false, "*required")
+        } else {
+            ValidationResult(true, "")
+        }
+    }
+
+    fun validateBloodGroup(bloodGroup: String): ValidationResult {
+        return if (bloodGroup.isEmpty()) {
+            ValidationResult(false, "*required")
+        } else {
+            ValidationResult(true, "")
+        }
+    }
 
     fun validateString(state: String): ValidationResult {
         return if (state.isEmpty()) {
@@ -88,21 +88,21 @@ object Validator {
         }
     }
 
-//    fun validateDistrict(district: String): ValidationResult {
-//        return if (district.isEmpty()) {
-//            ValidationResult(false, "*required")
-//        } else {
-//            ValidationResult(true, "")
-//        }
-//    }
-//
-//    fun validateCity(city: String): ValidationResult {
-//        return if (city.isEmpty()) {
-//            ValidationResult(false, "*required")
-//        } else {
-//            ValidationResult(true, "")
-//        }
-//    }
+    fun validateDistrict(district: String): ValidationResult {
+        return if (district.isEmpty()) {
+            ValidationResult(false, "*required")
+        } else {
+            ValidationResult(true, "")
+        }
+    }
+
+    fun validateCity(city: String): ValidationResult {
+        return if (city.isEmpty()) {
+            ValidationResult(false, "*required")
+        } else {
+            ValidationResult(true, "")
+        }
+    }
 
     fun validatePinCode(pinCode: String): ValidationResult {
         if (pinCode.isEmpty()) {
@@ -139,13 +139,6 @@ object Validator {
         return ValidationResult(true)
     }
 
-    fun validateDonationCenter(center: String): ValidationResult {
-        if (center.isEmpty()) {
-            return ValidationResult(false, "required")
-        }
-        return ValidationResult(true)
-    }
-
     fun validateBloodUnit(unit: String): ValidationResult {
         if (unit.isEmpty()) {
             return ValidationResult(false, "required")
@@ -163,6 +156,6 @@ object Validator {
 }
 
 data class ValidationResult(
-    val status: Boolean = true,
+    val status: Boolean = false,
     val errorComment: String = ""
 )

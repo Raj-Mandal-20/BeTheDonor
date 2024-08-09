@@ -1,6 +1,5 @@
 package com.example.bethedonor.ui.components
 
-import android.media.session.MediaSession.Token
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.TweenSpec
@@ -58,7 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bethedonor.R
-import com.example.bethedonor.data.dataModels.RequestCardDetails
+import com.example.bethedonor.domain.model.RequestCardDetails
 import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.activeColor1
 import com.example.bethedonor.ui.theme.activeColor2
@@ -69,7 +68,6 @@ import com.example.bethedonor.ui.theme.bloodRed3
 import com.example.bethedonor.ui.theme.bloodTrashparent
 import com.example.bethedonor.ui.theme.lightRed
 import com.example.bethedonor.viewmodels.AllRequestViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -321,7 +319,7 @@ fun AllRequestCard(
                                         donorCount.intValue += 1
                                     }
                                 }
-                                onDonationClickResponse(response.getOrNull()?.message.toString())
+                                onDonationClickResponse(response.getOrNull().toString())
                             }
                         },
                         shape = RoundedCornerShape(8.dp),

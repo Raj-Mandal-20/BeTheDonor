@@ -1,5 +1,7 @@
 package com.example.bethedonor.ui.main_screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,24 +23,27 @@ import androidx.navigation.NavController
 import com.example.bethedonor.ui.components.*
 import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.fadeBlue11
+import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.utils.*
 import com.example.bethedonor.viewmodels.CreateRequestViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateRequestScreen(
     navController: NavController,
     innerPaddingValues: PaddingValues,
-    uId: String,
+    token: String,
     onDone: () -> Unit,
     createRequestViewModel: CreateRequestViewModel
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val bloodGroupsList = bloodGroupList2
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
-        confirmValueChange = { false}
     )
     var showBottomSheet by remember { mutableStateOf(true) }
 
@@ -49,7 +54,6 @@ fun CreateRequestScreen(
             sheetState.hide()
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize(), contentAlignment = Alignment.Center
@@ -66,8 +70,11 @@ fun CreateRequestScreen(
                 if (showBottomSheet) {
                     ModalBottomSheet(
                         onDismissRequest = {
-                            onDone()
-                            showBottomSheet = false
+                            coroutineScope.launch {
+                                onDone() // Execute your onDone() logic here
+                                // delay(5000) // Wait for 500ms
+                                showBottomSheet = false // Then execute the next logic
+                            }
                         },
                         sheetState = sheetState,
                         modifier = Modifier
@@ -207,7 +214,34 @@ fun CreateRequestScreen(
                                 createRequestViewModel.newRequestUiState.value.deadLineErrorState
                             }, modifier = Modifier.fillMaxWidth(), label = "Deadline")
                             SpacerComponent(dp = 20.dp)
-                            ButtonComponent(onButtonClick = {}, text = "Send Request")
+                            ButtonComponent(
+                                onButtonClick = {
+                                    val validity =
+                                        createRequestViewModel.validateWithRulesForNewRequest()
+                                    Log.d("Validity", validity.toString())
+                                    if (!createRequestViewModel.validateWithRulesForNewRequest()) {
+                                        showToast(context, "Fill all the required fields!")
+                                        return@ButtonComponent
+                                    }
+                                    createRequestViewModel.createNewBloodRequest(
+                                        token,
+                                        onCreated = { response ->
+                                            if (response.statusCode == null) {
+                                                coroutineScope.launch {
+                                                    onDone()
+                                                    showBottomSheet = false
+                                                }
+                                            }
+                                            showToast(context, response.message.toString())
+                                        })
+
+                                }, text = "Send Request",
+                                isEnable = !createRequestViewModel.requestInProgress.value
+                            )
+
+                            if(createRequestViewModel.requestInProgress.value){
+                                ProgressIndicatorComponent()
+                            }
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-package com.example.bethedonor.activity
+package com.example.bethedonor
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.bethedonor.activity.ui.theme.BeTheDonorTheme
 import com.example.bethedonor.navigation.BeforeLogInNavigationStack
 import com.example.bethedonor.navigation.Destination
+import com.example.bethedonor.ui.theme.BeTheDonorTheme
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.utils.readJsonFromAssets
 import com.example.bethedonor.utils.setAreaData
@@ -24,12 +24,12 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class BeforeLogInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val areaData = readJsonFromAssets(this, "Location.json")
         if (areaData != null) {
             setAreaData(areaData)
         }
-
         setContent {
             BeTheDonorTheme {
                 val systemUiController = rememberSystemUiController()

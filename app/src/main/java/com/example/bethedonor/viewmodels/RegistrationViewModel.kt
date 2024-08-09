@@ -7,15 +7,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bethedonor.data.api.RegistrationResponse
 import com.example.bethedonor.data.api.RetrofitClient
+import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.repository.UserRepositoryImp
-import com.example.bethedonor.domain.model.User
-import com.example.bethedonor.domain.model.UserBase
+import com.example.bethedonor.data.dataModels.User
+import com.example.bethedonor.data.dataModels.UserBase
 import com.example.bethedonor.domain.usecase.RegistrationUserUseCase
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.utils.uistate.RegistrationUiState
 import com.example.bethedonor.ui.utils.validationRules.Validator
+import com.example.bethedonor.utils.toDate
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
@@ -25,15 +26,15 @@ class RegistrationViewModel() : ViewModel() {
     var registrationUIState = mutableStateOf(RegistrationUiState())
 
     //*** api_service and registration use case ***
-    private val _registrationResponse = MutableLiveData<Result<RegistrationResponse>>()
-    val registrationResponse: LiveData<Result<RegistrationResponse>> = _registrationResponse
+    private val _registrationResponse = MutableLiveData<Result<BackendResponse>>()
+    val registrationResponse: LiveData<Result<BackendResponse>> = _registrationResponse
     private val apiService = RetrofitClient.instance
     private val userRepository = UserRepositoryImp(apiService)
     private val registrationUserUseCase = RegistrationUserUseCase(userRepository)
 
     fun registerUser(onRegister: () -> Unit?) {
         requestInProgress.value = true
-        val dob = SimpleDateFormat("dd/MM/yyyy").parse(registrationUIState.value.date)!!
+        val dob = (registrationUIState.value.date.toDate())!!
         val userBase = UserBase(
             registrationUIState.value.name,
             registrationUIState.value.phoneNo,
@@ -170,8 +171,8 @@ class RegistrationViewModel() : ViewModel() {
 
             is RegistrationUIEvent.DateValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
-                    date = event.age,
-                    ageErrorState = Validator.validateAge(event.age)
+                    date = event.date,
+                    ageErrorState = Validator.validateAge(event.date)
                 )
             }
 

@@ -99,7 +99,7 @@ fun AfterLogInNavigationStack(
                 )
             }
             composable<Destination.CreateRequest> {
-                CreateRequestScreen(navController = navController, innerPadding, userId, onDone = {
+                CreateRequestScreen(navController = navController, innerPadding, token, onDone = {
                     navController.popBackStack()
                 }, mainViewModel.createRequestViewModel)
             }

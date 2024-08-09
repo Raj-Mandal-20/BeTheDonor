@@ -1,4 +1,4 @@
-package com.example.bethedonor.domain.model
+package com.example.bethedonor.data.dataModels
 
 import java.util.Date
 
