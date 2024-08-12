@@ -202,9 +202,16 @@ exports.acceptDonation = async (req, res, next) => {
     // donor increases
     // one time accept
 
+    const { available } = await User.findById(req.userId);
+    if(!available){
+      const error = new Error('You are not available to Donate!');
+      throw error;
+    }
+
+    
     const requestId = req.body.requestId;
     const bloodRequest = await Request.findById(requestId);
-
+  
     console.log("Request Id = ", requestId);
     // check if the user is already donated
     const donorExists = await Donor.findOne({
