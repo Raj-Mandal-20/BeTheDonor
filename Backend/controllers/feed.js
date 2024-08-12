@@ -339,6 +339,16 @@ exports.updateProfile = async (req, res, next) => {
       user.city = req.body.city;
       user.pin = req.body.pin;
     }
+    else{
+      // for Android APP
+      user.gender = req.body.gender;
+      user.state = req.body.state;
+      user.district = req.body.district;
+      user.city = req.body.city;
+      user.pin = req.body.pin;
+      user.available = req.body.available
+    }
+    
     await user.save();
     res.status(200).json({
       message: "Profile Updated Successfully",
