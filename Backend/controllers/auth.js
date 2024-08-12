@@ -230,6 +230,7 @@ exports.signin = (req, res, next) => {
       res.status(200).json({
         token: token,
         userId: loadedUser._id.toString(),
+        available : loadedUser.available
       });
     })
     .catch((err) => {
