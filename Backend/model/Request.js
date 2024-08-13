@@ -36,6 +36,10 @@ const requestSchema = new Schema(
       type: Date,
       required: true,
     },
+    isClosed : {
+      type : Boolean,
+      default : true
+    },
     donors: [
       {
         type: Schema.Types.ObjectId,
