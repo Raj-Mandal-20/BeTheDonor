@@ -14,5 +14,7 @@ router.get("/donation-history", isAuth, feedController.donatedHistory);
 router.delete("/closeAccount", isAuth, feedController.closeAccount);
 router.put("/updateProfile/:sectionId", isAuth, feedController.updateProfile);
 router.get("/donorlist/:requestId", isAuth, feedController.donarList);
+router.delete('/deleteRequest', feedController.deleteBloodRequest);
+router.put('/toggleRequestStatus', feedController.closeAndOnBloodRequest);
 
 module.exports = router;

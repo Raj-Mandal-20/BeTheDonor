@@ -203,15 +203,14 @@ exports.acceptDonation = async (req, res, next) => {
     // one time accept
 
     const { available } = await User.findById(req.userId);
-    if(!available){
-      const error = new Error('You are not available to Donate!');
+    if (!available) {
+      const error = new Error("You are not available to Donate!");
       throw error;
     }
 
-    
     const requestId = req.body.requestId;
     const bloodRequest = await Request.findById(requestId);
-  
+
     console.log("Request Id = ", requestId);
     // check if the user is already donated
     const donorExists = await Donor.findOne({
@@ -290,9 +289,8 @@ exports.donatedHistory = async (req, res, next) => {
       })
     );
     res.status(200).json({
-      donates: donates
+      donates: donates,
     });
-
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -326,29 +324,26 @@ exports.updateProfile = async (req, res, next) => {
     if (sectionId === "1") {
       user.name = req.body.name;
       user.available = req.body.available;
-    } 
-    else if (sectionId === "2") {
+    } else if (sectionId === "2") {
       user.phoneNumber = req.body.phoneNumber;
       user.gender = req.body.gender;
       user.bloodGroup = req.body.bloodGroup;
       user.dob = req.body.dob;
-    }
-    else if (sectionId === "3") {
+    } else if (sectionId === "3") {
       user.state = req.body.state;
       user.district = req.body.district;
       user.city = req.body.city;
       user.pin = req.body.pin;
-    }
-    else{
+    } else {
       // for Android APP
       user.gender = req.body.gender;
       user.state = req.body.state;
       user.district = req.body.district;
       user.city = req.body.city;
       user.pin = req.body.pin;
-      user.available = req.body.available
+      user.available = req.body.available;
     }
-    
+
     await user.save();
     res.status(200).json({
       message: "Profile Updated Successfully",
@@ -361,7 +356,7 @@ exports.updateProfile = async (req, res, next) => {
   }
 };
 
-exports.donarList = async(req, res, next) => {
+exports.donarList = async (req, res, next) => {
   try {
     const requestId = req.params.requestId;
     const requestBody = await Request.findById({ _id: requestId });
@@ -369,31 +364,83 @@ exports.donarList = async(req, res, next) => {
 
     let donors = await Promise.all(
       requestBody.donors.map(async (donorId) => {
-        const donor = await Donor.findById({ _id : donorId});
-        const user = await User.findById({ _id : donor.userId});
+        const donor = await Donor.findById({ _id: donorId });
+        const user = await User.findById({ _id: donor.userId });
         return {
-          name : user.name,
-          email : user.email,
-          state : user.state,
-          city : user.city,
-          district : user.district,
-          pin : user.pin,
-          phoneNumber : user.phoneNumber,
-          blooodGroup : user.bloodGroup
-        }
+          name: user.name,
+          email: user.email,
+          state: user.state,
+          city: user.city,
+          district: user.district,
+          pin: user.pin,
+          phoneNumber: user.phoneNumber,
+          blooodGroup: user.bloodGroup,
+        };
       })
     );
-    
+
     res.status(200).json({
       donors: donors,
-      message : 'Fetched Donors List Successfully',
-      statusCode : 200
+      message: "Fetched Donors List Successfully",
+      statusCode: 200,
     });
-
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};
+
+exports.deleteBloodRequest = async (req, res, next) => {
+  try {
+    // delete a request completely
+
+    const donors = await Donor.find({ requestId: req.body.requestId });
+    console.log(donors);
+    await Promise.all(
+      donors.map(async ({ userId, requestId }) => {
+        const user = await User.findById({ _id: userId });
+        if (!user) {
+          throw new Error(`User not found: ${userId}`);
+        }
+        user.donates = user.donates.filter((reqId) => {
+          return reqId.toString() != requestId.toString();
+        });
+        await user.save();
+      })
+    );
+    await Request.deleteOne({_id : req.body.requestId});
+    await Donor.deleteMany({requestId : req.body.requestId});
+
+    res.status(200).json({
+      message: "Blood Request Deleted Successfully",
+      statusCode: 200,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.closeAndOnBloodRequest = async (req, res, next) => {
+  try {
+    const request = await Request.findById({ _id: req.body.requestId });
+    request.isClosed = !request.isClosed;
+    request.save();
+
+    res.status(200).json({
+      message: `Blood Request ${
+        request.isClosed ? "Closed " : "Active "
+      }Successfully`,
+      statusCode: 200,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
