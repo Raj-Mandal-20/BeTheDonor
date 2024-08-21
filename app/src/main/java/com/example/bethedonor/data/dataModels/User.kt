@@ -25,7 +25,7 @@ data class User(
 
 // User class without email
 data class UserUpdate(
-    val phoneNumber: String,
+    //val phoneNumber: String,
     val gender: String,
     val state: String,
     val city: String,

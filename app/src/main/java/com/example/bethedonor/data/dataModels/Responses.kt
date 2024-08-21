@@ -10,6 +10,7 @@ data class BackendResponse(
 data class LogInResponse(
     val token: String? = null,
     val userId: String? = null,
+    val available:Boolean=false,
     val message: String = "Login SuccessFull",
     val statusCode: String? = null
 )
@@ -27,6 +28,12 @@ data class AccountResponse(
 
 data class BloodRequestsResponse(
     @SerializedName("allBloodRequest") val bloodRequests: List<BloodRequest>? = null,
+    val statusCode: String? = null,
+    val message: String? = null
+)
+data class HistoryBloodRequestsResponse(
+    @SerializedName("bloodRequests")
+    val bloodRequests: List<BloodRequest>?=null,
     val statusCode: String? = null,
     val message: String? = null
 )

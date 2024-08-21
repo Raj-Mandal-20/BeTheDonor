@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.bethedonor.navigation.BeforeLogInNavigationStack
 import com.example.bethedonor.navigation.Destination
 import com.example.bethedonor.ui.theme.BeTheDonorTheme
+import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.utils.readJsonFromAssets
 import com.example.bethedonor.utils.setAreaData
@@ -24,7 +25,6 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class BeforeLogInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val areaData = readJsonFromAssets(this, "Location.json")
         if (areaData != null) {
@@ -34,7 +34,7 @@ class BeforeLogInActivity : ComponentActivity() {
             BeTheDonorTheme {
                 val systemUiController = rememberSystemUiController()
                 SideEffect {
-                    systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = false)
+                    systemUiController.setSystemBarsColor(bgDarkBlue, darkIcons = false)
                 }
                 Surface(
                     modifier = Modifier.fillMaxSize(),

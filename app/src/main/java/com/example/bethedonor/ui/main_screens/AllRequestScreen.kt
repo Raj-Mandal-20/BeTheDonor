@@ -164,13 +164,14 @@ fun AllRequestScreen(
                                     details = cardDetails,
                                     allRequestViewModel,
                                     token = token,
-                                    id = requestWithUser.bloodRequest.id
-                                ) {
-                                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                }
+                                    id = requestWithUser.bloodRequest.id,
+                                    onDonationClickResponse = {
+                                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                    }
+                                )
                             }
                             item {
-                                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()+8.dp))
+                                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + 8.dp))
                             }
                         }
                     } ?: EmptyStateComponent()

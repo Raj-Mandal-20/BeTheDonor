@@ -1,11 +1,16 @@
 package com.example.bethedonor.ui.components
 
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +54,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
@@ -67,8 +75,8 @@ import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.bloodRed3
 import com.example.bethedonor.ui.theme.bloodTrashparent
 import com.example.bethedonor.ui.theme.lightRed
+import com.example.bethedonor.ui.utils.commons.animatedBorder
 import com.example.bethedonor.viewmodels.AllRequestViewModel
-
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -91,6 +99,16 @@ fun AllRequestCard(
     val isAcceptor = remember {
         mutableStateOf(details.isAcceptor)
     }
+    // Collect the state map from the viewModel
+    val requestingToAccept by viewModel.requestingToAccept.collectAsState()
+
+    // Access the specific value for the provided id
+    val isRequesting = requestingToAccept[id] ?: false
+    val modifier = if (isRequesting) Modifier.animatedBorder(
+        borderColors = listOf(bloodTrashparent, bloodRed2),
+        shape = RoundedCornerShape(8.dp),
+        borderWidth = 2.dp
+    ) else Modifier.border(1.dp, bloodTrashparent, RoundedCornerShape(8.dp))
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -312,14 +330,23 @@ fun AllRequestCard(
                 ) {
                     Button(
                         onClick = {
-                            viewModel.acceptDonation(token = token, requestId = id) { response ->
+//                            if (!userAvailabilityStatus) {
+//                                onDonationClickResponse("Please check your availability")
+//                                return@Button
+//                            }
+                            viewModel.acceptDonation(
+                                token = token,
+                                requestId = id
+                            ) { response ->
                                 if (response.isSuccess) {
                                     if (response.getOrNull()?.bloodRequest != null) {
                                         isAcceptor.value = true
                                         donorCount.intValue += 1
                                     }
                                 }
-                                onDonationClickResponse(response.getOrNull().toString())
+                                onDonationClickResponse(
+                                    response.getOrNull()?.message ?: "Error"
+                                )
                             }
                         },
                         shape = RoundedCornerShape(8.dp),
@@ -358,7 +385,8 @@ fun AllRequestCard(
                     }
                 }
             }
-            if (viewModel.requestingToAccept.collectAsState().value) {
+
+            if (isRequesting) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
                     strokeWidth = 2.dp,
@@ -475,6 +503,8 @@ fun AllRequestCardPreview() {
         onDonationClickResponse = {},
         token = "",
         id = "",
+        //userAvailabilityStatus = false,
         viewModel = AllRequestViewModel()
     )
+
 }

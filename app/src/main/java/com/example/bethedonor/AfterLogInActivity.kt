@@ -40,7 +40,6 @@ class AfterLogInActivity : ComponentActivity() {
                 SideEffect {
                     systemUiController.setSystemBarsColor(fadeBlue11, darkIcons = false)
                 }
-
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -49,6 +48,7 @@ class AfterLogInActivity : ComponentActivity() {
                     val homeViewModel: HomeViewModel = viewModel()
                     val currentUserId = homeViewModel.getUserId()
                     val token = homeViewModel.getToken()
+                    val userAvailabilityStatus = homeViewModel.getUserAvailabilityStatus()
                     AfterLogInNavigationStack(
                         navController = rememberNavController(),
                         userId = currentUserId,

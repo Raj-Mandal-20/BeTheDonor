@@ -5,6 +5,7 @@ import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 import com.example.bethedonor.data.dataModels.IsDonatedResponse
 import com.example.bethedonor.data.dataModels.LogInRequest
 import com.example.bethedonor.data.dataModels.NewBloodRequest
@@ -72,4 +73,7 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request: NewBloodRequest
     ): Response<BackendResponse>
+
+    @GET("v1/request-history")
+    suspend fun getRequestHistory(@Header("Authorization") token: String): Response<HistoryBloodRequestsResponse>
 }

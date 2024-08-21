@@ -57,6 +57,7 @@ data class UserProfile(
 )
 
 data class BloodRequest(
+    val isClosed:Boolean,
     @SerializedName("_id")
     val id: String,
     val city: String,
@@ -78,7 +79,7 @@ data class BloodRequest(
 data class UserIdRequest(val userId: String)
 
 data class UpdateProfileRequest(
-    val phoneNumber: String,
+  //  val phoneNumber: String,
     val gender: String,
     val state: String,
     val district: String,

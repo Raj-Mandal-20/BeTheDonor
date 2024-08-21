@@ -83,6 +83,7 @@ import com.example.bethedonor.ui.theme.darkGray
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.theme.teal
 import com.example.bethedonor.ui.utils.commons.linearGradientBrush
+import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.utils.validationRules.ValidationResult
 import com.example.bethedonor.utils.formatDate
@@ -390,6 +391,43 @@ fun ProfileScreen(
                 containerColor = fadeBlue11,
 
                 ) {
+                val isFieldChanged= remember {
+                    mutableStateOf(false)
+                }
+                LaunchedEffect(true) {
+                    Log.d("modalSheetLaunchEffect","InEffect" )
+                    profileViewmodel.onEvent(
+                        RegistrationUIEvent.GenderValueChangeEvent(
+                            profileData?.myProfile?.gender.toString()
+                        )
+                    )
+                    profileViewmodel.onEvent(
+                        RegistrationUIEvent.StateValueChangeEvent(
+                            profileData?.myProfile?.state.toString()
+                        )
+                    )
+                    profileViewmodel.onEvent(
+                        RegistrationUIEvent.DistrictValueChangeEvent(
+                            profileData?.myProfile?.district.toString()
+                        )
+                    )
+                    profileViewmodel.onEvent(
+                        RegistrationUIEvent.CityValueChangeEvent(
+                            profileData?.myProfile?.city.toString()
+                        )
+                    )
+                    profileViewmodel.onEvent(
+                        RegistrationUIEvent.PinCodeValueChangeEvent(
+                            profileData?.myProfile?.pin.toString()
+                        )
+                    )
+                    profileViewmodel.onEvent(
+                        RegistrationUIEvent.AvailabilityCheckerValueChangeEvent(
+                            profileData?.myProfile?.available ?: false
+                        )
+                    )
+                   isFieldChanged.value=false
+                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween,
@@ -430,6 +468,7 @@ fun ProfileScreen(
                             var code by remember { mutableStateOf(getCountryCode(profileData?.myProfile?.phoneNumber.toString())) }
                             Log.d("countryCode", code)
                             PhoneNumberEditText(
+                               readOnly = true,
                                 onFieldValueChanged = {
                                     profileViewmodel.onEvent(
                                         RegistrationUIEvent.PhoneNoChangeEvent(code + it)
@@ -450,6 +489,7 @@ fun ProfileScreen(
                                 index = genderList.indexOf(profileData?.myProfile?.gender),
                                 label = "Gender",
                                 onSelection = {
+                                    isFieldChanged.value=true
                                     profileViewmodel.onEvent(
                                         RegistrationUIEvent.GenderValueChangeEvent(it)
                                     )
@@ -462,6 +502,7 @@ fun ProfileScreen(
                                 options = getStateDataList(),
                                 selectedValue = profileViewmodel.selectedState.value,
                                 onSelection = {
+                                  isFieldChanged.value=true
                                     profileViewmodel.onEvent(
                                         RegistrationUIEvent.StateValueChangeEvent(
                                             it
@@ -477,6 +518,7 @@ fun ProfileScreen(
                                 options = getDistrictList(selectedState = profileViewmodel.selectedState.value),
                                 selectedValue = profileViewmodel.selectedDistrict.value,
                                 onSelection = {
+                                    isFieldChanged.value=true
                                     profileViewmodel.onEvent(
                                         RegistrationUIEvent.DistrictValueChangeEvent(
                                             it
@@ -496,6 +538,7 @@ fun ProfileScreen(
                                 ),
                                 selectedValue = profileViewmodel.selectedCity.value,
                                 onSelection = {
+                                    isFieldChanged.value=true
                                     profileViewmodel.onEvent(
                                         RegistrationUIEvent.CityValueChangeEvent(
                                             it
@@ -517,6 +560,7 @@ fun ProfileScreen(
                                 ),
                                 selectedValue = profileViewmodel.selectedPinCode.value,
                                 onSelection = {
+                                    isFieldChanged.value=true
                                     profileViewmodel.onEvent(
                                         RegistrationUIEvent.PinCodeValueChangeEvent(
                                             it
@@ -539,13 +583,37 @@ fun ProfileScreen(
                                 })
 
                             ButtonComponent(text = "Apply", onButtonClick = {
-//                                coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
-//                                    if (!sheetState.isVisible) {
-//                                        showBottomSheet = false
-//                                    }
-//                                }
+                                if (isFieldChanged.value && !profileViewmodel.validateWithRulesForUpdate()) {
+                                    showToast(
+                                        context = context,
+                                        "Please fill all the required fields"
+                                    )
+                                    return@ButtonComponent
+                                }
+                                coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    if (!sheetState.isVisible) {
+                                        showBottomSheet = false
+                                    }
+                                }
                                 profileViewmodel.updateProfile(token = authToken, onUpdate = {
-
+                                    if(it.first=="success"){
+                                      coroutineScope.launch {
+                                          networkCall(
+                                              profileViewmodel,
+                                              authToken,
+                                              onResolve = {
+                                                  profileResponse?.let { it->
+                                                      profileData = if (it.isSuccess) {
+                                                          it.getOrNull()
+                                                      } else {
+                                                          ProfileResponse(message = it.exceptionOrNull()?.message.toString())
+                                                      }
+                                                  }
+                                              }
+                                          )
+                                      }
+                                    }
+                                    showToast(context = context, it.second)
                                 })
                             })
                         }

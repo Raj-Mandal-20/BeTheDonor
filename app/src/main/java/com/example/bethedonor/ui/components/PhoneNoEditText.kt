@@ -34,7 +34,8 @@ fun PhoneNumberEditText(
     value: String = "",
     code: (value: String) -> Unit,
     modifier: Modifier,
-    countryCode:String="in"
+    countryCode:String="in",
+    readOnly:Boolean=false
 ) {
 
     var isTrailingIconVisible by rememberSaveable {
@@ -61,6 +62,7 @@ fun PhoneNumberEditText(
     ) {
         // Dropdown menu for selecting country code
         CountryPickerOutlinedTextField(
+            readOnly = readOnly,
             mobileNumber = mobileNumber,
             modifier = Modifier
                 .weight(1f)

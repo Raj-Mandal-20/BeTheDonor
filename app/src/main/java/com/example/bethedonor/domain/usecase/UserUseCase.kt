@@ -5,6 +5,7 @@ import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 
 
 import com.example.bethedonor.data.dataModels.LogInResponse
@@ -264,6 +265,26 @@ class CreateRequestUseCase(private val userRepository: UserRepository) {
             }
         } catch (e: Exception) {
             BackendResponse(message = e.message ?: "Unknown error")
+        }
+    }
+}
+class GetRequestHistoryUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String): HistoryBloodRequestsResponse {
+        return try {
+            val response = userRepository.getRequestHistory(token)
+            if (response.isSuccessful) {
+                response.body() ?: HistoryBloodRequestsResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, BloodRequestsResponse::class.java)
+                HistoryBloodRequestsResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("errorFromGetRequestHistory", e.message.toString())
+            HistoryBloodRequestsResponse(message = e.message ?: "Unknown error")
         }
     }
 }

@@ -64,13 +64,13 @@ object Validator {
     }
 
 
-    fun validateGender(gender: String): ValidationResult {
-        return if (gender.isEmpty()) {
-            ValidationResult(false, "*required")
-        } else {
-            ValidationResult(true, "")
-        }
-    }
+//    fun validateGender(gender: String): ValidationResult {
+//        return if (gender.isEmpty()) {
+//            ValidationResult(false, "*required")
+//        } else {
+//            ValidationResult(true, "")
+//        }
+//    }
 
     fun validateBloodGroup(bloodGroup: String): ValidationResult {
         return if (bloodGroup.isEmpty()) {
@@ -88,21 +88,21 @@ object Validator {
         }
     }
 
-    fun validateDistrict(district: String): ValidationResult {
-        return if (district.isEmpty()) {
-            ValidationResult(false, "*required")
-        } else {
-            ValidationResult(true, "")
-        }
-    }
-
-    fun validateCity(city: String): ValidationResult {
-        return if (city.isEmpty()) {
-            ValidationResult(false, "*required")
-        } else {
-            ValidationResult(true, "")
-        }
-    }
+//    fun validateDistrict(district: String): ValidationResult {
+//        return if (district.isEmpty()) {
+//            ValidationResult(false, "*required")
+//        } else {
+//            ValidationResult(true, "")
+//        }
+//    }
+//
+//    fun validateCity(city: String): ValidationResult {
+//        return if (city.isEmpty()) {
+//            ValidationResult(false, "*required")
+//        } else {
+//            ValidationResult(true, "")
+//        }
+//    }
 
     fun validatePinCode(pinCode: String): ValidationResult {
         if (pinCode.isEmpty()) {

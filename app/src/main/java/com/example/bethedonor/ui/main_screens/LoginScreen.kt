@@ -1,5 +1,7 @@
 package com.example.bethedonor.ui.main_screens
 
+import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bethedonor.ui.utils.uievent.LoginUIEvent
@@ -202,12 +205,12 @@ fun LoginScreen(
     }
 }
 
-//@Preview
-//@Composable
-//fun LoginScreenPreview() {
-//    LoginScreen(
-//        onRegisterNavigate = {},
-//        onLoginNavigate = {},
-//        //loginViewModel = LoginViewModel()
-//    )
-//}
+@Preview
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(
+        onRegisterNavigate = {},
+        onLoginNavigate = {},
+        loginViewModel = LoginViewModel(application = Application())
+    )
+}

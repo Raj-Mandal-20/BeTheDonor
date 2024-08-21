@@ -1,13 +1,11 @@
 package com.example.bethedonor.navigation
 
 import android.util.Log
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,7 +25,7 @@ fun AfterLogInNavigationStack(
     userId: String,
     token: String,
     onLogOut: () -> Unit,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
 ) {
     //  val selectedDestination = remember { mutableStateOf(BottomNavItem.Home.route) }
 
@@ -104,7 +102,7 @@ fun AfterLogInNavigationStack(
                 }, mainViewModel.createRequestViewModel)
             }
             composable<Destination.History> {
-                HistoryScreen(navController = navController, userId)
+                HistoryScreen(navController = navController, token,mainViewModel.historyViewModel,innerPadding)
             }
             composable<Destination.Profile> {
                 ProfileScreen(

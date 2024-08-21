@@ -12,7 +12,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val profileViewModel: ProfileViewModel by lazy { ProfileViewModel(application) }
     val allRequestViewModel: AllRequestViewModel by lazy { AllRequestViewModel() }
     val createRequestViewModel: CreateRequestViewModel by lazy { CreateRequestViewModel() }
-    //val historyViewModel: HistoryViewModel by lazy { HistoryViewModel(application) }
+    val historyViewModel: HistoryViewModel by lazy { HistoryViewModel() }
 }
 
 // Factory for creating MainViewModel with Application context

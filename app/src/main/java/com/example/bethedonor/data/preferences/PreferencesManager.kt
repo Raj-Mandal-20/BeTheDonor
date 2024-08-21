@@ -15,11 +15,16 @@ class PreferencesManager(context: Context) {
         get() = sharedPreferences.getString("user_id", null)
         set(value) = sharedPreferences.edit().putString("user_id", value).apply()
 
+    var userAvailabilityStatus: Boolean?
+        get()=sharedPreferences.getBoolean("userAvailabilityStatus",false)
+        set(value) = sharedPreferences.edit().putBoolean("userAvailabilityStatus",value!!).apply()
+
     // Method to clear user data
-    suspend fun clearUserData() {
+      fun clearUserData() {
         sharedPreferences.edit()
             .remove("jwt_token")
             .remove("user_id")
+            .remove("userAvailabilityStatus")
             .apply()
     }
 

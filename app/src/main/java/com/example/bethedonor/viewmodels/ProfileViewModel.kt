@@ -42,7 +42,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             is RegistrationUIEvent.DistrictValueChangeEvent -> {
                 updateProfileUiState.value = updateProfileUiState.value.copy(
                     district = event.district,
-                    cityErrorState = Validator.validateString(event.district)
+                    districtErrorState = Validator.validateString(event.district)
                 )
             }
 
@@ -95,9 +95,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun validateWithRulesForUpdate(): Boolean {
+        //  printState()
+        Log.d("updateProfileUiState", updateProfileUiState.value.genderErrorState.toString())
+        Log.d("updateProfileUiState", updateProfileUiState.value.stateErrorState.toString())
+        Log.d("updateProfileUiState", updateProfileUiState.value.districtErrorState.toString())
+        Log.d("updateProfileUiState", updateProfileUiState.value.cityErrorState.toString())
+        Log.d("updateProfileUiState", updateProfileUiState.value.pinCodeErrorState.toString())
         //  if (availableToDonate.value)
-        return updateProfileUiState.value.phoneNoErrorState.status
-                && updateProfileUiState.value.genderErrorState.status
+        return updateProfileUiState.value.genderErrorState.status
                 && updateProfileUiState.value.stateErrorState.status
                 && updateProfileUiState.value.districtErrorState.status
                 && updateProfileUiState.value.cityErrorState.status
@@ -183,10 +188,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun updateProfile(token: String, onUpdate: () -> Unit) {
+    fun updateProfile(token: String, onUpdate: (Pair<String,String>) -> Unit) {
 
         val updates = UserUpdate(
-            phoneNumber = updateProfileUiState.value.phoneNo,
+           // phoneNumber = updateProfileUiState.value.phoneNo,
             gender = updateProfileUiState.value.gender,
             state = updateProfileUiState.value.state,
             city = updateProfileUiState.value.city,
@@ -201,9 +206,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val result = Result.success(response)
               //  _profileResponse.value = result
                 Log.d("Response", response.toString())
-                onUpdate()
+                onUpdate(Pair("success",result.getOrNull()?.message.toString()))
             } catch (e: Exception) {
-
+                val result = Result.failure<String>(e)
+                Log.d("Error", e.message.toString())
+                onUpdate(Pair("failure",result.exceptionOrNull()?.message.toString()))
+            }
+            finally {
+                requestInProgress.value=false
             }
         }
     }

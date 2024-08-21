@@ -48,6 +48,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
                 response.token?.let {
                     preferencesManager.jwtToken = it
                     preferencesManager.userId = response.userId
+                   // preferencesManager.availableToDonate=response.available
                 }
             } catch (e: Exception) {
                 _loginResponse.value = Result.failure(e)

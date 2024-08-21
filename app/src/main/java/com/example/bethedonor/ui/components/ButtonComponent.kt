@@ -11,6 +11,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -35,9 +36,11 @@ fun ButtonComponent(text: String, onButtonClick: () -> Unit, isEnable: Boolean =
                             bloodRed2, bloodRed3
                         )
                     ), shape = ButtonDefaults.shape
+                ).clip(
+                    ButtonDefaults.shape
                 )
                 .padding(vertical = 4.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, disabledContainerColor = Color.Transparent),
         ) {
             Text(
                 text = text,

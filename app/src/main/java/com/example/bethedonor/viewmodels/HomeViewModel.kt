@@ -13,4 +13,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application){
     fun getToken(): String {
         return preferencesManager.jwtToken.toString()
     }
+    fun getUserAvailabilityStatus(): Boolean? {
+        return preferencesManager.userAvailabilityStatus
+    }
 }

@@ -1,6 +1,8 @@
 package com.example.bethedonor.viewmodels
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +12,7 @@ import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.BloodRequest
 import com.example.bethedonor.data.dataModels.UserProfile
 import com.example.bethedonor.data.dataModels.UserResponse
+import com.example.bethedonor.data.preferences.PreferencesManager
 import com.example.bethedonor.data.repository.UserRepositoryImp
 import com.example.bethedonor.domain.usecase.AcceptDonationUseCase
 import com.example.bethedonor.domain.usecase.FetchUserDetailsUseCase
@@ -27,8 +30,15 @@ data class BloodRequestWithUser(
 )
 
 class AllRequestViewModel() : ViewModel() {
+
+    // ***** get the useAvailabilityStatus to pass to the ui ***** //
+//    private val preferencesManager = PreferencesManager(getApplication())
+//    val userAvailabilityStatus = preferencesManager.userAvailabilityStatus
+    // ********************* **************************** //
+
     private val _recomposeTime = MutableStateFlow(-1L)
     val recomposeTime: StateFlow<Long> = _recomposeTime
+
 
     private val authToken = MutableStateFlow("")
 
@@ -62,7 +72,7 @@ class AllRequestViewModel() : ViewModel() {
     private val fetchUserDetailsUseCase = FetchUserDetailsUseCase(userRepository)
     private val acceptDonationUseCase = AcceptDonationUseCase(userRepository)
     val isRequestFetching = MutableStateFlow(false)
-    val requestingToAccept =MutableStateFlow(false)
+    val requestingToAccept = MutableStateFlow(mapOf<String, Boolean>())
     private val _isSheetVisible = MutableStateFlow(false)
     val isSheetVisible: StateFlow<Boolean> = _isSheetVisible
 
@@ -134,7 +144,7 @@ class AllRequestViewModel() : ViewModel() {
         requestId: String,
         onResult: (Result<AcceptDonationResponse>) -> Unit
     ) {
-        requestingToAccept.value=true
+        requestingToAccept.value= mapOf(requestId to true)
         viewModelScope.launch {
             try {
                 val response = acceptDonationUseCase.execute(token, requestId)
@@ -142,7 +152,7 @@ class AllRequestViewModel() : ViewModel() {
             } catch (e: Exception) {
                 onResult(Result.failure(e))
             } finally {
-                requestingToAccept.value=false
+                requestingToAccept.value = mapOf(requestId to false)
             }
         }
     }
