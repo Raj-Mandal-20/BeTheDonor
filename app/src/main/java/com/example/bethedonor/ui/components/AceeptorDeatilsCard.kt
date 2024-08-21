@@ -2,6 +2,7 @@ package com.example.bethedonor.ui.components
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PhoneInTalk
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,20 +31,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.bethedonor.domain.model.DonnerDetails
+import com.example.bethedonor.data.dataModels.Donor
+import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.Gray2
 import com.example.bethedonor.ui.theme.bloodRed2
-import com.example.bethedonor.ui.theme.lightBloodRed1
-import com.example.bethedonor.ui.theme.lightBloodRed2
+import com.example.bethedonor.ui.theme.fadeBlue1
+import com.example.bethedonor.ui.theme.fadeBlue11
+import com.example.bethedonor.ui.theme.fadeBlue2
 
 
 @Composable
-fun AcceptorDetailsCard(donnerDetails: DonnerDetails) {
+fun AcceptorDetailsCard(donnerDetails: Donor) {
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
         shape = RoundedCornerShape(10.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.dp
+        ),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         )
@@ -50,7 +56,7 @@ fun AcceptorDetailsCard(donnerDetails: DonnerDetails) {
         Box(
             modifier = Modifier
                 .background(
-                    color = lightBloodRed1
+                    color = fadeBlue11,
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -72,14 +78,14 @@ fun AcceptorDetailsCard(donnerDetails: DonnerDetails) {
                             modifier = Modifier
                                 .height(60.dp)
                                 .width(60.dp)
-                                .background(Gray2, RoundedCornerShape(30.dp)),
+                                .background(fadeBlue1, RoundedCornerShape(30.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Person,
                                 contentDescription = "profile",
                                 modifier = Modifier.size(40.dp),
-                                tint = Color.DarkGray
+                                tint = Gray2
                             )
                         }
 
@@ -89,13 +95,15 @@ fun AcceptorDetailsCard(donnerDetails: DonnerDetails) {
                             horizontalAlignment = Alignment.Start
                         ) {
                             Text(
-                                text = donnerDetails.name,
+                                text = donnerDetails.name
+                                    ?: "N/A", // or provide a suitable default value
                                 style = TextStyle(fontSize = 16.sp),
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = donnerDetails.address,
+                                text = "${donnerDetails.state}, ${donnerDetails.district},${donnerDetails.city}, ${donnerDetails.pin}",
                                 style = TextStyle(fontSize = 14.sp),
                                 color = Color.Gray,
                                 minLines = 2,
@@ -110,7 +118,7 @@ fun AcceptorDetailsCard(donnerDetails: DonnerDetails) {
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = donnerDetails.bloodGroup,
+                            text = donnerDetails.bloodGroup ?: "Unknown",
                             style = TextStyle(fontSize = 18.sp),
                             fontWeight = FontWeight.ExtraBold,
                             color = bloodRed2
@@ -120,7 +128,10 @@ fun AcceptorDetailsCard(donnerDetails: DonnerDetails) {
                             modifier = Modifier
                                 .height(40.dp)
                                 .width(40.dp)
-                                .background(lightBloodRed2, RoundedCornerShape(30.dp)),
+                                .background(fadeBlue1, RoundedCornerShape(30.dp))
+                                .clickable {
+                                    //
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -142,12 +153,15 @@ fun AcceptorDetailsCard(donnerDetails: DonnerDetails) {
 @Composable
 fun AcceptorDetailsCardPreview() {
     AcceptorDetailsCard(
-        donnerDetails = DonnerDetails(
+        donnerDetails = Donor(
             name = "Chayandev Bera",
-            emailId = "abcd@gmail.com",
-            phoneNo = "2848944",
-            address = "West Bengal, Kolkata, Dhapa, 700105",
-            bloodGroup = "B+"
+            email = "abcd@gmail.com",
+            phoneNumber = "2848944",
+            state = "West Bengal",
+            city = "Kolkata",
+            district = "Dhapa",
+            pin = "700105",
+            bloodGroup = "B+",
         )
     )
 }

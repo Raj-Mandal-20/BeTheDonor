@@ -5,6 +5,7 @@ import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.DonorListResponse
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 
 
@@ -268,6 +269,7 @@ class CreateRequestUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+
 class GetRequestHistoryUseCase(private val userRepository: UserRepository) {
     suspend fun execute(token: String): HistoryBloodRequestsResponse {
         return try {
@@ -288,3 +290,25 @@ class GetRequestHistoryUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+
+
+class GetDonorListUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, requestId: String): DonorListResponse {
+        return try {
+            val response = userRepository.getDonorList(token, requestId)
+            if (response.isSuccessful) {
+                response.body() ?: DonorListResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, DonorListResponse::class.java)
+                DonorListResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            DonorListResponse(message = e.message ?: "Unknown error")
+        }
+    }
+}
+

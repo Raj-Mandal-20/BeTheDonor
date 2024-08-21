@@ -12,13 +12,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.bethedonor.data.dataModels.Donor
+import com.example.bethedonor.ui.components.AcceptorDetailsCard
 import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.RequestHistoryCard
 import com.example.bethedonor.ui.components.Retry
@@ -42,6 +48,7 @@ import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.theme.lightGray
 import com.example.bethedonor.utils.isDeadlinePassed
 import com.example.bethedonor.viewmodels.HistoryViewModel
+import kotlinx.coroutines.launch
 
 data class TabItem(
     val title: String
@@ -117,7 +124,11 @@ fun HistoryScreen(
                             .weight(1f)
                     ) { page ->
                         when (page) {
-                            0 -> RequestScreen(token = token, historyViewModel = historyViewModel,innerPadding)
+                            0 -> RequestScreen(
+                                token = token,
+                                historyViewModel = historyViewModel,
+                                innerPadding
+                            )
                             //1 -> DonationScreen() // Create DonationScreen similar to RequestScreen
                         }
                     }
@@ -132,29 +143,36 @@ fun HistoryScreen(
 //    TODO("Not yet implemented")
 //}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPadding: PaddingValues) {
     LaunchedEffect(Unit) {
         if (historyViewModel.shouldFetch())
             networkCall(token = token, historyViewModel = historyViewModel, id = 1)
     }
-
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
     val isLoading by historyViewModel.isRequestFetching.collectAsState()
-    val requestHistoryResponseList by historyViewModel.requestHistoryResponseList.collectAsState(null)
+    val requestHistoryResponseList by historyViewModel.requestHistoryResponseList.collectAsState(
+        null
+    )
     var retryFlag by remember { mutableStateOf(false) }
 
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         when {
             isLoading -> {
                 ProgressIndicatorComponent()
                 retryFlag = false
             }
+
             retryFlag -> {
                 Retry(message = "Something Went Wrong") {
                     retryFlag = false
                     networkCall(token = token, historyViewModel = historyViewModel, id = 1)
                 }
             }
+
             else -> requestHistoryResponseList?.let { result ->
                 val requestHistory = if (result.isSuccess) {
                     result.getOrNull()
@@ -178,20 +196,69 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                                 pin = requestHistory.bloodRequest.pin,
                                 count = requestHistory.bloodRequest.donors.size,
                                 activeStatus = !isDeadlinePassed(requestHistory.bloodRequest.deadline)
-                            )
+                            ) {
+                                showBottomSheet = true
+                                scope.launch {
+                                    networkCall(
+                                        token,
+                                        historyViewModel,
+                                        0,
+                                        requestHistory.bloodRequest.id
+                                    )
+                                }
+                            }
                         }
                         item {
-                            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()+16.dp))
+                            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + 16.dp))
                         }
                     }
                 }
+            }
+        }
+
+    }
+    if (showBottomSheet) {
+        val isDonorListFetching by historyViewModel.isDonorListFetching.collectAsState()
+        val donorListResponse by historyViewModel.donorListResponse.collectAsState(null)
+        ModalBottomSheet(
+            onDismissRequest = {
+                showBottomSheet = false
+            },
+            sheetState = sheetState,
+            modifier = Modifier
+                .fillMaxSize(),
+            containerColor = fadeBlue11,
+
+            ) {
+            Box(contentAlignment = Alignment.Center) {
+                donorListResponse?.let { response ->
+                    if (response.isFailure || response.getOrNull()?.statusCode != "200") {
+                        return@let
+                    }
+                    val donors = response.getOrNull()?.donors
+                    donors?.let {
+                        LazyColumn {
+                            items(items = donors, key = { it.phoneNumber }) { donor ->
+                                AcceptorDetailsCard(donnerDetails = donor)
+                            }
+                        }
+                    }
+                }
+            }
+            if (isDonorListFetching) {
+                ProgressIndicatorComponent()
             }
         }
     }
 }
 
 
-fun networkCall(token: String, historyViewModel: HistoryViewModel, id: Int) {
+fun networkCall(
+    token: String,
+    historyViewModel: HistoryViewModel,
+    id: Int,
+    requestId: String? = null
+) {
     when (id) {
         1 -> {
             historyViewModel.fetchRequestHistory(token)
@@ -199,6 +266,10 @@ fun networkCall(token: String, historyViewModel: HistoryViewModel, id: Int) {
 
         2 -> {
 
+        }
+
+        else -> {
+            historyViewModel.fetchDonorList(token, requestId ?: "")
         }
     }
 }

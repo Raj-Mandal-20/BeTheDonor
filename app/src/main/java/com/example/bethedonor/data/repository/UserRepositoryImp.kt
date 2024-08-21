@@ -7,6 +7,7 @@ import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.DonorListResponse
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 import com.example.bethedonor.data.dataModels.IsDonatedResponse
 import com.example.bethedonor.data.dataModels.LogInRequest
@@ -97,5 +98,8 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     }
     override suspend fun getRequestHistory(token: String): Response<HistoryBloodRequestsResponse> {
         return apiService.getRequestHistory("Bearer $token")
+    }
+    override suspend fun getDonorList(token: String, requestId: String): Response<DonorListResponse> {
+        return apiService.getDonorList("Bearer $token", requestId)
     }
 }

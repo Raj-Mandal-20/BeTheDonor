@@ -54,3 +54,10 @@ data class AcceptDonationResponse(
     val statusCode: String? = null,
     val message: String? = null
 )
+
+// DonorListResponse.kt
+data class DonorListResponse(
+    val statusCode: String? = null,
+    val message: String? = null,
+    val donors: List<Donor>? = null
+)

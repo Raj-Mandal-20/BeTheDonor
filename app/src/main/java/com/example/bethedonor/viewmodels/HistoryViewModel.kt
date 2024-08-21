@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bethedonor.data.api.RetrofitClient
 import com.example.bethedonor.data.dataModels.BloodRequest
+import com.example.bethedonor.data.dataModels.DonorListResponse
 import com.example.bethedonor.data.repository.UserRepositoryImp
+import com.example.bethedonor.domain.usecase.GetDonorListUseCase
 import com.example.bethedonor.domain.usecase.GetRequestHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +24,14 @@ class HistoryViewModel : ViewModel() {
     private val apiService = RetrofitClient.instance
     private val userRepository = UserRepositoryImp(apiService)
     private val getRequestHistoryUseCase = GetRequestHistoryUseCase(userRepository)
+    private val getDonorListUseCase = GetDonorListUseCase(userRepository)
+
+    private val _isDonorListFetching = MutableStateFlow(false)
+    val isDonorListFetching: StateFlow<Boolean> = _isDonorListFetching
+
+    private val _donorListResponse = MutableStateFlow<Result<DonorListResponse>?>(null)
+    val donorListResponse: StateFlow<Result<DonorListResponse>?> = _donorListResponse
+
 
     val isRequestFetching = MutableStateFlow(false)
 
@@ -55,6 +65,25 @@ class HistoryViewModel : ViewModel() {
                 _requestHistoryResponseList.value = Result.failure(e)
             } finally {
                 isRequestFetching.value = false
+            }
+        }
+    }
+    fun fetchDonorList(token: String, requestId: String) {
+        viewModelScope.launch {
+            _isDonorListFetching.value = true
+            try {
+                val response = getDonorListUseCase.execute(token, requestId)
+                if (response.donors != null) {
+                    _donorListResponse.value = Result.success(response)
+                } else {
+                    _donorListResponse.value = Result.failure(Exception(response.message))
+                }
+                Log.d("HistoryViewModel", "Donor List Response: $response")
+            } catch (e: Exception) {
+                _donorListResponse.value = Result.failure(e)
+                Log.e("HistoryViewModel", "Error fetching donor list: ${e.message}")
+            } finally {
+                _isDonorListFetching.value = false
             }
         }
     }

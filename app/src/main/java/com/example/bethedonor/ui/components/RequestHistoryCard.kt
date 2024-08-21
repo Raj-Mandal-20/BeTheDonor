@@ -3,6 +3,7 @@ package com.example.bethedonor.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,7 +66,8 @@ fun RequestHistoryCard(
     district: String = "Kolkata",
     pin: String = "700105",
     count: Int = 4,
-    activeStatus: Boolean = true
+    activeStatus: Boolean = true,
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -96,7 +98,8 @@ fun RequestHistoryCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.Center,
+                        Modifier.fillMaxWidth(0.8f),
+                        horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
@@ -169,9 +172,13 @@ fun RequestHistoryCard(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    modifier = Modifier.padding(start = 48.dp),
+                    modifier = Modifier
+                        .padding(start = 48.dp)
+                        .clickable {
+                            onClick()
+                        },
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy((-8).dp)
+                    horizontalArrangement = Arrangement.spacedBy((-12).dp)
                 ) {
                     if (count <= 3) {
                         for (i in 1..count) {
@@ -182,12 +189,12 @@ fun RequestHistoryCard(
                             UserIconComponent()
                         }
                     }
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(25.dp))
                     Text(
-                        text = if (count - 3 > 0) "+${count - 3} Acceptors" else "Acceptors",
+                        text = if (count - 3 > 0) "+${count - 3} Acceptors" else if(count==0) "0 Acceptors" else " Acceptors",
                         style = TextStyle(
                             color = Gray1,
-                            fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
                             fontStyle = FontStyle.Italic,
                         ),
                     )
@@ -202,6 +209,7 @@ fun UserIconComponent() {
     Image(
         imageVector = ImageVector.vectorResource(id = R.drawable.ic_profile),
         contentDescription = "Profile",
+        modifier = Modifier.size(40.dp)
     )
 }
 
@@ -209,7 +217,7 @@ fun UserIconComponent() {
 fun AddressTExtComponent(value: String) {
     Text(
         text = value,
-        style = TextStyle(fontSize = MaterialTheme.typography.labelMedium.fontSize),
+        style = TextStyle(fontSize = MaterialTheme.typography.labelLarge.fontSize),
         fontWeight = FontWeight.SemiBold,
         color = Gray3
     )

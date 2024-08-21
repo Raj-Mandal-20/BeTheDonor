@@ -91,3 +91,14 @@ data class UpdateProfileRequest(
 data class AcceptDonationRequest(
     val requestId: String
 )
+data class Donor(
+    val name: String,
+    val email: String,
+    val state: String,
+    val city: String,
+    val district: String,
+    val pin: String,
+    val phoneNumber: String,
+    val bloodGroup: String
+)
+

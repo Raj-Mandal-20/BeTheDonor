@@ -5,6 +5,7 @@ import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.DonorListResponse
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 import com.example.bethedonor.data.dataModels.IsDonatedResponse
 import com.example.bethedonor.data.dataModels.NewBloodRequest
@@ -32,4 +33,5 @@ interface UserRepository {
     suspend fun acceptDonation(token: String, request: String): Response<AcceptDonationResponse>
     suspend fun createRequest(token: String, request:NewBloodRequest):Response<BackendResponse>
     suspend fun getRequestHistory(token: String): Response<HistoryBloodRequestsResponse>
+    suspend fun getDonorList(token: String, requestId: String): Response<DonorListResponse>
 }
