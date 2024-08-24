@@ -103,7 +103,7 @@ fun ForgotPasswordRecoveryDialog(
                         },recheckFiled=recheck.value)
                     Spacer(modifier = Modifier.height(16.dp))
                     ButtonComponent(
-                        text = "Done",
+                        buttonText = "Done",
                         onButtonClick = onButtonCLick
                     )
                 }

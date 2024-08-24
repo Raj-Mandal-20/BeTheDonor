@@ -1,5 +1,6 @@
 package com.example.bethedonor.ui.main_screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -35,6 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.bethedonor.data.dataModels.Donor
@@ -46,6 +51,9 @@ import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.theme.lightGray
+import com.example.bethedonor.ui.utils.commons.showToast
+import com.example.bethedonor.utils.dateDiffInDays
+import com.example.bethedonor.utils.formatDate
 import com.example.bethedonor.utils.isDeadlinePassed
 import com.example.bethedonor.viewmodels.HistoryViewModel
 import kotlinx.coroutines.launch
@@ -61,6 +69,7 @@ fun HistoryScreen(
     historyViewModel: HistoryViewModel,
     innerPadding: PaddingValues,
 ) {
+    val context = LocalContext.current
     val tabItem = listOf(
         TabItem("Requests"),
         TabItem("Donations")
@@ -150,6 +159,7 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
         if (historyViewModel.shouldFetch())
             networkCall(token = token, historyViewModel = historyViewModel, id = 1)
     }
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -195,18 +205,26 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                                 district = requestHistory.bloodRequest.district,
                                 pin = requestHistory.bloodRequest.pin,
                                 count = requestHistory.bloodRequest.donors.size,
-                                activeStatus = !isDeadlinePassed(requestHistory.bloodRequest.deadline)
-                            ) {
-                                showBottomSheet = true
-                                scope.launch {
-                                    networkCall(
-                                        token,
-                                        historyViewModel,
-                                        0,
-                                        requestHistory.bloodRequest.id
-                                    )
+                                bloodGroup = requestHistory.bloodRequest.bloodGroup,
+                                bloodUnit = requestHistory.bloodRequest.bloodUnit,
+                                createdAt = formatDate(requestHistory.bloodRequest.createdAt),
+                                deadline = dateDiffInDays(requestHistory.bloodRequest.createdAt).toString(),
+                                activeStatus = !isDeadlinePassed(requestHistory.bloodRequest.deadline),
+                                onAcceptorIconClick = {
+                                    showBottomSheet = true
+                                    scope.launch {
+                                        networkCall(
+                                            token,
+                                            historyViewModel,
+                                            0,
+                                            requestHistory.bloodRequest.id
+                                        )
+                                    }
+                                },
+                                onDeleteConfirmation = {
+                                     //
                                 }
-                            }
+                            )
                         }
                         item {
                             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + 16.dp))
@@ -233,6 +251,7 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
             Box(contentAlignment = Alignment.Center) {
                 donorListResponse?.let { response ->
                     if (response.isFailure || response.getOrNull()?.statusCode != "200") {
+                        showToast(context = context, message = "Something went wrong")
                         return@let
                     }
                     val donors = response.getOrNull()?.donors
@@ -243,11 +262,26 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                             }
                         }
                     }
+                    if (donors.isNullOrEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "No Acceptors", style = TextStyle(
+                                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                    color = Color.Gray, textAlign = TextAlign.Center
+                                )
+                            )
+                        }
+
+                    }
+                }
+                if (isDonorListFetching) {
+                    ProgressIndicatorComponent()
                 }
             }
-            if (isDonorListFetching) {
-                ProgressIndicatorComponent()
-            }
+
         }
     }
 }

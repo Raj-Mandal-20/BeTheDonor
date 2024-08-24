@@ -311,4 +311,23 @@ class GetDonorListUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+class DeleteRequestUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, requestId: String): BackendResponse {
+        return try {
+            val response = userRepository.deleteRequest(token, requestId)
+            if (response.isSuccessful) {
+                response.body() ?: BackendResponse(message = "Empty response body")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, BackendResponse::class.java)
+                BackendResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            BackendResponse(message = e.message ?: "Unknown error")
+        }
+    }
+}
 

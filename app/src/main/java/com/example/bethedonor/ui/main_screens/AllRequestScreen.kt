@@ -155,7 +155,7 @@ fun AllRequestScreen(
                                     bloodGroup = requestWithUser.bloodRequest.bloodGroup,
                                     noOfAcceptors = requestWithUser.bloodRequest.donors.size,
                                     dueDate = formatDate(requestWithUser.bloodRequest.deadline),
-                                    postDate = "${dateDiffInDays(requestWithUser.bloodRequest.createdAt)}",
+                                    postDate = dateDiffInDays(requestWithUser.bloodRequest.createdAt).toString(),
                                     isOpen = !isDeadlinePassed(requestWithUser.bloodRequest.deadline),
                                     isAcceptor = isDonnor.value,
                                     isMyCreation = requestWithUser.bloodRequest.userId == userId

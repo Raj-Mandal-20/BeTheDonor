@@ -83,4 +83,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("requestId") requestId: String
     ): Response<DonorListResponse>
+
+    @DELETE("v1/deleteRequest")
+    suspend fun deleteRequest(
+        @Header("Authorization") token: String,
+        @Body request: String
+    ): Response<BackendResponse>
+
 }

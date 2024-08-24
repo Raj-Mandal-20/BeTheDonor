@@ -1,7 +1,6 @@
 package com.example.bethedonor.ui.main_screens
 
 import PhoneNumberEditText
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
@@ -21,9 +20,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DoNotDisturbAlt
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Bloodtype
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
@@ -31,7 +34,6 @@ import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Transgender
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,8 +43,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -57,15 +57,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.ProfileResponse
 import com.example.bethedonor.ui.components.AvailabilityCheckerField
 import com.example.bethedonor.ui.components.ButtonComponent
@@ -74,15 +71,13 @@ import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.Retry
 import com.example.bethedonor.ui.components.SelectStateDistrictCityField
 import com.example.bethedonor.ui.components.SelectionField
-import com.example.bethedonor.ui.theme.Gray1
+import com.example.bethedonor.ui.components.WarningDialog
 import com.example.bethedonor.ui.theme.activeColor1
 import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.bloodTrashparent2
 import com.example.bethedonor.ui.theme.darkGray
 import com.example.bethedonor.ui.theme.fadeBlue11
-import com.example.bethedonor.ui.theme.teal
-import com.example.bethedonor.ui.utils.commons.linearGradientBrush
 import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.utils.validationRules.ValidationResult
@@ -96,12 +91,8 @@ import com.example.bethedonor.utils.getPhoneNoWithoutCountryCode
 import com.example.bethedonor.utils.getPinCodeList
 import com.example.bethedonor.utils.getStateDataList
 import com.example.bethedonor.viewmodels.ProfileViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Date
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -291,14 +282,21 @@ fun ProfileScreen(
                             color = Color.LightGray
                         )
                         SpacerComponent(16.dp)
-                        ButtonElement(label = "Sing out", onClick = {
-                            coroutineScope.launch {
-                                profileViewmodel.logoutUser(onLogout = {
-                                    onLogOutNavigate()
-                                })
-                                Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+                        ButtonElement(label = "Sing out",
+                            onClick = {},
+                            showDialog = true,
+                            dialogTitle = "Confirm Logout",
+                            dialogMessage = "Are you sure you want to logout? You will need to log in again to access your account.",
+                            dialogIcon = Icons.AutoMirrored.Filled.Logout,
+                            onConfirmAction = {
+                                coroutineScope.launch {
+                                    profileViewmodel.logoutUser(onLogout = {
+                                        onLogOutNavigate()
+                                    })
+                                    Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        })
+                        )
                         SpacerComponent(dp = 24.dp)
                         BoldTextComponent(label = "Personal Information")
                         SpacerComponent(dp = 20.dp)
@@ -330,14 +328,18 @@ fun ProfileScreen(
                             value = formatDate(it.dob ?: Date(0))
                         )
                         ButtonElement(label = "Edit profile", onClick = {
-                            //Todo
                             showBottomSheet = true
                         })
                         SpacerComponent(16.dp)
                         ButtonComponent(
                             isEnable = !profileViewmodel.requestInProgress.value,
-                            text = "Delete Account",
-                            onButtonClick = {
+                            buttonText = "Delete Account",
+                            onButtonClick = {},
+                            showDialog = true,
+                            dialogTitle = "Confirm Deletion",
+                            dialogMessage = "Are you sure you want to delete your account? This action is irreversible, and all your data will be permanently lost.",
+                            dialogIcon = Icons.Filled.DeleteForever,
+                            onConfirmAction = {
                                 profileViewmodel.deleteAccount(token = authToken) { result ->
                                     if (result.isSuccess) {
                                         // Handle the success case
@@ -582,7 +584,7 @@ fun ProfileScreen(
                                     profileViewmodel.updateProfileUiState.value.checkedAvailabilityStatus
                                 })
 
-                            ButtonComponent(text = "Apply", onButtonClick = {
+                            ButtonComponent(buttonText = "Apply", onButtonClick = {
                                 if (isFieldChanged.value && !profileViewmodel.validateWithRulesForUpdate()) {
                                     showToast(
                                         context = context,
@@ -661,9 +663,34 @@ private fun networkCall(
 
 
 @Composable
-fun ButtonElement(label: String, onClick: () -> Unit, isEnable: Boolean = true) {
+fun ButtonElement(
+    label: String, onClick: () -> Unit,
+    isEnable: Boolean = true,
+    showDialog: Boolean = false,
+    dialogTitle: String = "",
+    dialogMessage: String = "",
+    onConfirmAction: () -> Unit = {},
+    dialogIcon: ImageVector = Icons.Filled.Warning,
+) {
+    var isDialogVisible by remember { mutableStateOf(false) }
+
+    if (isDialogVisible && showDialog) {
+        WarningDialog(
+            icon = dialogIcon,
+            dialogTitle = dialogTitle,
+            dialogText = dialogMessage,
+            onDismissRequest = { isDialogVisible = false },
+            onConfirmation = {
+                isDialogVisible = false
+                onConfirmAction()
+            }
+        )
+    }
     Button(
-        onClick = onClick,
+        onClick = {
+            isDialogVisible = true
+            onClick()
+        },
         colors = ButtonColors(
             containerColor = darkGray,
             contentColor = Color.White,

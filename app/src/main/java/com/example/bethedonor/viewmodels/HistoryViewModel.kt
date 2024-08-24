@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bethedonor.data.api.RetrofitClient
+import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequest
 import com.example.bethedonor.data.dataModels.DonorListResponse
 import com.example.bethedonor.data.repository.UserRepositoryImp
+import com.example.bethedonor.domain.usecase.DeleteRequestUseCase
 import com.example.bethedonor.domain.usecase.GetDonorListUseCase
 import com.example.bethedonor.domain.usecase.GetRequestHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,19 +21,22 @@ data class RequestHistory(
 
 class HistoryViewModel : ViewModel() {
     private val _requestHistoryResponseList = MutableStateFlow<Result<List<RequestHistory>>?>(null)
-    val requestHistoryResponseList: StateFlow<Result<List<RequestHistory>>?> = _requestHistoryResponseList
+    val requestHistoryResponseList: StateFlow<Result<List<RequestHistory>>?> =
+        _requestHistoryResponseList
 
     private val apiService = RetrofitClient.instance
     private val userRepository = UserRepositoryImp(apiService)
     private val getRequestHistoryUseCase = GetRequestHistoryUseCase(userRepository)
     private val getDonorListUseCase = GetDonorListUseCase(userRepository)
-
+    private val deleteRequestUseCase = DeleteRequestUseCase(userRepository)
     private val _isDonorListFetching = MutableStateFlow(false)
     val isDonorListFetching: StateFlow<Boolean> = _isDonorListFetching
 
     private val _donorListResponse = MutableStateFlow<Result<DonorListResponse>?>(null)
     val donorListResponse: StateFlow<Result<DonorListResponse>?> = _donorListResponse
 
+    private val _deleteRequestResponse = MutableStateFlow<Result<BackendResponse>?>(null)
+    val deleteRequestResponse: StateFlow<Result<BackendResponse>?> = _deleteRequestResponse
 
     val isRequestFetching = MutableStateFlow(false)
 
@@ -68,7 +73,9 @@ class HistoryViewModel : ViewModel() {
             }
         }
     }
+
     fun fetchDonorList(token: String, requestId: String) {
+        _donorListResponse.value = null
         viewModelScope.launch {
             _isDonorListFetching.value = true
             try {
@@ -84,6 +91,23 @@ class HistoryViewModel : ViewModel() {
                 Log.e("HistoryViewModel", "Error fetching donor list: ${e.message}")
             } finally {
                 _isDonorListFetching.value = false
+            }
+        }
+    }
+
+    fun deleteRequest(token: String, requestId: String) {
+        viewModelScope.launch {
+            isRequestFetching.value = true
+            try {
+                val response = deleteRequestUseCase.execute(token, requestId)
+                Log.d("HistoryViewModel", "Delete Request Response: $response")
+                _deleteRequestResponse.value = Result.success(response)
+                Log.d("HistoryViewModel", "Delete Request Response: $response")
+            } catch (e: Exception) {
+                _deleteRequestResponse.value = Result.failure(e)
+                Log.e("HistoryViewModel", "Error deleting request: ${e.message}")
+            } finally {
+                isRequestFetching.value = false
             }
         }
     }

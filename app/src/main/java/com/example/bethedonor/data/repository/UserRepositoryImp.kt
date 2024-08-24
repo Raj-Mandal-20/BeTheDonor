@@ -102,4 +102,8 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     override suspend fun getDonorList(token: String, requestId: String): Response<DonorListResponse> {
         return apiService.getDonorList("Bearer $token", requestId)
     }
+
+    override suspend fun deleteRequest(token: String, requestId: String): Response<BackendResponse> {
+        return apiService.deleteRequest("Bearer $token", requestId)
+    }
 }

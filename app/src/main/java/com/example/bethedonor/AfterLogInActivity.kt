@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.bethedonor.navigation.AfterLogInNavigationStack
@@ -21,6 +23,9 @@ import com.example.bethedonor.viewmodels.HomeViewModel
 import com.example.bethedonor.viewmodels.MainViewModel
 import com.example.bethedonor.viewmodels.MainViewModelFactory
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AfterLogInActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels {
@@ -29,11 +34,18 @@ class AfterLogInActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val areaData = readJsonFromAssets(this, "Location.json")
-        if (areaData != null) {
-            setAreaData(areaData)
+
+
+        lifecycleScope.launch {
+            val areaData = withContext(Dispatchers.IO) {
+                readJsonFromAssets(this@AfterLogInActivity, "Location.json")
+            }
+            areaData?.let {
+                setAreaData(it)
+            }
         }
-    //    WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        //    WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             BeTheDonorTheme {
                 val systemUiController = rememberSystemUiController()

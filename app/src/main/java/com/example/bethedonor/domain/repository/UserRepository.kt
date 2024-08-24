@@ -34,4 +34,6 @@ interface UserRepository {
     suspend fun createRequest(token: String, request:NewBloodRequest):Response<BackendResponse>
     suspend fun getRequestHistory(token: String): Response<HistoryBloodRequestsResponse>
     suspend fun getDonorList(token: String, requestId: String): Response<DonorListResponse>
+    suspend fun deleteRequest(token: String, request: String): Response<BackendResponse>
+
 }

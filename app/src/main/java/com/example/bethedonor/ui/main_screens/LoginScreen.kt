@@ -1,7 +1,6 @@
 package com.example.bethedonor.ui.main_screens
 
 import android.app.Application
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -45,10 +43,8 @@ import com.example.bethedonor.ui.components.PasswordFiled
 import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.SimpleTextWithSpan
 import com.example.bethedonor.ui.components.SubGreetText
-import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.fadeBlue1
 import com.example.bethedonor.ui.theme.fadeBlue2
-import com.example.bethedonor.ui.theme.teal
 import com.example.bethedonor.ui.utils.validationRules.ValidationResult
 import com.example.bethedonor.viewmodels.LoginViewModel
 
@@ -149,7 +145,7 @@ fun LoginScreen(
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 ButtonComponent(
-                                    text = "Login",
+                                    buttonText = "Login",
                                     onButtonClick = {
                                         recheckFiled = true
                                         if (loginViewModel.validateWithRulesForLogIn()) {

@@ -1,13 +1,11 @@
 package com.example.bethedonor.ui.main_screens
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,7 +25,6 @@ import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.utils.*
 import com.example.bethedonor.viewmodels.CreateRequestViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -235,7 +232,7 @@ fun CreateRequestScreen(
                                             showToast(context, response.message.toString())
                                         })
 
-                                }, text = "Send Request",
+                                }, buttonText = "Send Request",
                                 isEnable = !createRequestViewModel.requestInProgress.value
                             )
 
