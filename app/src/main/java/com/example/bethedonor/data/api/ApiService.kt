@@ -1,6 +1,6 @@
 package com.example.bethedonor.data.api
 
-import com.example.bethedonor.data.dataModels.AcceptDonationRequest
+import com.example.bethedonor.data.dataModels.RequestID
 import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
@@ -66,7 +66,7 @@ interface ApiService {
     @POST("v1/donation")
     suspend fun acceptDonation(
         @Header("Authorization") token: String,
-        @Body request: AcceptDonationRequest
+        @Body request: RequestID
     ): Response<AcceptDonationResponse>
 
     @POST("v1/create-request")
@@ -87,7 +87,12 @@ interface ApiService {
     @DELETE("v1/deleteRequest")
     suspend fun deleteRequest(
         @Header("Authorization") token: String,
-        @Body request: String
+        @Query("requestId") requestId: String
     ): Response<BackendResponse>
 
+    @PUT("v1/toggleRequestStatus")
+    suspend fun toggleRequestStatus(
+        @Header("Authorization") token: String,
+        @Body requestBody: RequestID
+    ): Response<BackendResponse>
 }

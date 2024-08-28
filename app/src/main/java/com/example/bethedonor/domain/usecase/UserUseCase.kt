@@ -311,6 +311,7 @@ class GetDonorListUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+
 class DeleteRequestUseCase(private val userRepository: UserRepository) {
     suspend fun execute(token: String, requestId: String): BackendResponse {
         return try {
@@ -330,4 +331,21 @@ class DeleteRequestUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+
+class ToggleRequestStatusUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, requestId: String): BackendResponse {
+        return try {
+            val response = userRepository.toggleRequestStatus(token, requestId)
+            if (response.isSuccessful) {
+                response.body() ?: BackendResponse(message = "Unknown error", statusCode = "500")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                Gson().fromJson(errorBody, BackendResponse::class.java)
+            }
+        } catch (e: Exception) {
+            BackendResponse(message = e.message ?: "Unknown error", statusCode = "500")
+        }
+    }
+}
+
 

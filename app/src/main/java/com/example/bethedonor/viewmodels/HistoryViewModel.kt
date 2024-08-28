@@ -20,6 +20,12 @@ data class RequestHistory(
 )
 
 class HistoryViewModel : ViewModel() {
+    val authToken = MutableStateFlow("")
+
+    fun updateAuthToken(token: String) {
+        authToken.value = token
+    }
+
     private val _requestHistoryResponseList = MutableStateFlow<Result<List<RequestHistory>>?>(null)
     val requestHistoryResponseList: StateFlow<Result<List<RequestHistory>>?> =
         _requestHistoryResponseList
@@ -35,8 +41,11 @@ class HistoryViewModel : ViewModel() {
     private val _donorListResponse = MutableStateFlow<Result<DonorListResponse>?>(null)
     val donorListResponse: StateFlow<Result<DonorListResponse>?> = _donorListResponse
 
-    private val _deleteRequestResponse = MutableStateFlow<Result<BackendResponse>?>(null)
-    val deleteRequestResponse: StateFlow<Result<BackendResponse>?> = _deleteRequestResponse
+    private val _deleteRequestResponse = MutableStateFlow<Result<String>?>(null)
+    val deleteRequestResponse: StateFlow<Result<String>?> = _deleteRequestResponse
+
+    private var _toggleStatusResult = BackendResponse()
+
 
     val isRequestFetching = MutableStateFlow(false)
 
@@ -95,19 +104,56 @@ class HistoryViewModel : ViewModel() {
         }
     }
 
-    fun deleteRequest(token: String, requestId: String) {
+    fun deleteRequest(token: String, requestId: String, onResponse: (Result<String>) -> Unit) {
         viewModelScope.launch {
             isRequestFetching.value = true
             try {
+                Log.d("delete-request-id", requestId)
                 val response = deleteRequestUseCase.execute(token, requestId)
                 Log.d("HistoryViewModel", "Delete Request Response: $response")
-                _deleteRequestResponse.value = Result.success(response)
-                Log.d("HistoryViewModel", "Delete Request Response: $response")
+                if (response.statusCode == "200") {
+                    // Update the request history list after successful deletion
+                    val updatedList = _requestHistoryResponseList.value?.getOrNull()
+                        ?.filter { it.bloodRequest.id != requestId }
+                    _requestHistoryResponseList.value = Result.success(updatedList ?: listOf())
+
+                    // Notify success
+                    _deleteRequestResponse.value =
+                        Result.success(response.message ?: "Request deleted successfully")
+                } else {
+                    // Notify failure if status code is not 200
+                    _deleteRequestResponse.value =
+                        Result.failure(Exception("Error: ${response.message}"))
+                }
             } catch (e: Exception) {
                 _deleteRequestResponse.value = Result.failure(e)
                 Log.e("HistoryViewModel", "Error deleting request: ${e.message}")
             } finally {
+                _deleteRequestResponse.value?.let { onResponse(it) }
                 isRequestFetching.value = false
+            }
+        }
+    }
+
+    fun toggleRequestStatus(
+        token: String,
+        requestId: String,
+        onToggleStatus: (BackendResponse) -> Unit
+    ) {
+        isRequestFetching.value = true
+        viewModelScope.launch {
+            _toggleStatusResult = try {
+                val response = userRepository.toggleRequestStatus(token, requestId)
+                if (response.isSuccessful) {
+                    BackendResponse(message = response.message(), statusCode = response.code().toString())
+                } else {
+                    BackendResponse(message = response.message(), statusCode = response.code().toString())
+                }
+            } catch (e: Exception) {
+                BackendResponse(message = e.message, statusCode = "500")
+            } finally {
+                isRequestFetching.value = false
+                onToggleStatus(_toggleStatusResult)
             }
         }
     }

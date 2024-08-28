@@ -77,7 +77,7 @@ data class BloodRequest(
 )
 
 data class UserIdRequest(val userId: String)
-
+data class DeleteRequestBody(val requestId: String)
 data class UpdateProfileRequest(
   //  val phoneNumber: String,
     val gender: String,
@@ -88,7 +88,7 @@ data class UpdateProfileRequest(
     val available: Boolean,
 )
 
-data class AcceptDonationRequest(
+data class RequestID(
     val requestId: String
 )
 data class Donor(

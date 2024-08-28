@@ -37,7 +37,7 @@ fun WarningDialog(
             Text(text = dialogText, color = Gray1, textAlign = TextAlign.Justify)
         },
         onDismissRequest = {
-            onDismissRequest()
+          //
         },
         confirmButton = {
             TextButton(

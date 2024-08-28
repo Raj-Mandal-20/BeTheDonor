@@ -24,6 +24,8 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Bloodtype
 import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -51,17 +53,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bethedonor.R
 import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.Gray3
 import com.example.bethedonor.ui.theme.activeColor1
+import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.fadeBlue1
 import com.example.bethedonor.ui.theme.fadeBlue2
 import com.example.bethedonor.ui.theme.teal
+import com.example.bethedonor.viewmodels.HistoryViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RequestHistoryCard(
+    id: String="",
     donationCenter: String = "NRS Hospital",
     state: String = "West Bengal",
     district: String = "Kolkata",
@@ -73,11 +79,13 @@ fun RequestHistoryCard(
     deadline: String = "2024-06-05",
     activeStatus: Boolean = true,
     onAcceptorIconClick: () -> Unit = {},
-    onDeleteConfirmation: () -> Unit = {}
+    onDeleteConfirmation: () -> Unit = {},
+    onToggleStatus: (String) -> Unit = {},
+    historyViewModel: HistoryViewModel,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isDialogVisible by remember { mutableStateOf(false) }
-
+    var isActive by remember { mutableStateOf(activeStatus) }
     if (isDialogVisible) {
         WarningDialog(
             icon = Icons.Filled.DeleteForever,
@@ -97,7 +105,7 @@ fun RequestHistoryCard(
             .padding(start = 8.dp, end = 8.dp, top = 8.dp)
             .combinedClickable(
                 onLongClick = {
-                    isDialogVisible=true
+                    isDialogVisible = true
                 },
                 onClick = {
                     //
@@ -209,7 +217,7 @@ fun RequestHistoryCard(
                                     .padding(horizontal = 8.dp, vertical = 4.dp)
                             ) {
                                 Text(
-                                    text = if (activeStatus) "Active" else "Closed",
+                                    text = if (isActive) "Active" else "Closed",
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White
@@ -263,38 +271,61 @@ fun RequestHistoryCard(
 
                 }
 
-                Box {
-                    Row(
-                        modifier = Modifier
-                            .padding(start = 48.dp)
-                            .clickable {
-                                onAcceptorIconClick()
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy((-12).dp)
-                    ) {
-                        if (count <= 3) {
-                            for (i in 1..count) {
-                                UserIconComponent()
-                            }
-                        } else {
-                            for (i in 1..3) {
-                                UserIconComponent()
-                            }
+                Row(
+                    modifier = Modifier
+                        .padding(start = 48.dp)
+                        .clickable {
+                            onAcceptorIconClick()
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy((-12).dp)
+                ) {
+                    if (count <= 3) {
+                        for (i in 1..count) {
+                            UserIconComponent()
                         }
-                        Spacer(modifier = Modifier.width(25.dp))
+                    } else {
+                        for (i in 1..3) {
+                            UserIconComponent()
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(25.dp))
+                    Text(
+                        text = if (count - 3 > 0) "+${count - 3} Acceptors" else if (count == 0) "0 Acceptors" else " Acceptors",
+                        style = TextStyle(
+                            color = Gray1,
+                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                            fontStyle = FontStyle.Italic,
+                        ),
+                    )
+                }
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Button(
+                        onClick = {
+                         historyViewModel.toggleRequestStatus(historyViewModel.authToken.value, requestId = id, onToggleStatus = { response ->
+                             if(response.statusCode=="200"){
+                                 isActive=!isActive
+                             }
+                             response.message?.let { onToggleStatus(it) }
+                         })
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonColors(
+                            containerColor = bloodRed2,
+                            contentColor = Color.White,
+                            disabledContentColor = Color.DarkGray,
+                            disabledContainerColor = Color.LightGray
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(
-                            text = if (count - 3 > 0) "+${count - 3} Acceptors" else if (count == 0) "0 Acceptors" else " Acceptors",
-                            style = TextStyle(
-                                color = Gray1,
-                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                                fontStyle = FontStyle.Italic,
-                            ),
+                            text = if (isActive) "Mark Close" else "Mark Active",
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
-
             }
+
         }
     }
 }
@@ -354,5 +385,7 @@ fun RequestHistoryCardPreview(
     count: Int = 4,
     activeStatus: Boolean = false
 ) {
-    RequestHistoryCard()
+    RequestHistoryCard(
+        historyViewModel = viewModel(),
+    )
 }

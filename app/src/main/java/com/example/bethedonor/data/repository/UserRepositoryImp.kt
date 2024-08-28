@@ -2,7 +2,7 @@ package com.example.bethedonor.data.repository
 
 
 import com.example.bethedonor.data.api.ApiService
-import com.example.bethedonor.data.dataModels.AcceptDonationRequest
+import com.example.bethedonor.data.dataModels.RequestID
 import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
@@ -70,7 +70,7 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
         userUpdate: UserUpdate
     ): Response<BackendResponse> {
         val request = UpdateProfileRequest(
-        //    userUpdate.phoneNumber,
+            //    userUpdate.phoneNumber,
             userUpdate.gender,
             userUpdate.state,
             userUpdate.city,
@@ -81,12 +81,18 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
         return apiService.updateProfile(sectionId, "Bearer $token", request)
     }
 
-    override suspend fun checkIsDonated(token: String, requestId: String): Response<IsDonatedResponse> {
+    override suspend fun checkIsDonated(
+        token: String,
+        requestId: String
+    ): Response<IsDonatedResponse> {
         return apiService.isDonated("Bearer $token", requestId)
     }
 
-    override suspend fun acceptDonation(token: String, requestId: String): Response<AcceptDonationResponse> {
-        val request = AcceptDonationRequest(requestId)
+    override suspend fun acceptDonation(
+        token: String,
+        requestId: String
+    ): Response<AcceptDonationResponse> {
+        val request = RequestID(requestId)
         return apiService.acceptDonation("Bearer $token", request)
     }
 
@@ -96,14 +102,30 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     ): Response<BackendResponse> {
         return apiService.createRequest("Bearer $token", request)
     }
+
     override suspend fun getRequestHistory(token: String): Response<HistoryBloodRequestsResponse> {
         return apiService.getRequestHistory("Bearer $token")
     }
-    override suspend fun getDonorList(token: String, requestId: String): Response<DonorListResponse> {
+
+    override suspend fun getDonorList(
+        token: String,
+        requestId: String
+    ): Response<DonorListResponse> {
         return apiService.getDonorList("Bearer $token", requestId)
     }
 
-    override suspend fun deleteRequest(token: String, requestId: String): Response<BackendResponse> {
+    override suspend fun deleteRequest(
+        token: String,
+        requestId: String
+    ): Response<BackendResponse> {
         return apiService.deleteRequest("Bearer $token", requestId)
+    }
+
+    override suspend fun toggleRequestStatus(
+        token: String,
+        requestId: String
+    ): Response<BackendResponse> {
+        val requestBody = RequestID(requestId)
+        return apiService.toggleRequestStatus("Bearer $token", requestBody)
     }
 }

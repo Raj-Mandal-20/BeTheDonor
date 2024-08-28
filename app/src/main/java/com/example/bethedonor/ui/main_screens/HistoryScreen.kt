@@ -1,6 +1,6 @@
 package com.example.bethedonor.ui.main_screens
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +42,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.bethedonor.data.dataModels.Donor
 import com.example.bethedonor.ui.components.AcceptorDetailsCard
 import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.RequestHistoryCard
@@ -54,7 +53,6 @@ import com.example.bethedonor.ui.theme.lightGray
 import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.utils.dateDiffInDays
 import com.example.bethedonor.utils.formatDate
-import com.example.bethedonor.utils.isDeadlinePassed
 import com.example.bethedonor.viewmodels.HistoryViewModel
 import kotlinx.coroutines.launch
 
@@ -77,6 +75,8 @@ fun HistoryScreen(
     val pagerState = rememberPagerState {
         tabItem.size
     }
+    historyViewModel.updateAuthToken(token)
+
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
@@ -200,6 +200,8 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                             key = { it.bloodRequest.id }
                         ) { requestHistory ->
                             RequestHistoryCard(
+                                historyViewModel=historyViewModel,
+                                id=requestHistory.bloodRequest.id,
                                 donationCenter = requestHistory.bloodRequest.donationCenter,
                                 state = requestHistory.bloodRequest.state,
                                 district = requestHistory.bloodRequest.district,
@@ -209,7 +211,7 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                                 bloodUnit = requestHistory.bloodRequest.bloodUnit,
                                 createdAt = formatDate(requestHistory.bloodRequest.createdAt),
                                 deadline = dateDiffInDays(requestHistory.bloodRequest.createdAt).toString(),
-                                activeStatus = !isDeadlinePassed(requestHistory.bloodRequest.deadline),
+                                activeStatus = !requestHistory.bloodRequest.isClosed,
                                 onAcceptorIconClick = {
                                     showBottomSheet = true
                                     scope.launch {
@@ -222,7 +224,20 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                                     }
                                 },
                                 onDeleteConfirmation = {
-                                     //
+                                    Log.d("onDeleteConfirmation", "Clicked")
+                                    historyViewModel.deleteRequest(
+                                        token,
+                                        requestHistory.bloodRequest.id,
+                                        onResponse = { message ->
+                                            showToast(
+                                                context = context,
+                                                message = message.getOrNull().toString()
+                                            )
+                                        }
+                                    )
+                                },
+                                onToggleStatus = {
+                                    showToast(context = context, message = it)
                                 }
                             )
                         }
