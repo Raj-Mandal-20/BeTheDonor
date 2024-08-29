@@ -11,6 +11,7 @@ import com.example.bethedonor.data.repository.UserRepositoryImp
 import com.example.bethedonor.domain.usecase.DeleteRequestUseCase
 import com.example.bethedonor.domain.usecase.GetDonorListUseCase
 import com.example.bethedonor.domain.usecase.GetRequestHistoryUseCase
+import com.example.bethedonor.domain.usecase.ToggleRequestStatusUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -35,6 +36,7 @@ class HistoryViewModel : ViewModel() {
     private val getRequestHistoryUseCase = GetRequestHistoryUseCase(userRepository)
     private val getDonorListUseCase = GetDonorListUseCase(userRepository)
     private val deleteRequestUseCase = DeleteRequestUseCase(userRepository)
+    private val toggleRequestStatusUseCase = ToggleRequestStatusUseCase(userRepository)
     private val _isDonorListFetching = MutableStateFlow(false)
     val isDonorListFetching: StateFlow<Boolean> = _isDonorListFetching
 
@@ -44,10 +46,11 @@ class HistoryViewModel : ViewModel() {
     private val _deleteRequestResponse = MutableStateFlow<Result<String>?>(null)
     val deleteRequestResponse: StateFlow<Result<String>?> = _deleteRequestResponse
 
-    private var _toggleStatusResult = BackendResponse()
+    private var _toggleStatusResult: BackendResponse? = null
 
 
     val isRequestFetching = MutableStateFlow(false)
+    val isToggleStatusRequestFetching = MutableStateFlow(mapOf<String, Boolean>())
 
     private val _recomposeTime = MutableStateFlow(-1L)
     val recomposeTime: StateFlow<Long> = _recomposeTime
@@ -140,20 +143,41 @@ class HistoryViewModel : ViewModel() {
         requestId: String,
         onToggleStatus: (BackendResponse) -> Unit
     ) {
-        isRequestFetching.value = true
+        isToggleStatusRequestFetching.value = mapOf(requestId to true)
         viewModelScope.launch {
-            _toggleStatusResult = try {
-                val response = userRepository.toggleRequestStatus(token, requestId)
-                if (response.isSuccessful) {
-                    BackendResponse(message = response.message(), statusCode = response.code().toString())
-                } else {
-                    BackendResponse(message = response.message(), statusCode = response.code().toString())
+            try {
+                val response = toggleRequestStatusUseCase.execute(token, requestId)
+                Log.d("response_toggle", response.toString())
+                onToggleStatus(
+                    BackendResponse(
+                        message = response.message,
+                        statusCode = response.statusCode.toString()
+                    )
+                )
+
+                // Find the BloodRequest with the matching requestId and toggle the isClosed field
+                _requestHistoryResponseList.value?.getOrNull()?.let { requestHistoryList ->
+                    val updatedRequestHistoryList = requestHistoryList.map { requestHistory ->
+                        if (requestHistory.bloodRequest.id == requestId) {
+                            // Toggle the isClosed field
+                            requestHistory.copy(
+                                bloodRequest = requestHistory.bloodRequest.copy(
+                                    isClosed = !requestHistory.bloodRequest.isClosed
+                                )
+                            )
+                        } else {
+                            requestHistory
+                        }
+                    }
+
+                    // Update the _requestHistoryResponseList with the modified list
+                    _requestHistoryResponseList.value = Result.success(updatedRequestHistoryList)
                 }
             } catch (e: Exception) {
-                BackendResponse(message = e.message, statusCode = "500")
+                e.printStackTrace()
+                onToggleStatus(BackendResponse(message = e.message, statusCode = "500"))
             } finally {
-                isRequestFetching.value = false
-                onToggleStatus(_toggleStatusResult)
+                isToggleStatusRequestFetching.value = mapOf(requestId to false)
             }
         }
     }

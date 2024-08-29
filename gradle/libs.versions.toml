@@ -1,6 +1,6 @@
 [versions]
 accompanistSystemuicontroller = "0.32.0"
-agp = "8.5.1"
+agp = "8.5.2"
 converterGson = "2.9.0"
 countryPicker = "1.0.3"
 gson = "2.10.1"

@@ -133,12 +133,12 @@ fun AllRequestScreen(
                                 items = bloodRequestsWithUsers,
                                 key = { requestWithUser -> requestWithUser.bloodRequest.id }
                             ) { requestWithUser ->
-                                val isDonnor = remember { mutableStateOf(false) }
+                                val isDonor = remember { mutableStateOf(false) }
 
                                 currentUserDetails?.let { userResult ->
                                     if (userResult.isSuccess) {
                                         userResult.getOrNull()?.let { userResponse ->
-                                            isDonnor.value =
+                                            isDonor.value =
                                                 userResponse.user?.donates?.contains(requestWithUser.bloodRequest.id)
                                                     ?: false
                                         }
@@ -149,7 +149,7 @@ fun AllRequestScreen(
                                     name = requestWithUser.user.name ?: "",
                                     emailId = requestWithUser.user.email ?: "",
                                     phoneNo = requestWithUser.user.phoneNumber ?: "",
-                                    address = "${requestWithUser.bloodRequest.state}, ${requestWithUser.bloodRequest.district}, ${requestWithUser.bloodRequest.city},${requestWithUser.bloodRequest.pin}",
+                                    address = "${requestWithUser.bloodRequest.state}, ${requestWithUser.bloodRequest.district}, ${requestWithUser.bloodRequest.city}, ${requestWithUser.bloodRequest.pin}",
                                     exactPlace = requestWithUser.bloodRequest.donationCenter,
                                     bloodUnit = requestWithUser.bloodRequest.bloodUnit,
                                     bloodGroup = requestWithUser.bloodRequest.bloodGroup,
@@ -157,7 +157,7 @@ fun AllRequestScreen(
                                     dueDate = formatDate(requestWithUser.bloodRequest.deadline),
                                     postDate = dateDiffInDays(requestWithUser.bloodRequest.createdAt).toString(),
                                     isOpen = !isDeadlinePassed(requestWithUser.bloodRequest.deadline),
-                                    isAcceptor = isDonnor.value,
+                                    isAcceptor = isDonor.value,
                                     isMyCreation = requestWithUser.bloodRequest.userId == userId
                                 )
                                 AllRequestCard(

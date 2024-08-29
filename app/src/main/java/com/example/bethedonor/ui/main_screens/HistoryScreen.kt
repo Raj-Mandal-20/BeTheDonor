@@ -211,7 +211,7 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                                 bloodUnit = requestHistory.bloodRequest.bloodUnit,
                                 createdAt = formatDate(requestHistory.bloodRequest.createdAt),
                                 deadline = dateDiffInDays(requestHistory.bloodRequest.createdAt).toString(),
-                                activeStatus = !requestHistory.bloodRequest.isClosed,
+                                isClosed = requestHistory.bloodRequest.isClosed,
                                 onAcceptorIconClick = {
                                     showBottomSheet = true
                                     scope.launch {

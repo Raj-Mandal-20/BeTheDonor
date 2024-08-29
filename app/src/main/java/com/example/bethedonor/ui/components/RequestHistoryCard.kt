@@ -1,5 +1,6 @@
 package com.example.bethedonor.ui.components
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -28,20 +29,24 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -58,6 +63,8 @@ import com.example.bethedonor.R
 import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.Gray3
 import com.example.bethedonor.ui.theme.activeColor1
+import com.example.bethedonor.ui.theme.bgDarkBlue2
+import com.example.bethedonor.ui.theme.bloodRed
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.fadeBlue1
 import com.example.bethedonor.ui.theme.fadeBlue2
@@ -67,7 +74,7 @@ import com.example.bethedonor.viewmodels.HistoryViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RequestHistoryCard(
-    id: String="",
+    id: String = "",
     donationCenter: String = "NRS Hospital",
     state: String = "West Bengal",
     district: String = "Kolkata",
@@ -77,7 +84,7 @@ fun RequestHistoryCard(
     bloodUnit: String = "5",
     createdAt: String = "2024-06-05",
     deadline: String = "2024-06-05",
-    activeStatus: Boolean = true,
+    isClosed: Boolean = true,
     onAcceptorIconClick: () -> Unit = {},
     onDeleteConfirmation: () -> Unit = {},
     onToggleStatus: (String) -> Unit = {},
@@ -85,7 +92,10 @@ fun RequestHistoryCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isDialogVisible by remember { mutableStateOf(false) }
-    var isActive by remember { mutableStateOf(activeStatus) }
+    var isClosedValue by remember { mutableStateOf(isClosed) }
+    val togglingToChangeStatus by historyViewModel.isToggleStatusRequestFetching.collectAsState()
+    val isToggling = togglingToChangeStatus[id] ?: false
+
     if (isDialogVisible) {
         WarningDialog(
             icon = Icons.Filled.DeleteForever,
@@ -211,13 +221,13 @@ fun RequestHistoryCard(
                             Box(
                                 modifier = Modifier
                                     .background(
-                                        color = if (activeStatus) activeColor1 else Color.Gray,
+                                        color = if (!isClosedValue) activeColor1 else Color.Gray,
                                         shape = RoundedCornerShape(50)
                                     )
                                     .padding(horizontal = 8.dp, vertical = 4.dp)
                             ) {
                                 Text(
-                                    text = if (isActive) "Active" else "Closed",
+                                    text = if (!isClosedValue) "Active" else "Closed",
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White
@@ -299,33 +309,47 @@ fun RequestHistoryCard(
                         ),
                     )
                 }
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
                     Button(
                         onClick = {
-                         historyViewModel.toggleRequestStatus(historyViewModel.authToken.value, requestId = id, onToggleStatus = { response ->
-                             if(response.statusCode=="200"){
-                                 isActive=!isActive
-                             }
-                             response.message?.let { onToggleStatus(it) }
-                         })
+                            historyViewModel.toggleRequestStatus(
+                                historyViewModel.authToken.value,
+                                requestId = id,
+                                onToggleStatus = { response ->
+                                    Log.d("response", "$response")
+                                    if (response.statusCode == "200") {
+                                        isClosedValue = !isClosedValue
+                                    }
+                                    response.message?.let { onToggleStatus(it) }
+                                })
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonColors(
-                            containerColor = bloodRed2,
-                            contentColor = Color.White,
+                            containerColor = if (isClosedValue) teal else Gray1,
+                            contentColor = Color.Black,
                             disabledContentColor = Color.DarkGray,
                             disabledContainerColor = Color.LightGray
                         ),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(0.5f)
                     ) {
                         Text(
-                            text = if (isActive) "Mark Close" else "Mark Active",
+                            text = if (!isClosedValue) "Mark Close" else "Mark Active",
                             fontWeight = FontWeight.SemiBold
                         )
                     }
+
+
                 }
             }
-
+            if (isToggling) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    strokeWidth = 2.dp,
+                    strokeCap = StrokeCap.Round,
+                    trackColor = bgDarkBlue2,
+                    color = bloodRed
+                )
+            }
         }
     }
 }
