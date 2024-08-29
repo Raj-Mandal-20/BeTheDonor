@@ -144,11 +144,22 @@ class AllRequestViewModel() : ViewModel() {
         requestId: String,
         onResult: (Result<AcceptDonationResponse>) -> Unit
     ) {
-        requestingToAccept.value= mapOf(requestId to true)
+        requestingToAccept.value = mapOf(requestId to true)
         viewModelScope.launch {
             try {
                 val response = acceptDonationUseCase.execute(token, requestId)
                 onResult(Result.success(response))
+
+                // Update the donates list in the current user details
+                _currentUserDetails.value?.getOrNull()?.let { userResponse ->
+                    val updatedUserProfile = userResponse.user?.copy(
+                        donates = (userResponse.user.donates ?: emptyList()) + requestId
+                    )
+
+                    // Update _currentUserDetails with the modified UserProfile
+                    _currentUserDetails.value =
+                        Result.success(userResponse.copy(user = updatedUserProfile))
+                }
             } catch (e: Exception) {
                 onResult(Result.failure(e))
             } finally {
