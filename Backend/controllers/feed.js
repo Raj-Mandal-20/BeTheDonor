@@ -394,10 +394,17 @@ exports.donarList = async (req, res, next) => {
 
 exports.deleteBloodRequest = async (req, res, next) => {
   try {
-    // delete a request completely
 
-    const donors = await Donor.find({ requestId: req.body.requestId });
-    console.log(donors);
+    const request = await Request.findById({ _id: req.query.requestId });
+
+    if (!request) {
+      const err = new Error("Blood Request Not Found!");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const donors = await Donor.find({ requestId: req.query.requestId });
+
     await Promise.all(
       donors.map(async ({ userId, requestId }) => {
         const user = await User.findById({ _id: userId });
@@ -410,8 +417,9 @@ exports.deleteBloodRequest = async (req, res, next) => {
         await user.save();
       })
     );
-    await Request.deleteOne({_id : req.body.requestId});
-    await Donor.deleteMany({requestId : req.body.requestId});
+
+    await Request.deleteOne({ _id: req.query.requestId });
+    await Donor.deleteMany({ requestId: req.query.requestId });
 
     res.status(200).json({
       message: "Blood Request Deleted Successfully",
@@ -428,6 +436,13 @@ exports.deleteBloodRequest = async (req, res, next) => {
 exports.closeAndOnBloodRequest = async (req, res, next) => {
   try {
     const request = await Request.findById({ _id: req.body.requestId });
+    
+    if (!request) {
+      const err = new Error("Blood Request Not Found!");
+      err.statusCode = 404;
+      throw err;
+    }
+
     request.isClosed = !request.isClosed;
     request.save();
 

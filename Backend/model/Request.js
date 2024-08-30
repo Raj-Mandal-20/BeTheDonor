@@ -38,7 +38,7 @@ const requestSchema = new Schema(
     },
     isClosed : {
       type : Boolean,
-      default : true
+      default : false
     },
     donors: [
       {
