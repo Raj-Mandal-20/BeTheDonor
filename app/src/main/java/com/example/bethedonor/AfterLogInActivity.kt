@@ -66,9 +66,9 @@ class AfterLogInActivity : ComponentActivity() {
                         userId = currentUserId,
                         token = token,
                         onLogOut = {
-                            finish()
                             val intent = Intent(this, BeforeLogInActivity::class.java)
                             startActivity(intent)
+                            finish()
                         }, mainViewModel = mainViewModel
                     )
 
@@ -76,4 +76,5 @@ class AfterLogInActivity : ComponentActivity() {
             }
         }
     }
+
 }

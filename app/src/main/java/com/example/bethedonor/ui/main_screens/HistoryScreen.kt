@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -177,10 +178,10 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
             }
 
             retryFlag -> {
-                Retry(message = "Something Went Wrong") {
+                Retry(message = "Something Went Wrong", onRetry = {
                     retryFlag = false
                     networkCall(token = token, historyViewModel = historyViewModel, id = 1)
-                }
+                })
             }
 
             else -> requestHistoryResponseList?.let { result ->
@@ -191,7 +192,7 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                     listOf()
                 }
                 requestHistory?.let {
-                    LazyColumn {
+                    LazyColumn(state = rememberLazyListState()){
                         item {
                             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
                         }
@@ -200,8 +201,8 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                             key = { it.bloodRequest.id }
                         ) { requestHistory ->
                             RequestHistoryCard(
-                                historyViewModel=historyViewModel,
-                                id=requestHistory.bloodRequest.id,
+                                historyViewModel = historyViewModel,
+                                id = requestHistory.bloodRequest.id,
                                 donationCenter = requestHistory.bloodRequest.donationCenter,
                                 state = requestHistory.bloodRequest.state,
                                 district = requestHistory.bloodRequest.district,

@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -87,12 +91,12 @@ fun AllRequestScreen(
     var retryFlag by remember { mutableStateOf(false) }
 
     //*** Recomposition Count ***//
-    allRequestViewModel.updateRecomposeTime()
-    val recomposeTime by allRequestViewModel.recomposeTime.collectAsState()
+    val isRefreshing by allRequestViewModel.isRefreshing.collectAsState()
+    val pullToRefreshState = rememberPullToRefreshState()
     //**********
-
-    LaunchedEffect(Unit) {
-        if (allRequestViewModel.shouldFetch())
+    val hasFetchedRequests = allRequestViewModel.getFetchedProfile()
+    LaunchedEffect(hasFetchedRequests) {
+        if (!hasFetchedRequests)
             networkCall(
                 token = token,
                 userId = userId,
@@ -111,10 +115,11 @@ fun AllRequestScreen(
                 filterPin
             )
         },
+        modifier = Modifier.nestedScroll(pullToRefreshState.nestedScrollConnection),
         containerColor = bgDarkBlue
     ) { padding ->
         Box(
-            contentAlignment = Alignment.Center,
+           contentAlignment = Alignment.TopCenter
         ) {
             Surface(color = bgDarkBlue) {
                 allBloodRequestResponseList?.let { result ->
@@ -125,7 +130,7 @@ fun AllRequestScreen(
                         listOf()
                     }
                     bloodRequestsWithUsers?.let {
-                        LazyColumn {
+                        LazyColumn(state = rememberLazyListState()){
                             item {
                                 Spacer(modifier = Modifier.height(padding.calculateTopPadding()))
                             }
@@ -177,19 +182,40 @@ fun AllRequestScreen(
                     } ?: EmptyStateComponent()
                 }
             }
-            if (isLoading) {
+            if (isLoading && !isRefreshing) {
                 LoadingScreen()
                 retryFlag = false
             }
             if (retryFlag) {
-                Retry(message = "Something Went Wrong") {
+                Retry(message = "Something Went Wrong", onRetry = {
                     retryFlag = false
                     networkCall(
                         token = token,
                         userId = userId,
                         allRequestViewModel = allRequestViewModel,
                     )
-                }
+                })
+            }
+            if(isRefreshing)
+            PullToRefreshContainer(
+                state = pullToRefreshState, modifier = Modifier.padding(innerPadding.calculateBottomPadding()+20.dp)
+            )
+        }
+        LaunchedEffect(isRefreshing) {
+            if (isRefreshing) {
+                pullToRefreshState.startRefresh()
+            } else {
+                pullToRefreshState.endRefresh()
+            }
+        }
+        if (pullToRefreshState.isRefreshing) {
+            LaunchedEffect(true) {
+                allRequestViewModel.setRefresherStatusTrue()
+                networkCall(
+                    token = token,
+                    userId = userId,
+                    allRequestViewModel = allRequestViewModel,
+                )
             }
         }
     }

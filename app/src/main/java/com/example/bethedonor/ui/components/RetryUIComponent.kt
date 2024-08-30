@@ -25,8 +25,8 @@ import com.example.bethedonor.ui.theme.Gray1
 import com.example.bethedonor.ui.theme.bloodRed2
 
 @Composable
-fun Retry(message: String, onRetry: () -> Unit) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+fun Retry(message: String, onRetry: () -> Unit,modifier: Modifier = Modifier) {
+    Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)

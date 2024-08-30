@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -68,7 +70,7 @@ fun RegistrationScreen(
     val registrationResponse by registrationViewModel.registrationResponse.observeAsState()
 
     // Log.d("JSON", areaData?.states.toString())
-    var recheckFiled by remember {
+    val recheckFiled by remember {
         mutableStateOf(false)
     }
     Box(
@@ -91,7 +93,7 @@ fun RegistrationScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .padding(vertical = 20.dp, horizontal = 20.dp)
+                        .padding(horizontal = 20.dp)
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                 ) {
@@ -100,8 +102,9 @@ fun RegistrationScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
+                            Spacer(modifier = Modifier.height(16.dp))
                             GreetingText()
-                            Spacer(modifier = Modifier.size(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             SubGreetText(text = "Register as a Donor")
                             Spacer(modifier = Modifier.size(20.dp))
                             EditText(
@@ -407,16 +410,16 @@ fun RegistrationScreen(
                                 },
                                 isEnable = registrationViewModel.validateWithRulesForRegister() && !registrationViewModel.requestInProgress.value
                             )
-                            Spacer(modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.height(20.dp))
                             SimpleTextWithSpan(
                                 "Already have an account? ",
                                 "Login",
                                 onTextClicked = {
                                     onRegisterNavigate()
-                                })
+                                }, modifier =Modifier.padding(bottom = 16.dp))
+                            Spacer(modifier = Modifier.size(16.dp))
                         }
                     }
-
 
                 }
                 if (registrationViewModel.requestInProgress.value) {

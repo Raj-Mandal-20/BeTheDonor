@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
@@ -55,6 +57,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -178,6 +181,7 @@ fun RequestHistoryCard(
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             Column(
+                                modifier = Modifier.weight(1f),
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Center
                             ) {
@@ -186,11 +190,17 @@ fun RequestHistoryCard(
                                     style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
-                                    modifier = Modifier.fillMaxWidth(0.75f)
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    // New: Modifier to make text responsive
+                                    modifier = Modifier.fillMaxWidth()
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Row(
-                                    horizontalArrangement = Arrangement.Center,
+                                    // New: Modifier to make row responsive
+                                    modifier = Modifier.fillMaxWidth().
+                                        horizontalScroll(rememberScrollState()),
+                                    horizontalArrangement = Arrangement.Start,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     AddressTExtComponent(value = state)
@@ -209,7 +219,9 @@ fun RequestHistoryCard(
                                     style = TextStyle(
                                         color = Color.Gray,
                                         fontSize = MaterialTheme.typography.labelMedium.fontSize
-                                    )
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
 
@@ -228,7 +240,7 @@ fun RequestHistoryCard(
                             ) {
                                 Text(
                                     text = if (!isClosedValue) "Active" else "Closed",
-                                    fontSize = 12.sp,
+                                    fontSize = MaterialTheme.typography.labelSmall.fontSize,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White
                                 )
@@ -260,7 +272,7 @@ fun RequestHistoryCard(
                                 )
                                 IconTextComponent(
                                     icon = rememberVectorPainter(image = Icons.Outlined.AccessTime),
-                                    text = createdAt
+                                    text = "$createdAt Days"
                                 )
                             }
                             Column(
@@ -286,8 +298,11 @@ fun RequestHistoryCard(
                         .padding(start = 48.dp)
                         .clickable {
                             onAcceptorIconClick()
-                        },
+                        }
+                        // New: Allows donors to scroll horizontally in a small screen
+                        .horizontalScroll(rememberScrollState()),
                     verticalAlignment = Alignment.CenterVertically,
+
                     horizontalArrangement = Arrangement.spacedBy((-12).dp)
                 ) {
                     if (count <= 3) {
@@ -367,7 +382,12 @@ fun IconTextComponent(icon: Painter, text: String, modifier: Modifier = Modifier
             modifier = Modifier.size(20.dp)
         )
 
-        Text(text = text, color = Color.LightGray)
+        Text(
+            text = text, color = Color.LightGray,
+            style = MaterialTheme.typography.bodySmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -386,7 +406,10 @@ fun AddressTExtComponent(value: String) {
         text = value,
         style = TextStyle(fontSize = MaterialTheme.typography.labelLarge.fontSize),
         fontWeight = FontWeight.SemiBold,
-        color = Gray3
+        color = Gray3,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        softWrap = true
     )
 }
 

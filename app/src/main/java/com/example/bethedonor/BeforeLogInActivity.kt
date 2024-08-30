@@ -17,6 +17,7 @@ import com.example.bethedonor.navigation.BeforeLogInNavigationStack
 import com.example.bethedonor.navigation.Destination
 import com.example.bethedonor.ui.theme.BeTheDonorTheme
 import com.example.bethedonor.ui.theme.bgDarkBlue
+import com.example.bethedonor.ui.theme.fadeBlue1
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.utils.readJsonFromAssets
 import com.example.bethedonor.utils.setAreaData
@@ -34,7 +35,7 @@ class BeforeLogInActivity : ComponentActivity() {
             BeTheDonorTheme {
                 val systemUiController = rememberSystemUiController()
                 SideEffect {
-                    systemUiController.setSystemBarsColor(bgDarkBlue, darkIcons = false)
+                    systemUiController.setSystemBarsColor(fadeBlue1, darkIcons = false)
                 }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -59,9 +60,9 @@ class BeforeLogInActivity : ComponentActivity() {
     }
 
     private fun goNextActivity() {
-        finish() // Finish the current activity
         val intent = Intent(this, AfterLogInActivity::class.java)
         startActivity(intent) // Start the new activity
+        finish() // Finish the current activity
     }
 }
 

@@ -180,13 +180,13 @@ fun LoginScreen(
                                     },
                                     isEnable = loginViewModel.validateWithRulesForLogIn() && !loginViewModel.requestInProgress.value
                                 )
-                                Spacer(modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.size(20.dp))
                                 SimpleTextWithSpan(
                                     "Don't have an account? ",
                                     "Register",
                                     onTextClicked = {
                                         onRegisterNavigate()
-                                    })
+                                    }, modifier = Modifier.padding(bottom = 16.dp))
                             }
                         }
 

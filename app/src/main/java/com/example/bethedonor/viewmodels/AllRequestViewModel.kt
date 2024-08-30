@@ -2,6 +2,7 @@ package com.example.bethedonor.viewmodels
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -35,23 +36,23 @@ class AllRequestViewModel() : ViewModel() {
 //    private val preferencesManager = PreferencesManager(getApplication())
 //    val userAvailabilityStatus = preferencesManager.userAvailabilityStatus
     // ********************* **************************** //
+    private val hasFetchedRequests = mutableStateOf(false)
+    fun setFetchedProfile(value: Boolean) {
+        hasFetchedRequests .value = value
+    }
+    fun getFetchedProfile(): Boolean {
+        return  hasFetchedRequests .value
+    }
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
 
-    private val _recomposeTime = MutableStateFlow(-1L)
-    val recomposeTime: StateFlow<Long> = _recomposeTime
-
-
+    fun setRefresherStatusTrue() {
+        _isRefreshing.value = true
+    }
     private val authToken = MutableStateFlow("")
 
     fun updateAuthToken(token: String) {
         authToken.value = token
-    }
-
-    fun updateRecomposeTime() {
-        _recomposeTime.value += 1
-    }
-
-    fun shouldFetch(): Boolean {
-        return (_recomposeTime.value % 3).toInt() == 0;
     }
 
     private val _currentUserDetails = MutableStateFlow<Result<UserResponse>?>(null)
@@ -121,6 +122,7 @@ class AllRequestViewModel() : ViewModel() {
                 _allBloodRequestResponseList.value = Result.failure(e)
             } finally {
                 isRequestFetching.value = false
+                _isRefreshing.value=false
             }
         }
     }

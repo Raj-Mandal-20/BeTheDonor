@@ -40,9 +40,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +59,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -114,9 +118,8 @@ fun ProfileScreen(
     )
     var showBottomSheet by remember { mutableStateOf(false) }
 
-
-    //*** Recomposition Count ***//
-    profileViewmodel.updateRecomposeTime()
+    val isRefreshing by profileViewmodel.isRefreshing.collectAsState()
+    val pullToRefreshState = rememberPullToRefreshState()
     //**********
 
     profileResponse?.let {
@@ -126,13 +129,11 @@ fun ProfileScreen(
             errorMessage = it.exceptionOrNull()?.message
         }
     }
-
+    val hasFetchedProfile = profileViewmodel.getFetchedProfile()
     LaunchedEffect(Unit) {
-        Log.d("authToken", authToken)
-        Log.d("recositionCOunt", profileViewmodel.recomposeTime.value.toString())
-        Log.d("shouldFetch", profileViewmodel.shouldFetch().toString())
-        if (profileViewmodel.shouldFetch()) {
+        if (!hasFetchedProfile) {
             networkCall(profileViewmodel, authToken, onResolve = {})
+            profileViewmodel.setFetchedProfile(true)
         }
     }
     Box(
@@ -149,6 +150,7 @@ fun ProfileScreen(
                     .background(
                         color = bgDarkBlue
                     )
+                    .nestedScroll(pullToRefreshState.nestedScrollConnection)
             ) {
                 profileData?.myProfile?.let {
                     Column(
@@ -371,6 +373,24 @@ fun ProfileScreen(
                     }
 
                 }
+                LaunchedEffect(isRefreshing) {
+                    if (isRefreshing) {
+                        pullToRefreshState.startRefresh()
+                    } else {
+                        pullToRefreshState.endRefresh()
+                    }
+                }
+                if (pullToRefreshState.isRefreshing) {
+                    LaunchedEffect(true) {
+                        profileViewmodel.setRefresherStatusTrue()
+                        networkCall(profileViewmodel, authToken, onResolve = {})
+                    }
+                }
+                PullToRefreshContainer(
+                    state = pullToRefreshState, modifier = Modifier.align(
+                        Alignment.TopCenter
+                    )
+                )
             }
         }
         val recheckFiled by remember {
@@ -396,7 +416,7 @@ fun ProfileScreen(
                 val isFieldChanged = remember {
                     mutableStateOf(false)
                 }
-                LaunchedEffect(true) {
+                LaunchedEffect(showBottomSheet) {
                     Log.d("modalSheetLaunchEffect", "InEffect")
                     profileViewmodel.onEvent(
                         RegistrationUIEvent.GenderValueChangeEvent(
@@ -467,7 +487,8 @@ fun ProfileScreen(
                                 },
                                 readOnly = true
                             )
-                            var code by remember { mutableStateOf(getCountryCode(profileData?.myProfile?.phoneNumber.toString())) }
+                            var code =
+                                getCountryCode(profileData?.myProfile?.phoneNumber.toString())
                             Log.d("countryCode", code)
                             PhoneNumberEditText(
                                 readOnly = true,
@@ -624,7 +645,7 @@ fun ProfileScreen(
             }
         }
 
-        if (profileViewmodel.requestInProgress.value) {
+        if (profileViewmodel.requestInProgress.value && !isRefreshing) {
             ProgressIndicatorComponent()
         }
 
@@ -688,8 +709,11 @@ fun ButtonElement(
     }
     Button(
         onClick = {
-            isDialogVisible = true
-            onClick()
+            if (showDialog) {
+                isDialogVisible = true
+            } else {
+                onClick()
+            }
         },
         colors = ButtonColors(
             containerColor = darkGray,

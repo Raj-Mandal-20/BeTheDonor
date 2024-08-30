@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -170,9 +171,10 @@ fun AllRequestCard(
                                 Text(
                                     text = details.name,
                                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    softWrap = true,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
-                                    modifier = Modifier.fillMaxWidth(0.72f)
+                                    modifier = Modifier.fillMaxWidth(0.70f)
                                 )
                                 RoundedBoxWithIconAndText(open = details.isOpen)
                             }
@@ -194,6 +196,8 @@ fun AllRequestCard(
                                     Text(
                                         text = if (details.isAcceptor || details.isMyCreation) details.emailId else "xyz@gmail.com",
                                         color = Gray1,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
                                     )
                                 }
@@ -275,7 +279,7 @@ fun AllRequestCard(
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = details.dueDate, color = Color.LightGray)
+                            Text(text = details.dueDate, color = Color.LightGray, softWrap = true)
                         }
                     }
                     Column(
@@ -377,8 +381,9 @@ fun AllRequestCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "${details.postDate} days ago",
+                           softWrap = true,
                             style = TextStyle(
-                                fontWeight = FontWeight.Normal,
+                                fontWeight = MaterialTheme.typography.bodySmall.fontWeight,
                                 color = Color.LightGray
                             )
                         )
@@ -470,11 +475,11 @@ fun RoundedBoxWithIconAndText(modifier: Modifier = Modifier, open: Boolean) {
         ) {
             if (open)
                 BlinkingCircle()
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = if (open) "Open" else "Closed",
                 color = if (open) activeColor2 else Color.DarkGray,
-                fontSize = 14.sp,
+                fontSize = MaterialTheme.typography.labelSmall.fontSize,
                 fontWeight = FontWeight.SemiBold
             )
         }

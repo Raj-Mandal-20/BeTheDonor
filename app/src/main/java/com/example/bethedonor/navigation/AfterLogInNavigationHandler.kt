@@ -32,7 +32,7 @@ fun AfterLogInNavigationStack(
     // Obtain the current back stack entry as a State
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    // Derive the current route from the back stack entry
+
     // Derive the current route from the back stack entry
     val currentRoute by remember(navBackStackEntry) {
         derivedStateOf {

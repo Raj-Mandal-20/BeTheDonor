@@ -22,10 +22,18 @@ import com.example.bethedonor.ui.utils.uistate.RegistrationUiState
 import com.example.bethedonor.ui.utils.validationRules.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val hasFetchedProfile = mutableStateOf(false)
+    fun setFetchedProfile(value: Boolean) {
+        hasFetchedProfile.value = value
+    }
+    fun getFetchedProfile(): Boolean {
+        return hasFetchedProfile.value
+    }
     var updateProfileUiState = mutableStateOf(RegistrationUiState())
 
     //***update-profile-bottom-sheet ***//
@@ -89,6 +97,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             RegistrationUIEvent.RegistrationButtonClick -> {
                 //  printState()
             }
+
             is RegistrationUIEvent.BloodUnitValueChangeEvent -> {}
             is RegistrationUIEvent.DonationCenterValueChangeEvent -> {}
         }
@@ -141,17 +150,24 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         availableToDonate.value = value
     }
 
-    private val _recomposeTime = MutableStateFlow(-1L)
-    val recomposeTime: StateFlow<Long> = _recomposeTime
+//    private val _recomposeTime = MutableStateFlow(-1L)
+//    val recomposeTime: StateFlow<Long> = _recomposeTime
+//
+//    fun updateRecomposeTime() {
+//        _recomposeTime.value += 1
+//    }
+//
+//    fun shouldFetch(): Boolean {
+//        return (_recomposeTime.value % 3).toInt() == 0
+//    }
 
-    fun updateRecomposeTime() {
-        _recomposeTime.value += 1
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
+
+    fun setRefresherStatusTrue() {
+        _isRefreshing.value = true
     }
-
-    fun shouldFetch(): Boolean {
-        return (_recomposeTime.value % 3).toInt() == 0
-    }
-
+    //*** preferences-manager ***//
     private val preferencesManager = PreferencesManager(getApplication())
 
     //*** api-responses ***//
@@ -183,15 +199,16 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 _profileResponse.value = result
             } finally {
                 requestInProgress.value = false
+                _isRefreshing.value = false
                 onProfileFetched()
             }
         }
     }
 
-    fun updateProfile(token: String, onUpdate: (Pair<String,String>) -> Unit) {
+    fun updateProfile(token: String, onUpdate: (Pair<String, String>) -> Unit) {
 
         val updates = UserUpdate(
-           // phoneNumber = updateProfileUiState.value.phoneNo,
+            // phoneNumber = updateProfileUiState.value.phoneNo,
             gender = updateProfileUiState.value.gender,
             state = updateProfileUiState.value.state,
             city = updateProfileUiState.value.city,
@@ -204,16 +221,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             try {
                 val response = updateProfileUseCase.execute("0", token, updates)
                 val result = Result.success(response)
-              //  _profileResponse.value = result
+                //  _profileResponse.value = result
                 Log.d("Response", response.toString())
-                onUpdate(Pair("success",result.getOrNull()?.message.toString()))
+                onUpdate(Pair("success", result.getOrNull()?.message.toString()))
             } catch (e: Exception) {
                 val result = Result.failure<String>(e)
                 Log.d("Error", e.message.toString())
-                onUpdate(Pair("failure",result.exceptionOrNull()?.message.toString()))
-            }
-            finally {
-                requestInProgress.value=false
+                onUpdate(Pair("failure", result.exceptionOrNull()?.message.toString()))
+            } finally {
+                requestInProgress.value = false
             }
         }
     }
