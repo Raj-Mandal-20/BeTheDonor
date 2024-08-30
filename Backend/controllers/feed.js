@@ -398,6 +398,15 @@ exports.deleteBloodRequest = async (req, res, next) => {
 
     const donors = await Donor.find({ requestId: req.body.requestId });
     console.log(donors);
+
+    // Check if the request with the provided requestId exists
+    if (!donors) {
+      return res.status(404).json({
+        message: "Request not found",
+        statusCode: 404,
+      });
+    }
+
     await Promise.all(
       donors.map(async ({ userId, requestId }) => {
         const user = await User.findById({ _id: userId });
@@ -410,8 +419,8 @@ exports.deleteBloodRequest = async (req, res, next) => {
         await user.save();
       })
     );
-    await Request.deleteOne({_id : req.body.requestId});
-    await Donor.deleteMany({requestId : req.body.requestId});
+    await Request.deleteOne({ _id: req.body.requestId });
+    await Donor.deleteMany({ requestId: req.body.requestId });
 
     res.status(200).json({
       message: "Blood Request Deleted Successfully",
@@ -428,6 +437,15 @@ exports.deleteBloodRequest = async (req, res, next) => {
 exports.closeAndOnBloodRequest = async (req, res, next) => {
   try {
     const request = await Request.findById({ _id: req.body.requestId });
+    
+    // Check if the request with the provided requestId exists
+    if (!request) {
+      return res.status(404).json({
+        message: "Request not found",
+        statusCode: 404,
+      });
+    }
+
     request.isClosed = !request.isClosed;
     request.save();
 
