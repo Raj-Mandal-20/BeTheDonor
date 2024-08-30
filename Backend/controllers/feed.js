@@ -394,7 +394,7 @@ exports.donarList = async (req, res, next) => {
 
 exports.deleteBloodRequest = async (req, res, next) => {
   try {
-    
+
     const request = await Request.findById({ _id: req.body.requestId });
 
     if (!request) {
@@ -436,6 +436,13 @@ exports.deleteBloodRequest = async (req, res, next) => {
 exports.closeAndOnBloodRequest = async (req, res, next) => {
   try {
     const request = await Request.findById({ _id: req.body.requestId });
+    
+    if (!request) {
+      const err = new Error("Blood Request Not Found!");
+      err.statusCode = 404;
+      throw err;
+    }
+
     request.isClosed = !request.isClosed;
     request.save();
 
