@@ -5,6 +5,7 @@ const User = require("../model/User");
 const nodemailer = require("nodemailer");
 const Verification = require("../model/Verification");
 const path = require("path");
+const ForgetPassword = require("../model/ForgetPassword");
 const { fsync } = require("fs");
 require("dotenv").config();
 
@@ -164,21 +165,22 @@ exports.verifyEmail = async (req, res, next) => {
   try {
     const verificationId = req.params.verificationId;
     const verification = await Verification.findById(verificationId);
-    
+
     if (!verification) {
-     
       const file = path.join(__dirname, "..", "public", "linkExpired.html");
       res.sendFile(file);
-    }
-    else{
-      
-      const filePath = path.join(__dirname, "..", "public", "emailVerified.html");
+    } else {
+      const filePath = path.join(
+        __dirname,
+        "..",
+        "public",
+        "emailVerified.html"
+      );
       const data = verification.data;
       const user = new User(data);
       await user.save();
       await Verification.findByIdAndDelete(verificationId);
-  
-      
+
       res.sendFile(filePath, (err) => {
         if (err) {
           // Handle errors, such as file not found or permission issues
@@ -188,7 +190,6 @@ exports.verifyEmail = async (req, res, next) => {
           console.log("File sent successfully");
         }
       });
-
     }
   } catch (err) {
     if (!err.statusCode) {
@@ -230,7 +231,7 @@ exports.signin = (req, res, next) => {
       res.status(200).json({
         token: token,
         userId: loadedUser._id.toString(),
-        available : loadedUser.available
+        available: loadedUser.available,
       });
     })
     .catch((err) => {
@@ -239,4 +240,104 @@ exports.signin = (req, res, next) => {
       }
       next(err);
     });
+};
+
+exports.forgetPassword = async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      const err = new Error("Email Not Found");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+      },
+      process.env.SECRET_KEY,
+      { expiresIn: "20m" }
+    );
+
+    const forgetPass = new ForgetPassword({
+      userId: user._id,
+      token: token,
+    });
+
+    const host = req.get("host");
+    const protocol = req.protocol;
+    const forgetData = await forgetPass.save();
+    console.log(forgetData);
+    const verificationLink = `${protocol}://${host}/auth/verifyforgetPassword/${forgetData._id}`;
+
+    res.status(200).json({
+      verificationLink: verificationLink,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.verifyforgetPassword = async (req, res, next) => {
+  try {
+    const verifyPassword = req.params.verifyPass;
+
+    const found = await ForgetPassword.findById(verifyPassword);
+    if (!found) {
+      const err = new Error("Link Expired Try Again!");
+      err.statusCode = 404;
+      throw err;
+    }
+    console.log("verifyforgetPassword");
+
+    res.render("auth/changePass", {
+      token: verifyPassword,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const newPassword = req.body.newPassword;
+    console.log(newPassword);
+    const id = req.body.id;
+    console.log("id", id);
+    const forgetData = await ForgetPassword.findById(id);
+
+    if(!forgetData){
+      const err = new Error('Link Expired!');
+      err.statusCode = 404;
+      throw err;
+    }
+    console.log(forgetData);
+
+
+    const user = await User.findById(forgetData.userId);
+    const hashPass = await bcrypt.hash(newPassword, 12);
+    user.password = hashPass;
+    await user.save();
+    await ForgetPassword.findByIdAndDelete(id);
+
+
+    res.status(200).json({
+      message: "Password Change Successfully",
+      statusCode: 200,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
