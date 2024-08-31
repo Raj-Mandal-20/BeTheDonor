@@ -11,13 +11,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bethedonor.data.api.RetrofitClient
+import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.LogInResponse
 import com.example.bethedonor.data.preferences.PreferencesManager
 import com.example.bethedonor.data.repository.UserRepositoryImp
+import com.example.bethedonor.domain.usecase.ForgetPasswordUseCase
 import com.example.bethedonor.domain.usecase.LogInUserUseCase
 import com.example.bethedonor.ui.utils.uievent.LoginUIEvent
 import com.example.bethedonor.ui.utils.uistate.LoginUiState
 import com.example.bethedonor.ui.utils.validationRules.Validator
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : AndroidViewModel(application){
@@ -32,6 +36,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
 
     private val _loginResponse = MutableLiveData<Result<LogInResponse>>()
     val loginResponse: LiveData<Result<LogInResponse>> = _loginResponse
+
     private val apiService = RetrofitClient.instance
     private val userRepository = UserRepositoryImp(apiService)
     private val logInUserUseCase = LogInUserUseCase(userRepository)
@@ -70,6 +75,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
     fun getToken(): String {
         return preferencesManager.jwtToken.toString()
     }
+
+
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {

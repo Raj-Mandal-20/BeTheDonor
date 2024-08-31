@@ -45,6 +45,7 @@ import com.example.bethedonor.ui.components.SimpleTextWithSpan
 import com.example.bethedonor.ui.components.SubGreetText
 import com.example.bethedonor.ui.theme.fadeBlue1
 import com.example.bethedonor.ui.theme.fadeBlue2
+import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.ui.utils.validationRules.ValidationResult
 import com.example.bethedonor.viewmodels.LoginViewModel
 
@@ -127,14 +128,14 @@ fun LoginScreen(
                                             )
                                         )
                                         loginViewModel.printState()
-                                       ValidationResult(true)
-                                     // loginViewModel.loginUIState.value.passwordErrorState
+                                        ValidationResult(true)
+                                        // loginViewModel.loginUIState.value.passwordErrorState
                                     },
                                     recheckFiled = recheckFiled
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 ForgotPassword(onResetProcessResult = { message ->
-                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    showToast(context, message)
                                 })
                             }
                         }
@@ -154,7 +155,7 @@ fun LoginScreen(
                                                     loginResponse?.let {
                                                         if (it.isSuccess) {
                                                             if (it.getOrNull()?.statusCode == null && it.getOrNull()?.message != "timeout") {
-                                                               onLoginNavigate()
+                                                                onLoginNavigate()
                                                             }
                                                             Toast.makeText(
                                                                 context,
@@ -186,7 +187,8 @@ fun LoginScreen(
                                     "Register",
                                     onTextClicked = {
                                         onRegisterNavigate()
-                                    }, modifier = Modifier.padding(bottom = 16.dp))
+                                    }, modifier = Modifier.padding(bottom = 16.dp)
+                                )
                             }
                         }
 

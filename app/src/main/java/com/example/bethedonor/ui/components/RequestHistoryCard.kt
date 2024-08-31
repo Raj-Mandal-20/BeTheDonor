@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -92,8 +93,9 @@ fun RequestHistoryCard(
     onDeleteConfirmation: () -> Unit = {},
     onToggleStatus: (String) -> Unit = {},
     historyViewModel: HistoryViewModel,
+    isExpanded: Boolean = false
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(isExpanded) }
     var isDialogVisible by remember { mutableStateOf(false) }
     var isClosedValue by remember { mutableStateOf(isClosed) }
     val togglingToChangeStatus by historyViewModel.isToggleStatusRequestFetching.collectAsState()
@@ -198,8 +200,9 @@ fun RequestHistoryCard(
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Row(
                                     // New: Modifier to make row responsive
-                                    modifier = Modifier.fillMaxWidth().
-                                        horizontalScroll(rememberScrollState()),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .horizontalScroll(rememberScrollState()),
                                     horizontalArrangement = Arrangement.Start,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -296,7 +299,10 @@ fun RequestHistoryCard(
                 Row(
                     modifier = Modifier
                         .padding(start = 48.dp)
-                        .clickable {
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
                             onAcceptorIconClick()
                         }
                         // New: Allows donors to scroll horizontally in a small screen
@@ -319,8 +325,9 @@ fun RequestHistoryCard(
                         text = if (count - 3 > 0) "+${count - 3} Acceptors" else if (count == 0) "0 Acceptors" else " Acceptors",
                         style = TextStyle(
                             color = Gray1,
-                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                             fontStyle = FontStyle.Italic,
+                            fontWeight = FontWeight.SemiBold
                         ),
                     )
                 }
@@ -404,7 +411,7 @@ fun UserIconComponent() {
 fun AddressTExtComponent(value: String) {
     Text(
         text = value,
-        style = TextStyle(fontSize = MaterialTheme.typography.labelLarge.fontSize),
+        style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize),
         fontWeight = FontWeight.SemiBold,
         color = Gray3,
         maxLines = 1,
@@ -430,9 +437,10 @@ fun RequestHistoryCardPreview(
     district: String = "Kolkata",
     pin: String = "700105",
     count: Int = 4,
-    activeStatus: Boolean = false
+    activeStatus: Boolean = false,
 ) {
     RequestHistoryCard(
         historyViewModel = viewModel(),
+        isExpanded = true
     )
 }

@@ -24,7 +24,6 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DoNotDisturbAlt
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Bloodtype
@@ -79,7 +78,7 @@ import com.example.bethedonor.ui.components.WarningDialog
 import com.example.bethedonor.ui.theme.activeColor1
 import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.bloodRed2
-import com.example.bethedonor.ui.theme.bloodTrashparent2
+import com.example.bethedonor.ui.theme.bloodTransparent2
 import com.example.bethedonor.ui.theme.darkGray
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.utils.commons.showToast
@@ -267,7 +266,7 @@ fun ProfileScreen(
                                         //imageVector = Icons.Filled.ModeNight,
                                         imageVector = Icons.Filled.DoNotDisturbAlt,
                                         contentDescription = "Not Available",
-                                        tint = bloodTrashparent2
+                                        tint = bloodTransparent2
                                         // tint = moonNightColor,
                                         // modifier = Modifier.rotate(45F)
                                     )

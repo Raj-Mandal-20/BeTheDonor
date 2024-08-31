@@ -79,6 +79,41 @@ class LogInUserUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+class ForgetPasswordUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(email: String): BackendResponse {
+        return try {
+            // Call the API service
+            val response = userRepository.forgetPassword(email)
+
+            if (response.isSuccessful) {
+                Log.d("if_block","Success")
+                // Convert the response body to BackendResponse
+                val backendResponse = Gson().fromJson(
+                    response.body()?.charStream(), // Use charStream() for Gson
+                    BackendResponse::class.java
+                )
+                backendResponse
+            } else {
+                // Handle error response
+                Log.d("else_block","Error")
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, BackendResponse::class.java)
+                BackendResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("catch","Exception")
+            // Handle exception
+            BackendResponse(
+                statusCode = "500",
+                message = e.message ?: "Unknown error"
+            )
+        }
+    }
+}
+
 
 class GetUserProfileUseCase(private val userRepository: UserRepository) {
     suspend fun execute(token: String): ProfileResponse {

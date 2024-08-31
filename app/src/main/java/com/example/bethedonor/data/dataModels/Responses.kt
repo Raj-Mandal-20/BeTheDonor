@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class BackendResponse(
     val statusCode: String? = null,
-    val message: String? = null
+    val message: String? = null,
+    val verificationLink: String?=null
 )
 
 data class LogInResponse(

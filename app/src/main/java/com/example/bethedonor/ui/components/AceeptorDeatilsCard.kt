@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,14 +99,14 @@ fun AcceptorDetailsCard(donnerDetails: Donor) {
                             Text(
                                 text = donnerDetails.name
                                     ?: "N/A", // or provide a suitable default value
-                                style = TextStyle(fontSize = 16.sp),
+                                style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "${donnerDetails.state}, ${donnerDetails.district},${donnerDetails.city}, ${donnerDetails.pin}",
-                                style = TextStyle(fontSize = 14.sp),
+                                style = MaterialTheme.typography.bodySmall,
                                 color = Color.Gray,
                                 minLines = 2,
                                 lineHeight = 16.sp,
@@ -121,6 +123,7 @@ fun AcceptorDetailsCard(donnerDetails: Donor) {
                             text = donnerDetails.bloodGroup ?: "Unknown",
                             style = TextStyle(fontSize = 18.sp),
                             fontWeight = FontWeight.ExtraBold,
+                            textAlign = TextAlign.Center,
                             color = bloodRed2
                         )
                         Spacer(modifier = Modifier.height(16.dp))

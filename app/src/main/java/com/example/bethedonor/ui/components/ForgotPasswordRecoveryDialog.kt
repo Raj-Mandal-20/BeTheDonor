@@ -37,6 +37,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.bethedonor.ui.utils.uievent.ForgotPasswordUiEvent
 import com.example.bethedonor.ui.theme.Gray1
+import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.theme.teal
 import com.example.bethedonor.viewmodels.ForgotPasswordViewModel
 
@@ -60,7 +61,7 @@ fun ForgotPasswordRecoveryDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
-            color = Color.White
+            color = fadeBlue11
         ) {
             Box(
                 contentAlignment = Alignment.Center
@@ -78,14 +79,14 @@ fun ForgotPasswordRecoveryDialog(
                             style = TextStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = Color.White
                             ),
                             textAlign = TextAlign.Left
                         )
                         Icon(
                             imageVector = Icons.Filled.Cancel,
                             contentDescription = "",
-                            tint = Color.Gray,
+                            tint = Color.LightGray,
                             modifier = Modifier
                                 .width(30.dp)
                                 .height(30.dp)
@@ -99,7 +100,7 @@ fun ForgotPasswordRecoveryDialog(
                         onFiledValueChanged = {
                             viewModel.onEvent(ForgotPasswordUiEvent.EmailValueChangeEvent(it))
                             //viewModel.printState()
-                            viewModel.`forgot-passwordUiState`.value.emailIdErrorState
+                            viewModel.forgotPasswordUiState.value.emailIdErrorState
                         },recheckFiled=recheck.value)
                     Spacer(modifier = Modifier.height(16.dp))
                     ButtonComponent(

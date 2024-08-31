@@ -8,6 +8,7 @@ import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
 import com.example.bethedonor.data.dataModels.DonorListResponse
+import com.example.bethedonor.data.dataModels.ForgotPasswordRequest
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 import com.example.bethedonor.data.dataModels.IsDonatedResponse
 import com.example.bethedonor.data.dataModels.LogInRequest
@@ -45,6 +46,11 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     override suspend fun loginUser(email: String, password: String): Response<ResponseBody> {
         val request = LogInRequest(email, password)
         return apiService.login(request)
+    }
+
+    override suspend fun forgetPassword(email: String): Response<ResponseBody> {
+        val request= ForgotPasswordRequest(email)
+        return apiService.forgetPassword(request)
     }
 
     override suspend fun getUserProfile(token: String): Response<ProfileResponse> {

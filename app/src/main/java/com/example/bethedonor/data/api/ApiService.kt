@@ -6,6 +6,7 @@ import com.example.bethedonor.data.dataModels.AccountResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
 import com.example.bethedonor.data.dataModels.DonorListResponse
+import com.example.bethedonor.data.dataModels.ForgotPasswordRequest
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 import com.example.bethedonor.data.dataModels.IsDonatedResponse
 import com.example.bethedonor.data.dataModels.LogInRequest
@@ -33,8 +34,12 @@ interface ApiService {
     @POST("auth/signin")
     suspend fun login(@Body request: LogInRequest): Response<ResponseBody>
 
+
     @GET("v1/my-profile")
     suspend fun getProfile(@Header("Authorization") token: String): Response<ProfileResponse>
+
+    @POST("auth/forgetPassword")
+    suspend fun forgetPassword(@Body request: ForgotPasswordRequest): Response<ResponseBody>
 
     @GET("v1/all-blood-request")
     suspend fun getAllBloodRequests(@Header("Authorization") token: String): Response<BloodRequestsResponse>

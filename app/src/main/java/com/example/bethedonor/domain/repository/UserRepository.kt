@@ -19,6 +19,7 @@ import retrofit2.Response
 interface UserRepository {
     suspend fun registerUser(user: User): Response<ResponseBody>
     suspend fun loginUser(email: String, password: String): Response<ResponseBody>
+    suspend fun forgetPassword(email: String): Response<ResponseBody>
     suspend fun getUserProfile(token: String): Response<ProfileResponse>
     suspend fun getAllBloodRequests(token: String): Response<BloodRequestsResponse>
     suspend fun fetchUserByUserId(token: String, userId: String): Response<UserResponse>
@@ -31,7 +32,7 @@ interface UserRepository {
 
     suspend fun checkIsDonated(token: String, requestId: String): Response<IsDonatedResponse>
     suspend fun acceptDonation(token: String, request: String): Response<AcceptDonationResponse>
-    suspend fun createRequest(token: String, request:NewBloodRequest):Response<BackendResponse>
+    suspend fun createRequest(token: String, request: NewBloodRequest): Response<BackendResponse>
     suspend fun getRequestHistory(token: String): Response<HistoryBloodRequestsResponse>
     suspend fun getDonorList(token: String, requestId: String): Response<DonorListResponse>
     suspend fun deleteRequest(token: String, requestId: String): Response<BackendResponse>

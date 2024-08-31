@@ -14,8 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bethedonor.ui.components.ForgotPasswordRecoveryDialog
 import com.example.bethedonor.ui.theme.teal
+import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.viewmodels.ForgotPasswordViewModel
 
 
@@ -45,13 +45,18 @@ fun ForgotPassword(
                 showDialog.value = it
             }, viewModel = viewModel, onButtonCLick = {
                 recheck.value = true
-                if (viewModel.`forgot-passwordUiState`.value.emailIdErrorState.status) {
-                    viewModel.resetPassWord(
-                        viewModel.`forgot-passwordUiState`.value.emailId,
-                        onProcessResult = { status, message ->
-                            onResetProcessResult(message)
-                            showDialog.value = false
-                        })
+                if (viewModel.forgotPasswordUiState.value.emailIdErrorState.status) {
+                    viewModel.forgetPassword(
+                        viewModel.forgotPasswordUiState.value.emailId,
+                       onResponse = {response->
+                           if(response.statusCode=="200"){
+                               onResetProcessResult("Password reset link sent to your email")
+                           }
+                           else{
+                               onResetProcessResult(response.message.toString())
+                           }
+                           showDialog.value=false
+                       })
                 }
             }, recheck = recheck
         )

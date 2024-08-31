@@ -1,16 +1,11 @@
 package com.example.bethedonor.ui.components
 
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,8 +48,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
@@ -74,7 +66,7 @@ import com.example.bethedonor.ui.theme.bgDarkBlue2
 import com.example.bethedonor.ui.theme.bloodRed
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.bloodRed3
-import com.example.bethedonor.ui.theme.bloodTrashparent
+import com.example.bethedonor.ui.theme.bloodTransparent
 import com.example.bethedonor.ui.theme.lightRed
 import com.example.bethedonor.ui.utils.commons.animatedBorder
 import com.example.bethedonor.viewmodels.AllRequestViewModel
@@ -106,16 +98,16 @@ fun AllRequestCard(
     // Access the specific value for the provided id
     val isRequesting = requestingToAccept[id] ?: false
     val modifier = if (isRequesting) Modifier.animatedBorder(
-        borderColors = listOf(bloodTrashparent, bloodRed2),
+        borderColors = listOf(bloodTransparent, bloodRed2),
         shape = RoundedCornerShape(8.dp),
         borderWidth = 2.dp
-    ) else Modifier.border(1.dp, bloodTrashparent, RoundedCornerShape(8.dp))
+    ) else Modifier.border(1.dp, bloodTransparent, RoundedCornerShape(8.dp))
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, bloodTrashparent),
+        border = BorderStroke(1.dp, bloodTransparent),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
@@ -196,6 +188,7 @@ fun AllRequestCard(
                                     Text(
                                         text = if (details.isAcceptor || details.isMyCreation) details.emailId else "xyz@gmail.com",
                                         color = Gray1,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
@@ -214,6 +207,7 @@ fun AllRequestCard(
                                     Text(
                                         text = if (details.isAcceptor || details.isMyCreation) details.phoneNo else "xxxxxxxxxx",
                                         color = Gray1,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         modifier = Modifier.padding(start = 4.dp) // Add some padding between icon and text
                                     )
                                 }
@@ -248,6 +242,7 @@ fun AllRequestCard(
                             Text(
                                 text = details.exactPlace,
                                 color = Gray1,
+                                style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -264,6 +259,7 @@ fun AllRequestCard(
                             Text(
                                 text = details.address,
                                 color = Color.LightGray,
+                                style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(start = 18.dp)
                             )
                         }
@@ -279,7 +275,7 @@ fun AllRequestCard(
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = details.dueDate, color = Color.LightGray, softWrap = true)
+                            Text(text = details.dueDate, color = Color.LightGray, softWrap = true, style = MaterialTheme.typography.bodySmall)
                         }
                     }
                     Column(
@@ -383,7 +379,7 @@ fun AllRequestCard(
                             text = "${details.postDate} days ago",
                            softWrap = true,
                             style = TextStyle(
-                                fontWeight = MaterialTheme.typography.bodySmall.fontWeight,
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
                                 color = Color.LightGray
                             )
                         )
@@ -433,7 +429,8 @@ fun BloodUnitAndAcceptorCountComponent(painterResource: Painter, count: Int, lab
             text = labelTExt,
             style = TextStyle(
                 fontWeight = if (count >= 0) FontWeight.Normal else FontWeight.SemiBold,
-                color = Color.LightGray
+                color = Color.LightGray,
+                fontSize = MaterialTheme.typography.bodySmall.fontSize
             )
         )
     }

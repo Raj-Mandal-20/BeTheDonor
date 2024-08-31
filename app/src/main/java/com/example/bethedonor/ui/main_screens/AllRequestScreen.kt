@@ -96,12 +96,14 @@ fun AllRequestScreen(
     //**********
     val hasFetchedRequests = allRequestViewModel.getFetchedProfile()
     LaunchedEffect(hasFetchedRequests) {
-        if (!hasFetchedRequests)
+        if (!hasFetchedRequests) {
             networkCall(
                 token = token,
                 userId = userId,
                 allRequestViewModel = allRequestViewModel,
             )
+            allRequestViewModel.setFetchedProfile(true)
+        }
     }
 
     Scaffold(
