@@ -341,6 +341,7 @@ exports.forgetPassword = async (req, res, next) => {
 
     res.status(200).json({
       verificationLink: verificationLink,
+      statusCode : 200
     });
   } catch (err) {
     if (!err.statusCode) {
