@@ -6,8 +6,73 @@ const nodemailer = require("nodemailer");
 const Verification = require("../model/Verification");
 const path = require("path");
 const ForgetPassword = require("../model/ForgetPassword");
-const { fsync } = require("fs");
+const mjml = require("mjml");
+const fs = require("fs");
 require("dotenv").config();
+
+async function resetPasswordEmail(verifyurl, email, name) {
+  try {
+    const templatePath = path.join(__dirname, "../Emails/reset-password.mjml");
+    let mjmlTemplate = fs.readFileSync(templatePath, "utf-8");
+
+    const dynamicValues = {
+      name: name,
+      company: "BeTheDonor",
+      url: verifyurl,
+    };
+
+    Object.keys(dynamicValues).forEach((key) => {
+      const value = dynamicValues[key];
+      const regex = new RegExp(`{{${key}}}`, "g");
+      mjmlTemplate = mjmlTemplate.replace(regex, value);
+    });
+
+    const { html, errors } = mjml(mjmlTemplate, { validationLevel: "soft" });
+
+    if (errors.length) {
+      console.error("MJML Errors:", errors);
+    } else {
+      const outputHtmlPath = path.join(
+        __dirname,
+        "../Emails/reset-password.html"
+      );
+      fs.writeFileSync(outputHtmlPath, html);
+      console.log("HTML Email Template Generated");
+    }
+
+    const htmlContent = fs.readFileSync(
+      path.join(__dirname, "../Emails/reset-password.html"),
+      "utf-8"
+    );
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_FROM,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `BeTheDonor <${process.env.EMAIL_FROM}>`,
+      to: email,
+      subject: "Chanage Password",
+      html: htmlContent,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log("Email sent: " + info.response);
+    });
+  } catch (err) {
+    throw err;
+  }
+}
 
 async function sendVerifiedEmail(name, userEmail, verificationLink) {
   const transporter = nodemailer.createTransport({
@@ -272,6 +337,7 @@ exports.forgetPassword = async (req, res, next) => {
     const forgetData = await forgetPass.save();
     console.log(forgetData);
     const verificationLink = `${protocol}://${host}/auth/verifyforgetPassword/${forgetData._id}`;
+    await resetPasswordEmail(verificationLink, email, user.name);
 
     res.status(200).json({
       verificationLink: verificationLink,
@@ -313,20 +379,18 @@ exports.changePassword = async (req, res, next) => {
     console.log("id", id);
     const forgetData = await ForgetPassword.findById(id);
 
-    if(!forgetData){
-      const err = new Error('Link Expired!');
+    if (!forgetData) {
+      const err = new Error("Link Expired!");
       err.statusCode = 404;
       throw err;
     }
     console.log(forgetData);
-
 
     const user = await User.findById(forgetData.userId);
     const hashPass = await bcrypt.hash(newPassword, 12);
     user.password = hashPass;
     await user.save();
     await ForgetPassword.findByIdAndDelete(id);
-
 
     res.status(200).json({
       message: "Password Change Successfully",
