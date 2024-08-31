@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password</title>
+    <link href="/styles.css" rel="stylesheet" />
+    <script>
+      function validatePasswords(event) {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword !== confirmPassword) {
+          alert('Passwords do not match!');
+          event.preventDefault(); // Prevent form submission
+          return false;
+        }
+        return true;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="flex justify-center flex-col">
+      <div class="flex justify-center bg-red-400 font-semibold p-2 text-2xl text-white w-full">
+        Reset Your Password
+      </div>
+      <div class="pt-5">
+        <form
+          action="/auth/reset-password"
+          method="POST"
+          class="flex flex-col justify-center items-center"
+          onsubmit="return validatePasswords(event);"
+        >
+          <div class="p-5 sm:p-10 md:p-20 flex flex-col justify-center font-bold border border-gray-300 rounded-md">
+            <input type="hidden" name="id" value="<%= token %>" />
+            <div class="flex flex-col">
+              <label for="newPassword">New Password:</label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                class="bg-gray-100 outline-none px-2"
+                required
+              />
+            </div>
+            <div class="flex flex-col pt-2">
+              <label for="confirmPassword">Confirm New Password:</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                class="bg-gray-100 outline-none px-2"
+                required
+              />
+            </div>
+            <button type="submit" class="bg-green-500 px-8 py-2 rounded-md mt-5 w-[15rem] text-white">
+              Reset Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
