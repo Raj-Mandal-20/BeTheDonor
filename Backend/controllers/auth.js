@@ -259,7 +259,7 @@ exports.forgetPassword = async (req, res, next) => {
         email: user.email,
       },
       process.env.SECRET_KEY,
-      { expiresIn: "20m" }
+      { expiresIn: "30m" }
     );
 
     const forgetPass = new ForgetPassword({
@@ -294,8 +294,6 @@ exports.verifyforgetPassword = async (req, res, next) => {
       err.statusCode = 404;
       throw err;
     }
-    console.log("verifyforgetPassword");
-
     res.render("auth/changePass", {
       token: verifyPassword,
     });
