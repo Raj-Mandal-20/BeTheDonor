@@ -6,58 +6,196 @@
     <title>Reset Password</title>
     <link href="/styles.css" rel="stylesheet" />
     <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        // Set default visibility
+        document.querySelectorAll(".password-field").forEach((field) => {
+          const id = field.id;
+          const visibilityIcon = document.getElementById(`${id}VisibilityIcon`);
+          const visibilityToggle = document.getElementById(
+          `${id}VisibilityToggle`
+        );
+        
+        visibilityToggle.checked = true;
+
+          // Set password field type to 'password'
+          field.type = "password";
+
+          // Set default icon (eye closed)
+          visibilityIcon.innerHTML = `<svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 01-6 0m6 0a3 3 0 00-6 0M12 4.5C7.5 4.5 3.5 8.5 3.5 12s4 7.5 8.5 7.5 8.5-4 8.5-7.5S16.5 4.5 12 4.5z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 3.055l17.9 17.9"/>
+                   </svg>`;
+        });
+      });
+
       function validatePasswords(event) {
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
 
         if (newPassword !== confirmPassword) {
-          alert('Passwords do not match!');
+          alert("Passwords do not match!");
           event.preventDefault(); // Prevent form submission
           return false;
         }
+
+        if (!validatePasswordCriteria(newPassword)) {
+          alert(
+            "Password must be at least 8 characters long, including uppercase, lowercase, and numbers."
+          );
+          event.preventDefault(); // Prevent form submission
+          return false;
+        }
+
         return true;
+      }
+
+      function validatePasswordCriteria(password) {
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        return (
+          password.length >= minLength &&
+          hasUpperCase &&
+          hasLowerCase &&
+          hasNumber
+        );
+      }
+
+      function togglePasswordVisibility(id) {
+        const passwordField = document.getElementById(id);
+        const visibilityToggle = document.getElementById(
+          `${id}VisibilityToggle`
+        );
+        const visibilityIcon = document.getElementById(`${id}VisibilityIcon`);
+
+        // Toggle password visibility
+        passwordField.type = visibilityToggle.checked ? "password" : "text";
+
+        // Toggle between eye and eye-off icons
+        visibilityIcon.innerHTML = visibilityToggle.checked
+          ? `<svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 01-6 0m6 0a3 3 0 00-6 0M12 4.5C7.5 4.5 3.5 8.5 3.5 12s4 7.5 8.5 7.5 8.5-4 8.5-7.5S16.5 4.5 12 4.5z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 3.055l17.9 17.9"/>
+                   </svg>`
+          : `<svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5C7.5 4.5 3.5 8.5 3.5 12s4 7.5 8.5 7.5 8.5-4 8.5-7.5S16.5 4.5 12 4.5z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a3 3 0 110-6 3 3 0 010 6z"/>
+                   </svg>`;
       }
     </script>
   </head>
-  <body>
-    <div class="flex justify-center flex-col">
-      <div class="flex justify-center bg-red-400 font-semibold p-2 text-2xl text-white w-full">
-        Reset Your Password
+  <body
+    class="bg-gradient-to-r from-blue-50 to-blue-100 flex flex-col items-center justify-center h-screen"
+  >
+    <!-- Navbar -->
+    <header
+      class="fixed top-0 left-0 right-0 bg-gradient-to-r from-green-400 to-blue-500 text-white py-4 shadow-lg z-50"
+    >
+      <div class="container mx-auto flex justify-center">
+        <h1 class="text-3xl font-extrabold tracking-wide animate-pulse">
+          Be the Donor
+        </h1>
       </div>
-      <div class="pt-5">
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center w-full mt-24 px-4">
+      <div class="w-full max-w-md p-8 bg-white rounded-3xl shadow-2xl">
+        <h2 class="text-4xl font-extrabold text-center text-blue-700 mb-8">
+          Reset Your Password
+        </h2>
         <form
           action="/auth/reset-password"
           method="POST"
-          class="flex flex-col justify-center items-center"
+          class="space-y-8"
           onsubmit="return validatePasswords(event);"
         >
-          <div class="p-5 sm:p-10 md:p-20 flex flex-col justify-center font-bold border border-gray-300 rounded-md">
-            <input type="hidden" name="id" value="<%= token %>" />
-            <div class="flex flex-col">
-              <label for="newPassword">New Password:</label>
-              <input
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                class="bg-gray-100 outline-none px-2"
-                required
-              />
+          <input type="hidden" name="id" value="<%= token %>" />
+
+          <!-- Password Fields -->
+          <div class="relative flex flex-col space-y-4">
+            <!-- New Password -->
+            <div class="flex flex-col space-y-2">
+              <label for="newPassword" class="text-gray-800 font-semibold"
+                >New Password:</label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  class="bg-gray-100 outline-none px-4 py-3 rounded-lg border border-gray-300 focus:ring-4 focus:ring-blue-400 focus:outline-none transition-transform transform hover:scale-105 w-full password-field"
+                  placeholder="Enter new password"
+                  required
+                />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <input
+                    type="checkbox"
+                    id="newPasswordVisibilityToggle"
+                    class="hidden"
+                    onchange="togglePasswordVisibility('newPassword')"
+                  />
+                  <label
+                    for="newPasswordVisibilityToggle"
+                    class="cursor-pointer"
+                  >
+                    <div id="newPasswordVisibilityIcon">
+                      <!-- Default icon will be set by JavaScript -->
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <p class="text-sm text-gray-500">
+                Password should be at least 8 characters long, including
+                uppercase, lowercase, and numbers.
+              </p>
             </div>
-            <div class="flex flex-col pt-2">
-              <label for="confirmPassword">Confirm New Password:</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                class="bg-gray-100 outline-none px-2"
-                required
-              />
+
+            <!-- Confirm Password -->
+            <div class="flex flex-col space-y-2">
+              <label for="confirmPassword" class="text-gray-800 font-semibold"
+                >Confirm New Password:</label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  class="bg-gray-100 outline-none px-4 py-3 rounded-lg border border-gray-300 focus:ring-4 focus:ring-blue-400 focus:outline-none transition-transform transform hover:scale-105 w-full password-field"
+                  placeholder="Confirm new password"
+                  required
+                />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <input
+                    type="checkbox"
+                    id="confirmPasswordVisibilityToggle"
+                    class="hidden"
+                    onchange="togglePasswordVisibility('confirmPassword')"
+                  />
+                  <label
+                    for="confirmPasswordVisibilityToggle"
+                    class="cursor-pointer"
+                  >
+                    <div id="confirmPasswordVisibilityIcon">
+                      <!-- Default icon will be set by JavaScript -->
+                    </div>
+                  </label>
+                </div>
+              </div>
             </div>
-            <button type="submit" class="bg-green-500 px-8 py-2 rounded-md mt-5 w-[15rem] text-white">
-              Reset Password
-            </button>
           </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-green-500 hover:to-blue-500 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
+          >
+            Reset Password
+          </button>
         </form>
       </div>
-    </div>
+    </main>
   </body>
 </html>

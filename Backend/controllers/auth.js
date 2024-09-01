@@ -393,10 +393,13 @@ exports.changePassword = async (req, res, next) => {
     await user.save();
     await ForgetPassword.findByIdAndDelete(id);
 
-    res.status(200).json({
-      message: "Password Change Successfully",
-      statusCode: 200,
-    });
+    // res.status(200).json({
+    //   message: "Password Change Successfully",
+    //   statusCode: 200,
+    // });
+    res.render('auth/changePassSuccess',{
+      name : user.name
+    })
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
