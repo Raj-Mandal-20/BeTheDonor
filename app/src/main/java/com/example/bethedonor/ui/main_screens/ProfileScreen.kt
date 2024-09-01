@@ -283,7 +283,7 @@ fun ProfileScreen(
                             color = Color.LightGray
                         )
                         SpacerComponent(16.dp)
-                        ButtonElement(label = "Sing out",
+                        ButtonElement(label = "Sign out",
                             onClick = {},
                             showDialog = true,
                             dialogTitle = "Confirm Logout",

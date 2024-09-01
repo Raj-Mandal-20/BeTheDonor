@@ -7,8 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -28,7 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,6 +61,13 @@ fun FilterItemComponent(
     onResetClick: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val textFieldWidth by remember { mutableStateOf(screenWidth*0.8f) }
+    val dropDownHeight by remember {
+        mutableStateOf(if(label!="Pin Code") screenHeight*0.5f else screenHeight*0.1f)
+    }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -75,7 +91,8 @@ fun FilterItemComponent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor() // Make sure the entire row is clickable
+                    .menuAnchor()
+                // Make sure the entire row is clickable
             ) {
                 Text(
                     text = selectedValue.ifEmpty { label },
@@ -94,26 +111,37 @@ fun FilterItemComponent(
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .background(fadeBlue2)
-                .fillMaxWidth()
+                .width(textFieldWidth)
         ) {
-            Column {
-                options.forEach { option: String ->
-                    DropdownMenuItem(
-                        text = { Text(text = option, color = Color.White) },
-                        onClick = {
-                            expanded = false
-                            onSelection(option)
-                        }
-                    )
+            LazyColumn(
+                modifier = Modifier
+                    .width(textFieldWidth)
+                    .height(dropDownHeight)  // You can adjust the height as needed
+            ) {
+                items(options) { option ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                expanded = false
+                                onSelection(option)
+                            }
+                    ) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = option,
+                            modifier = Modifier.padding(start = 10.dp),
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
                 }
-                // Adding the Reset text at the bottom
-                if(options.isNotEmpty())
-                DropdownMenuItem(
-                    text = {
+                if (options.isNotEmpty()) {
+                    item{
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp, end = 8.dp),
+                                .width(textFieldWidth)
+                                .padding(bottom = 16.dp, end = 16.dp),
                             contentAlignment = Alignment.BottomEnd
                         ) {
                             Text(
@@ -126,9 +154,8 @@ fun FilterItemComponent(
                                 }
                             )
                         }
-                    },
-                    onClick = { /* No action needed as it's handled by the clickable modifier */ }
-                )
+                    }
+                }
             }
         }
     }

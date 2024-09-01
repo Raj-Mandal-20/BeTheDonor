@@ -1,5 +1,6 @@
 package com.example.bethedonor.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.bethedonor.ui.utils.validationRules.ValidationResult
 import com.example.bethedonor.ui.theme.ErrorColor
 import com.example.bethedonor.ui.theme.Gray1
+import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.ui.theme.teal
 
 
@@ -56,7 +58,7 @@ fun SelectionField(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-        modifier
+        modifier = modifier
             .clip(shape = RoundedCornerShape(8.dp)),
     ) {
         OutlinedTextField(
@@ -102,12 +104,12 @@ fun SelectionField(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
-                .padding(start = 4.dp)
         )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier
+            .background(fadeBlue11)) {
             options.forEach { option: String ->
                 DropdownMenuItem(
-                    text = { Text(text = option) },
+                    text = { Text(text = option, color = Color.White) },
                     onClick = {
                         expanded = false
                         selectedOptionIndex = options.indexOf(option)
