@@ -5,6 +5,9 @@ const Request = require("../model/Request");
 const User = require("../model/User");
 const nodemailer = require("nodemailer");
 const Donor = require("../model/Donor");
+const mjml = require("mjml");
+const fs = require("fs");
+const path = require('path');
 
 exports.createRequest = async (req, res, next) => {
   const errors = validationResult(req);
@@ -47,7 +50,7 @@ exports.createRequest = async (req, res, next) => {
     const users = await User.find({ available: true, _id: { $ne: userId } });
     const recipients = users.map((user) => user.email);
     console.log(recipients);
-    await notifyAll(bloodGroup, recipients);
+    await notifyAll(user.name, deadline, '12 pm - 5pm', donationCenter, user.phoneNumber, bloodGroup, recipients);
 
     const bloodRequest = await request.save();
     console.log(bloodRequest);
@@ -64,35 +67,76 @@ exports.createRequest = async (req, res, next) => {
   }
 };
 
-async function notifyAll(bloodGroup, recipients) {
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_FROM,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+async function notifyAll(name, date, time, location, contact, bloodGroup, recipients) {
 
-  const mailOptions = {
-    from: `BeTheDonor <${process.env.EMAIL_FROM}>`,
-    to: recipients.join(","),
-    subject: "[URGENT] Blood Needed",
-    html: `
-      <h2> A Patient Needed (${bloodGroup}) Blood, do you want to contribute? </h2>
-    `,
-    bcc: recipients.join(","),
-  };
+  try{
+    const templatePath = path.join(__dirname, "../Emails/NotifyAll.mjml");
+    let mjmlTemplate = fs.readFileSync(templatePath, "utf-8");
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error("Error sending email: ", error);
+    const dynamicValues = {
+      name: name,
+      time : time,
+      date : date,
+      location : location,
+      contact : contact,
+      bloodGroup : bloodGroup
+    };
+
+    Object.keys(dynamicValues).forEach((key) => {
+      const value = dynamicValues[key];
+      const regex = new RegExp(`{{${key}}}`, "g");
+      mjmlTemplate = mjmlTemplate.replace(regex, value);
+    });
+
+    const { html, errors } = mjml(mjmlTemplate, { validationLevel: "soft" });
+
+    if (errors.length) {
+      console.error("MJML Errors:", errors);
     } else {
-      console.log("Email sent: ", info.response);
+      const outputHtmlPath = path.join(
+        __dirname,
+        "../Emails/NotifyAll.html"
+      );
+      fs.writeFileSync(outputHtmlPath, html);
+      console.log("HTML Email Template Generated");
     }
-  });
+
+    const htmlContent = fs.readFileSync(
+      path.join(__dirname, "../Emails/NotifyAll.html"),
+      "utf-8"
+    );
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_FROM,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+  
+    const mailOptions = {
+      from: `BeTheDonor <${process.env.EMAIL_FROM}>`,
+      bcc: recipients.join(","),
+      subject: "🚨 Urgent Blood Donation Needed! 🩸",
+      html: htmlContent
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email: ", error);
+      } else {
+        console.log("Email sent: ", info.response);
+      }
+    });
+
+  }
+  catch(err){
+    throw err;
+  }
+  
 }
 
 async function sendDonationEmail(userEmail) {
