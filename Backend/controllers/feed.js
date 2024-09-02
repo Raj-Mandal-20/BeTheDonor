@@ -394,7 +394,6 @@ exports.donarList = async (req, res, next) => {
 
 exports.deleteBloodRequest = async (req, res, next) => {
   try {
-
     const request = await Request.findById({ _id: req.query.requestId });
 
     if (!request) {
@@ -436,7 +435,7 @@ exports.deleteBloodRequest = async (req, res, next) => {
 exports.closeAndOnBloodRequest = async (req, res, next) => {
   try {
     const request = await Request.findById({ _id: req.body.requestId });
-    
+
     if (!request) {
       const err = new Error("Blood Request Not Found!");
       err.statusCode = 404;
@@ -450,6 +449,46 @@ exports.closeAndOnBloodRequest = async (req, res, next) => {
       message: `Blood Request ${
         request.isClosed ? "Closed " : "Active "
       }Successfully`,
+      statusCode: 200,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+//home-page-controlers
+exports.getAllActiveDonorsCount = async (req, res, next) => {
+  try {
+    const bloodGroup = req.query.bloodGroup;
+    console.log(bloodGroup);
+    let noOfActiveDonors = 0;
+    if (!bloodGroup) {
+      noOfActiveDonors = (await User.find({ available: true })).length;
+    } else {
+      noOfActiveDonors = (
+        await User.find({ available: true, bloodGroup: bloodGroup })
+      ).length;
+    }
+    res.status(200).json({
+      noOfActiveDonors: noOfActiveDonors,
+      statusCode: 200,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getAllLifetimeRequestsCount = async (req, res, next) => {
+  try {
+    const noOfAllBloodRequests = (await Request.find()).length;
+    res.status(200).json({
+      noOfAllBloodRequests: noOfAllBloodRequests,
       statusCode: 200,
     });
   } catch (err) {

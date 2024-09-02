@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const feedController = require("../controllers/feed");
 const isAuth = require("../middleware/is-auth");
+const { route } = require("./auth");
 
 router.post("/create-request", isAuth, feedController.createRequest);
 router.get("/all-blood-request", isAuth, feedController.allBloodRequest);
@@ -17,4 +18,8 @@ router.get("/donorlist/:requestId", isAuth, feedController.donarList);
 router.delete('/deleteRequest', isAuth, feedController.deleteBloodRequest);
 router.put('/toggleRequestStatus', isAuth, feedController.closeAndOnBloodRequest);
 
+
+//home-page-endpoints
+router.get("/all-active-donors",feedController.getAllActiveDonorsCount);
+router.get("/all-time-requests",feedController.getAllLifetimeRequestsCount);
 module.exports = router;

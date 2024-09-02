@@ -214,7 +214,6 @@ exports.signup = async (req, res, next) => {
     const verificationLink = `${protocol}://${host}/auth/verifyemail/${verificationData._id}`;
 
     await sendVerifiedEmail(name, email, verificationLink);
-
     res.status(200).json({
       message: "Verification Email Sent Successfully!",
     });
@@ -341,7 +340,7 @@ exports.forgetPassword = async (req, res, next) => {
 
     res.status(200).json({
       verificationLink: verificationLink,
-      statusCode : 200
+      statusCode: 200,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -397,9 +396,9 @@ exports.changePassword = async (req, res, next) => {
     //   message: "Password Change Successfully",
     //   statusCode: 200,
     // });
-    res.render('auth/changePassSuccess',{
-      name : user.name
-    })
+    res.render("auth/changePassSuccess", {
+      name: user.name,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
