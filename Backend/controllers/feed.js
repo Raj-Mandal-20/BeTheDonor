@@ -48,9 +48,10 @@ exports.createRequest = async (req, res, next) => {
 
     // notify all pepole
     const users = await User.find({ available: true, _id: { $ne: userId } });
-    const recipients = users.map((user) => user.email);
-    console.log(recipients);
-    await notifyAll(user.name, deadline, '12 pm - 5pm', donationCenter, user.phoneNumber, bloodGroup, recipients);
+
+    for (const userx of users) {
+      await notifyAll(userx.name, deadline, '12 pm - 5pm', donationCenter, user.phoneNumber, bloodGroup, [userx.email]);
+    }
 
     const bloodRequest = await request.save();
     console.log(bloodRequest);
