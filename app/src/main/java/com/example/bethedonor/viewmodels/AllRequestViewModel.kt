@@ -186,16 +186,16 @@ class AllRequestViewModel() : ViewModel() {
 
     fun updateFilterDistrict(district: String) {
         _filterDistrict.value = district
-        clearCityFilter()
+        clearPinFilter()
     }
 
     fun updateFilterCity(city: String) {
         _filterCity.value = city
-        clearPinFilter()
     }
 
     fun updateFilterPin(pin: String) {
         _filterPin.value = pin
+        clearCityFilter()
         filterBloodRequests()
     }
 
@@ -210,15 +210,14 @@ class AllRequestViewModel() : ViewModel() {
         _filterPin.value = ""
         filterBloodRequests()
     }
-
-    fun clearCityFilter() {
-        _filterCity.value = ""
+    fun clearPinFilter() {
         _filterPin.value = ""
+        _filterCity.value=""
         filterBloodRequests()
     }
 
-    fun clearPinFilter() {
-        _filterPin.value = ""
+    fun clearCityFilter() {
+        _filterCity.value = ""
         filterBloodRequests()
     }
 

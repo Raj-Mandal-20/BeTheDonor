@@ -288,22 +288,22 @@ fun TopAppBarComponent(
                         allRequestViewModel.clearDistrictFilter()
                     })
                 FilterItemComponent(
-                    label = "City",
-                    options = getCityList(filterState, filterDistrict),
-                    selectedValue = filterCity,
-                    onSelection = {
-                        allRequestViewModel.updateFilterCity(it)
-                    }, onResetClick = {
-                        allRequestViewModel.clearCityFilter()
-                    })
-                FilterItemComponent(
                     label = "Pin Code",
-                    options = getPinCodeList(filterState, filterDistrict, filterCity),
+                    options = getPinCodeList(filterState, filterDistrict),
                     selectedValue = filterPin,
                     onSelection = {
                         allRequestViewModel.updateFilterPin(it)
                     }, onResetClick = {
                         allRequestViewModel.clearPinFilter()
+                    })
+                FilterItemComponent(
+                    label = "City",
+                    options = getCityList(filterState, filterDistrict,filterPin),
+                    selectedValue = filterCity,
+                    onSelection = {
+                        allRequestViewModel.updateFilterCity(it)
+                    }, onResetClick = {
+                        allRequestViewModel.clearCityFilter()
                     })
             }
         }

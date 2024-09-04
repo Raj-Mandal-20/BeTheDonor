@@ -115,27 +115,10 @@ fun CreateRequestScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
                     SelectStateDistrictCityField(
-                        label = "City",
-                        options = getCityList(
-                            createRequestViewModel.selectedState.value,
-                            createRequestViewModel.selectedDistrict.value
-                        ),
-                        selectedValue = createRequestViewModel.selectedCity.value,
-                        onSelection = {
-                            createRequestViewModel.onEvent(
-                                RegistrationUIEvent.CityValueChangeEvent(it)
-                            )
-                            createRequestViewModel.selectCity(it)
-                            createRequestViewModel.newRequestUiState.value.cityErrorState
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    SelectStateDistrictCityField(
                         label = "Zip",
                         options = getPinCodeList(
                             createRequestViewModel.selectedState.value,
                             createRequestViewModel.selectedDistrict.value,
-                            createRequestViewModel.selectedCity.value
                         ),
                         selectedValue = createRequestViewModel.selectedPinCode.value,
                         onSelection = {
@@ -144,6 +127,23 @@ fun CreateRequestScreen(
                             )
                             createRequestViewModel.selectPin(it)
                             createRequestViewModel.newRequestUiState.value.pinCodeErrorState
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    SelectStateDistrictCityField(
+                        label = "City",
+                        options = getCityList(
+                            createRequestViewModel.selectedState.value,
+                            createRequestViewModel.selectedDistrict.value,
+                            createRequestViewModel.selectedPinCode.value
+                        ),
+                        selectedValue = createRequestViewModel.selectedCity.value,
+                        onSelection = {
+                            createRequestViewModel.onEvent(
+                                RegistrationUIEvent.CityValueChangeEvent(it)
+                            )
+                            createRequestViewModel.selectCity(it)
+                            createRequestViewModel.newRequestUiState.value.cityErrorState
                         },
                         modifier = Modifier.fillMaxWidth()
                     )

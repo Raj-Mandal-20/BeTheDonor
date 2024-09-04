@@ -116,13 +116,12 @@ class RegistrationViewModel() : ViewModel() {
         selectedPinCode.value = null
     }
 
-    fun selectCity(city: String) {
-        selectedCity.value = city
-        selectedPinCode.value = null
-    }
-
     fun selectPin(pinCode: String) {
         selectedPinCode.value = pinCode
+        selectedCity.value=null
+    }
+    fun selectCity(city: String) {
+        selectedCity.value = city
     }
 
     fun setAvailableToDonate(value: Boolean) {
@@ -186,7 +185,7 @@ class RegistrationViewModel() : ViewModel() {
             is RegistrationUIEvent.DistrictValueChangeEvent -> {
                 registrationUIState.value = registrationUIState.value.copy(
                     district = event.district,
-                    cityErrorState = Validator.validateString(event.district)
+                    districtErrorState = Validator.validateString(event.district)
                 )
             }
 

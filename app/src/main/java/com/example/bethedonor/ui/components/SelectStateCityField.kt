@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -58,29 +59,25 @@ fun SelectStateDistrictCityField(
     modifier: Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    //var selectedOptionText by remember { mutableStateOf("") }
-//    var selectedState by remember {
-//        mutableStateOf(null as State?)
-//    }
-    var isErrorState by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var supportingTextState by rememberSaveable {
-        mutableStateOf("")
-    }
+    var isErrorState by rememberSaveable { mutableStateOf(false) }
+    var supportingTextState by rememberSaveable { mutableStateOf("") }
+    var searchText by rememberSaveable { mutableStateOf(selectedValue ?: "") } // Display selected value
+    var dropdownSearchText by rememberSaveable { mutableStateOf("") } // Search text for filtering options
+
+    val filteredOptions = options.filter { it.contains(dropdownSearchText, ignoreCase = true) } // Filtered options based on search
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     var textFieldWidth by remember { mutableStateOf(0.dp) }
-    val density = LocalDensity.current // Capture LocalDensity within the composable context
+    val density = LocalDensity.current
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-        modifier
-            .clip(shape = RoundedCornerShape(8.dp))
+        modifier = modifier.clip(shape = RoundedCornerShape(8.dp))
     ) {
+        // Main input field - Read-Only
         OutlinedTextField(
-            readOnly = true,
+            readOnly = true,  // Set to read-only
             label = { Text(text = label, fontSize = 14.sp) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
@@ -103,7 +100,7 @@ fun SelectStateDistrictCityField(
             textStyle = TextStyle(color = Color.White),
             shape = RoundedCornerShape(16.dp),
             isError = if (recheckFiled) {
-                val result = onSelection(selectedValue ?: "")
+                val result = onSelection(searchText) // Validate based on the selected value
                 supportingTextState = result.errorComment
                 isErrorState = !result.status
                 isErrorState
@@ -117,8 +114,8 @@ fun SelectStateDistrictCityField(
                     )
                 }
             },
-            value = selectedValue ?: "",
-            onValueChange = {},
+            value = searchText, // Display the selected value
+            onValueChange = { /* No action needed since it is read-only */ },
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
@@ -126,24 +123,49 @@ fun SelectStateDistrictCityField(
                     textFieldWidth = with(density) { coordinates.size.width.toDp() }
                 }
         )
+        // Dropdown with search field
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .background(fadeBlue11)
-                .width(textFieldWidth)  // Set the width of the dropdown to match the text field width
+                .width(textFieldWidth * 2f),
+            scrollState = rememberScrollState()
         ) {
+            // Search field inside the dropdown
+            SearchBarComponent(
+                searchQuery =dropdownSearchText,
+                onSearchQueryChange = {
+                   dropdownSearchText=it
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)//.border(1.dp, bloodRed2, shape = RoundedCornerShape(8.dp)))
+            )
+//            OutlinedTextField(
+//                value = dropdownSearchText,
+//                onValueChange = { dropdownSearchText = it },
+//                placeholder = { Text(text = "Search...", color = Color.Gray) },
+//                singleLine = true,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(8.dp)
+//                    .background(Color.White, RoundedCornerShape(8.dp))
+//            )
             LazyColumn(
                 modifier = Modifier
                     .width(textFieldWidth)
-                    .height(screenHeight * 0.4f)  // You can adjust the height as needed
+                    .height(screenHeight * 0.5f)
             ) {
-                items(options) { option ->
+                items(filteredOptions) { option ->
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
                                 expanded = false
+                                searchText =
+                                    option // Set the read-only field to the selected option
+                                dropdownSearchText = "" // Reset search text after selection
                                 val validationResult = onSelection(option)
                                 supportingTextState = validationResult.errorComment
                                 isErrorState = !validationResult.status
@@ -152,7 +174,9 @@ fun SelectStateDistrictCityField(
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = option,
-                            modifier = Modifier.padding(start = 10.dp),
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .width(textFieldWidth),
                             color = Color.White
                         )
                         Spacer(modifier = Modifier.height(12.dp))

@@ -38,21 +38,25 @@ fun getDistrictList(selectedState: String?): List<String> {
         ?: emptyList()
 }
 
-fun getCityList(selectedState: String?, selectedDistrict: String?): List<String> {
-    return selectedDistrict.let {
-        areaData?.states?.get(selectedState)?.get(it)?.keys?.toList()
+fun getPinCodeList(selectedState: String?, selectedDistrict: String?): List<String> {
+    // Fetch all pin codes for the selected district
+    return selectedDistrict?.let {
+        areaData?.states?.get(selectedState)?.get(it)?.values?.distinct()?.toList()
     } ?: emptyList()
 }
 
-fun getPinCodeList(
+fun getCityList(
     selectedState: String?,
     selectedDistrict: String?,
-    selectedCity: String?
+    selectedPinCode: String?
 ): List<String> {
-    return selectedCity.let {
+    // Fetch cities based on the selected pin code
+    return selectedPinCode?.let {
         areaData?.states?.get(selectedState)?.get(selectedDistrict)
-            ?.get(it)
-    }?.let { listOf(it) } ?: emptyList()
+            ?.filterValues { it == selectedPinCode }
+            ?.keys
+            ?.toList()
+    } ?: emptyList()
 }
 
 

@@ -71,7 +71,7 @@ fun AfterLogInNavigationStack(
                 ),
                 exit = slideOutVertically(
                     targetOffsetY = { fullHeight -> fullHeight },
-                    animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing)
+                    animationSpec = tween(durationMillis = 450, easing = FastOutLinearInEasing)
                 )
             ) {
                 BottomNavBar(

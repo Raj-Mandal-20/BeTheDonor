@@ -274,46 +274,10 @@ fun RegistrationScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     SelectStateDistrictCityField(
-                                        label = "City",
-                                        options = getCityList(
-                                            selectedState = registrationViewModel.selectedState.value,
-                                            selectedDistrict = registrationViewModel.selectedDistrict.value
-                                        ),
-                                        selectedValue = registrationViewModel.selectedCity.value,
-                                        onSelection = {
-                                            registrationViewModel.onEvent(
-                                                RegistrationUIEvent.CityValueChangeEvent(
-                                                    it
-                                                )
-                                            )
-                                            registrationViewModel.selectCity(it)
-                                            registrationViewModel.printState()
-                                            registrationViewModel.registrationUIState.value.cityErrorState
-                                        },
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(end = 4.dp),
-                                        // recheckFiled = recheckFiled,
-                                    )
-
-//                                NumericOnlyField(
-//                                    onFiledValueChanged = {
-//                                        registrationViewModel.onEvent(
-//                                            RegistrationUIEvent.PinCodeValueChangeEvent(it)
-//                                        )
-//                                        registrationViewModel.printState()
-//                                        registrationViewModel.registrationUIState.value.pinCodeErrorState
-//                                    },
-//                                    recheckFiled = recheckFiled,
-//                                    label = "Zip Code",
-//                                    modifier = Modifier.fillMaxWidth()
-//                                )
-                                    SelectStateDistrictCityField(
                                         label = "Zip",
                                         options = getPinCodeList(
                                             selectedState = registrationViewModel.selectedState.value,
                                             selectedDistrict = registrationViewModel.selectedDistrict.value,
-                                            selectedCity = registrationViewModel.selectedCity.value
                                         ),
                                         selectedValue = registrationViewModel.selectedPinCode.value,
                                         onSelection = {
@@ -328,8 +292,31 @@ fun RegistrationScreen(
                                         },
                                         modifier = Modifier
                                             .weight(1f)
-                                            .padding(start = 4.dp),
+                                            .padding(end = 4.dp),
                                         //   recheckFiled = recheckFiled,
+                                    )
+                                    SelectStateDistrictCityField(
+                                        label = "City",
+                                        options = getCityList(
+                                            selectedState = registrationViewModel.selectedState.value,
+                                            selectedDistrict = registrationViewModel.selectedDistrict.value,
+                                            selectedPinCode = registrationViewModel.selectedPinCode.value
+                                        ),
+                                        selectedValue = registrationViewModel.selectedCity.value,
+                                        onSelection = {
+                                            registrationViewModel.onEvent(
+                                                RegistrationUIEvent.CityValueChangeEvent(
+                                                    it
+                                                )
+                                            )
+                                            registrationViewModel.selectCity(it)
+                                            registrationViewModel.printState()
+                                            registrationViewModel.registrationUIState.value.cityErrorState
+                                        },
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(start = 4.dp),
+                                        // recheckFiled = recheckFiled,
                                     )
                                 }
                             }

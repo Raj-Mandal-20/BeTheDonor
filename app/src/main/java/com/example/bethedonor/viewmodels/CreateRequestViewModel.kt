@@ -163,15 +163,11 @@ class CreateRequestViewModel : ViewModel() {
         selectedCity.value = null
         selectedPinCode.value = null
     }
-
-    fun selectCity(city: String) {
-        selectedCity.value = city
-        selectedPinCode.value = null
-    }
-
     fun selectPin(pinCode: String) {
         selectedPinCode.value = pinCode
+        selectedCity.value=null
     }
-
-
+    fun selectCity(city: String) {
+        selectedCity.value = city
+    }
 }

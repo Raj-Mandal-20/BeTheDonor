@@ -605,10 +605,31 @@ fun ProfileScreen(
                                     .fillMaxWidth()
                             )
                             SelectStateDistrictCityField(
+                                label = "Zip",
+                                options = getPinCodeList(
+                                    selectedState = profileViewmodel.selectedState.value,
+                                    selectedDistrict = profileViewmodel.selectedDistrict.value,
+                                ),
+                                selectedValue = profileViewmodel.selectedPinCode.value,
+                                onSelection = {
+                                    isFieldChanged.value = true
+                                    profileViewmodel.onEvent(
+                                        RegistrationUIEvent.PinCodeValueChangeEvent(
+                                            it
+                                        )
+                                    )
+                                    profileViewmodel.selectPin(it)
+                                    profileViewmodel.updateProfileUiState.value.pinCodeErrorState
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                            SelectStateDistrictCityField(
                                 label = "City",
                                 options = getCityList(
                                     selectedState = profileViewmodel.selectedState.value,
-                                    selectedDistrict = profileViewmodel.selectedDistrict.value
+                                    selectedDistrict = profileViewmodel.selectedDistrict.value,
+                                    selectedPinCode = profileViewmodel.selectedPinCode.value
                                 ),
                                 selectedValue = profileViewmodel.selectedCity.value,
                                 onSelection = {
@@ -625,27 +646,6 @@ fun ProfileScreen(
                                     .fillMaxWidth()
                             )
 
-                            SelectStateDistrictCityField(
-                                label = "Zip",
-                                options = getPinCodeList(
-                                    selectedState = profileViewmodel.selectedState.value,
-                                    selectedDistrict = profileViewmodel.selectedDistrict.value,
-                                    selectedCity = profileViewmodel.selectedCity.value
-                                ),
-                                selectedValue = profileViewmodel.selectedPinCode.value,
-                                onSelection = {
-                                    isFieldChanged.value = true
-                                    profileViewmodel.onEvent(
-                                        RegistrationUIEvent.PinCodeValueChangeEvent(
-                                            it
-                                        )
-                                    )
-                                    profileViewmodel.selectPin(it)
-                                    profileViewmodel.updateProfileUiState.value.pinCodeErrorState
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            )
                             AvailabilityCheckerField(
                                 value = profileViewmodel.availableToDonate.value,
                                 onCheckerChange = {
