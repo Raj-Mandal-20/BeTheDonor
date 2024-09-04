@@ -608,7 +608,7 @@ exports.mailChange = async (req, res, next) => {
     console.log(generateOtp);
     generateOtp.save();
 
-    const currentUser = await User.findById({_id : req.body.userId});
+    const currentUser = await User.findById({_id : req.userId});
     
     await verificationOTPMail(currentUser.name, password, currentUser.email, emailId);
 
