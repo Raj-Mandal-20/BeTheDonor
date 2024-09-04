@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -49,34 +50,32 @@ fun BottomNavBar(
     onHistoryNavigate: () -> Unit,
     onProfileNavigate: () -> Unit
 ) {
-    Log.d("BottomNavBar", "selectedDestination: ${selectedDestination}")
+    // Log the currently selected destination for debugging
+    Log.d("BottomNavBar", "selectedDestination: $selectedDestination")
+
+    // Define the bottom app bar with a specific background color and padding
     BottomAppBar(
         containerColor = fadeBlue11,
         contentPadding = PaddingValues(top = 0.dp)
     ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .background(Color.Transparent),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically,
-//        ) {
+        // Add individual navigation items
         BottomNavBarItem(
             BottomNavItem.Home,
             selectedDestination,
             modifier = Modifier.weight(1f),
             onCLick = {
-                //     selectedDestination.value = BottomNavItem.Home.route
                 onHomeNavigate()
-            })
+            }
+        )
         BottomNavBarItem(
             BottomNavItem.Request,
             selectedDestination,
             modifier = Modifier.weight(1f),
             onCLick = {
-                //selectedDestination.value = BottomNavItem.Request.route
                 onAllRequestNavigate()
-            })
+            }
+        )
+        // Center create request icon
         CreateRequestIcon(modifier = Modifier.weight(1f), onClick = {
             onCreateRequestNavigate()
         })
@@ -85,30 +84,30 @@ fun BottomNavBar(
             selectedDestination,
             modifier = Modifier.weight(1f),
             onCLick = {
-                //  selectedDestination.value = BottomNavItem.History.route
                 onHistoryNavigate()
-            })
+            }
+        )
         BottomNavBarItem(
             BottomNavItem.Profile,
             selectedDestination,
             modifier = Modifier.weight(1f),
             onCLick = {
-                //    selectedDestination = BottomNavItem.Profile.route
                 onProfileNavigate()
-            })
-        // }
+            }
+        )
     }
 }
 
-
 @Composable
 fun CreateRequestIcon(onClick: () -> Unit, modifier: Modifier) {
+    // Create a circular red button with a plus icon in the middle
     Box(
         modifier = modifier
             .fillMaxSize()
             .padding(8.dp)
             .clickable { onClick() }
-            .background(bloodRed2, shape = RoundedCornerShape(60.dp)),
+            .clip(RoundedCornerShape(60))
+            .background(bloodRed2),
         contentAlignment = Alignment.Center,
     ) {
         Icon(imageVector = Icons.Outlined.Add, contentDescription = "create", tint = Color.White)
@@ -122,15 +121,15 @@ fun BottomNavBarItem(
     onCLick: () -> Unit,
     modifier: Modifier
 ) {
-
+    // Create individual bottom navigation item
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .clickable { onCLick() }
             .drawBehind {
+                // Draw an underline if the item is selected
                 if (selected == item.route) {
                     val strokeWidth = 4.dp.toPx()
-                    val y = size.height - strokeWidth / 2
                     drawLine(
                         color = bloodRed2,
                         start = Offset(0f, 0f),
@@ -139,8 +138,8 @@ fun BottomNavBarItem(
                     )
                 }
             }
-    )
-    {
+    ) {
+        // Arrange icon and text vertically
         Column(
             modifier = modifier.fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -149,8 +148,7 @@ fun BottomNavBarItem(
             Icon(
                 imageVector = item.icon,
                 contentDescription = item.label,
-                modifier = Modifier
-                    .size(30.dp),
+                modifier = Modifier.size(30.dp),
                 tint = if (selected == item.route) bloodRed2 else Gray3,
             )
             Text(
@@ -158,18 +156,7 @@ fun BottomNavBarItem(
                 color = if (selected == item.route) bloodRed2 else Gray3,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold
-                //modifier = Modifier.padding(top = 8.dp) // Reduced padding to decrease space
             )
-//            if(selected.value == item.route)
-//            HorizontalDivider(modifier = Modifier.size(25.dp), thickness = 3.dp, color = bloodRed3)
         }
     }
 }
-
-
-//@Preview
-//@Composable
-//fun HomePreview() {
-//    BottomNavBar(navController = NavController(LocalContext.current), onHomeNavigate = {
-//    })
-//}

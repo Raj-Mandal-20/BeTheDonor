@@ -39,7 +39,7 @@ class BeforeLogInActivity : ComponentActivity() {
                 }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = bgDarkBlue
                 ) {
                     // Initialize the ViewModel
                     val loginViewModel: LoginViewModel = viewModel()

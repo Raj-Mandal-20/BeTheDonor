@@ -538,7 +538,7 @@ fun CarouselItemCard(item: CarouselItem) {
 }
 
 @Composable
-fun AppTopBar() {
+private fun AppTopBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()

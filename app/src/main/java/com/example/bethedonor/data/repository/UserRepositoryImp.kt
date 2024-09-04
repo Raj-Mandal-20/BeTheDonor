@@ -5,10 +5,12 @@ import com.example.bethedonor.data.api.ApiService
 import com.example.bethedonor.data.dataModels.RequestID
 import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
+import com.example.bethedonor.data.dataModels.BackendOTPResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.ChangeEmailRequest
 import com.example.bethedonor.data.dataModels.DonorListResponse
-import com.example.bethedonor.data.dataModels.ForgotPasswordRequest
+import com.example.bethedonor.data.dataModels.EmailID
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 import com.example.bethedonor.data.dataModels.IsDonatedResponse
 import com.example.bethedonor.data.dataModels.LogInRequest
@@ -20,6 +22,7 @@ import com.example.bethedonor.data.dataModels.User
 import com.example.bethedonor.data.dataModels.UserIdRequest
 import com.example.bethedonor.data.dataModels.UserResponse
 import com.example.bethedonor.data.dataModels.UserUpdate
+import com.example.bethedonor.data.dataModels.VerifyOTPRequest
 import com.example.bethedonor.domain.repository.UserRepository
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -49,7 +52,7 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     }
 
     override suspend fun forgetPassword(email: String): Response<ResponseBody> {
-        val request= ForgotPasswordRequest(email)
+        val request = EmailID(email)
         return apiService.forgetPassword(request)
     }
 
@@ -133,5 +136,21 @@ class UserRepositoryImp(private val apiService: ApiService) : UserRepository {
     ): Response<BackendResponse> {
         val requestBody = RequestID(requestId)
         return apiService.toggleRequestStatus("Bearer $token", requestBody)
+    }
+
+    override suspend fun changeEmailId(token: String, changeEmailRequest: ChangeEmailRequest): Response<BackendOTPResponse> {
+
+        return apiService.changeEmail("Bearer $token", changeEmailRequest)
+    }
+
+    override suspend fun verifyOTP(
+        token: String,
+        verifyOTPRequest: VerifyOTPRequest
+    ): Response<BackendResponse> {
+        val verifyOtpRequest = VerifyOTPRequest(
+            otp = verifyOTPRequest.otp,
+            otpId = verifyOTPRequest.otpId
+        )
+        return apiService.verifyOTP("Bearer $token", verifyOtpRequest)
     }
 }

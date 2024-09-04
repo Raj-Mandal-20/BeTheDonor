@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.bethedonor.navigation.AfterLogInNavigationStack
 import com.example.bethedonor.ui.theme.BeTheDonorTheme
+import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.fadeBlue11
 import com.example.bethedonor.utils.readJsonFromAssets
 import com.example.bethedonor.utils.setAreaData
@@ -55,7 +56,7 @@ class AfterLogInActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = bgDarkBlue
                 ) {
                     val homeViewModel: HomeViewModel = viewModel()
                     val currentUserId = homeViewModel.getUserId()

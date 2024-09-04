@@ -91,8 +91,16 @@ data class UpdateProfileRequest(
 data class RequestID(
     val requestId: String
 )
-data class ForgotPasswordRequest(
+data class EmailID(
     val email: String
+)
+data class ChangeEmailRequest(
+    val emailId: String,
+   // val userId: String
+)
+data class VerifyOTPRequest(
+    val otp: String,
+    val otpId: String
 )
 data class Donor(
     val name: String,

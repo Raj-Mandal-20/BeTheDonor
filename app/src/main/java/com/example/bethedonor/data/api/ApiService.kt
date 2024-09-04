@@ -3,10 +3,12 @@ package com.example.bethedonor.data.api
 import com.example.bethedonor.data.dataModels.RequestID
 import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
+import com.example.bethedonor.data.dataModels.BackendOTPResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.ChangeEmailRequest
 import com.example.bethedonor.data.dataModels.DonorListResponse
-import com.example.bethedonor.data.dataModels.ForgotPasswordRequest
+import com.example.bethedonor.data.dataModels.EmailID
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 import com.example.bethedonor.data.dataModels.IsDonatedResponse
 import com.example.bethedonor.data.dataModels.LogInRequest
@@ -16,6 +18,7 @@ import com.example.bethedonor.data.dataModels.RegistrationRequest
 import com.example.bethedonor.data.dataModels.UpdateProfileRequest
 import com.example.bethedonor.data.dataModels.UserIdRequest
 import com.example.bethedonor.data.dataModels.UserResponse
+import com.example.bethedonor.data.dataModels.VerifyOTPRequest
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -39,7 +42,7 @@ interface ApiService {
     suspend fun getProfile(@Header("Authorization") token: String): Response<ProfileResponse>
 
     @POST("auth/forgetPassword")
-    suspend fun forgetPassword(@Body request: ForgotPasswordRequest): Response<ResponseBody>
+    suspend fun forgetPassword(@Body request: EmailID): Response<ResponseBody>
 
     @GET("v1/all-blood-request")
     suspend fun getAllBloodRequests(@Header("Authorization") token: String): Response<BloodRequestsResponse>
@@ -101,5 +104,15 @@ interface ApiService {
         @Body requestBody: RequestID
     ): Response<BackendResponse>
 
+    @POST("v1/mailChange")
+    suspend fun changeEmail(
+        @Header("Authorization") token: String,
+        @Body requestBody: ChangeEmailRequest
+    ): Response<BackendOTPResponse>
 
+    @POST("v1/verify-otp")
+    suspend fun verifyOTP(
+        @Header("Authorization") token: String,
+        @Body requestBody: VerifyOTPRequest
+    ): Response<BackendResponse>
 }

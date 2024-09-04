@@ -23,5 +23,11 @@ sealed class Destination {
 
     @Serializable
     data class Profile(val userId:String ) : Destination()
+
+    @Serializable
+    data class ProfileEdit(val userId:String ) : Destination()
+
+    @Serializable
+    data object EmailEdit : Destination()
 }
 

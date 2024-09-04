@@ -56,7 +56,7 @@ fun ForgotPasswordRecoveryDialog(
 
     Dialog(
         onDismissRequest = { setShowDialog(false) }, properties = DialogProperties(
-            dismissOnBackPress = false, dismissOnClickOutside = false
+            dismissOnClickOutside = false
         )
     ) {
         Surface(

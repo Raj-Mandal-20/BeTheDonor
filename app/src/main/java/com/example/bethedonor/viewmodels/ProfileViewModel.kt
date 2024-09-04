@@ -124,6 +124,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var selectedPinCode: MutableState<String?> = mutableStateOf(null)
     var availableToDonate: MutableState<Boolean> = mutableStateOf(true)
 
+
     fun selectState(state: String) {
         selectedState.value = state
         selectedDistrict.value = null
@@ -160,6 +161,23 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 //    fun shouldFetch(): Boolean {
 //        return (_recomposeTime.value % 3).toInt() == 0
 //    }
+
+    // Edit Email address here and OTP validation **********
+    private val _editEmailScreen = MutableStateFlow(false)
+    val editEmailScreen: StateFlow<Boolean> get() = _editEmailScreen
+    fun setEditEmailScreen(value: Boolean) {
+        _editEmailScreen.value = value
+    }
+    private val _otpDialog = MutableStateFlow(false)
+    val otpDialog: StateFlow<Boolean> get() = _otpDialog
+    fun setOTPDialog(value: Boolean) {
+        _otpDialog.value = value
+    }
+
+
+    //****************************************************
+
+
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()

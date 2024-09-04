@@ -96,7 +96,7 @@ fun AllRequestScreen(
     //**********
     val hasFetchedRequests = allRequestViewModel.getFetchedProfile()
     LaunchedEffect(hasFetchedRequests) {
-        if (!hasFetchedRequests) {
+        if (retryFlag || !hasFetchedRequests) {
             networkCall(
                 token = token,
                 userId = userId,

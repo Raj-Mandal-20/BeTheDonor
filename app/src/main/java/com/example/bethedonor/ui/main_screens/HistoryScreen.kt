@@ -156,10 +156,6 @@ fun HistoryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPadding: PaddingValues) {
-    LaunchedEffect(Unit) {
-        if (historyViewModel.shouldFetch())
-            networkCall(token = token, historyViewModel = historyViewModel, id = 1)
-    }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
@@ -170,6 +166,10 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
     )
     var retryFlag by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        if (retryFlag|| historyViewModel.shouldFetch())
+            networkCall(token = token, historyViewModel = historyViewModel, id = 1)
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             isLoading -> {

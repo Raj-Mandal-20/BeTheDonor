@@ -3,8 +3,10 @@ package com.example.bethedonor.domain.usecase
 import android.util.Log
 import com.example.bethedonor.data.dataModels.AcceptDonationResponse
 import com.example.bethedonor.data.dataModels.AccountResponse
+import com.example.bethedonor.data.dataModels.BackendOTPResponse
 import com.example.bethedonor.data.dataModels.BackendResponse
 import com.example.bethedonor.data.dataModels.BloodRequestsResponse
+import com.example.bethedonor.data.dataModels.ChangeEmailRequest
 import com.example.bethedonor.data.dataModels.DonorListResponse
 import com.example.bethedonor.data.dataModels.HistoryBloodRequestsResponse
 
@@ -17,6 +19,7 @@ import com.example.bethedonor.data.dataModels.ProfileResponse
 import com.example.bethedonor.data.dataModels.User
 import com.example.bethedonor.data.dataModels.UserResponse
 import com.example.bethedonor.data.dataModels.UserUpdate
+import com.example.bethedonor.data.dataModels.VerifyOTPRequest
 import com.example.bethedonor.domain.repository.UserRepository
 
 import com.google.gson.Gson
@@ -79,6 +82,7 @@ class LogInUserUseCase(private val userRepository: UserRepository) {
         }
     }
 }
+
 class ForgetPasswordUseCase(private val userRepository: UserRepository) {
     suspend fun execute(email: String): BackendResponse {
         return try {
@@ -86,7 +90,7 @@ class ForgetPasswordUseCase(private val userRepository: UserRepository) {
             val response = userRepository.forgetPassword(email)
 
             if (response.isSuccessful) {
-                Log.d("if_block","Success")
+                Log.d("if_block", "Success")
                 // Convert the response body to BackendResponse
                 val backendResponse = Gson().fromJson(
                     response.body()?.charStream(), // Use charStream() for Gson
@@ -95,7 +99,7 @@ class ForgetPasswordUseCase(private val userRepository: UserRepository) {
                 backendResponse
             } else {
                 // Handle error response
-                Log.d("else_block","Error")
+                Log.d("else_block", "Error")
                 val errorBody = response.errorBody()?.string() ?: "{}"
                 val errorResponse = Gson().fromJson(errorBody, BackendResponse::class.java)
                 BackendResponse(
@@ -104,7 +108,7 @@ class ForgetPasswordUseCase(private val userRepository: UserRepository) {
                 )
             }
         } catch (e: Exception) {
-            Log.d("catch","Exception")
+            Log.d("catch", "Exception")
             // Handle exception
             BackendResponse(
                 statusCode = "500",
@@ -375,7 +379,11 @@ class ToggleRequestStatusUseCase(private val userRepository: UserRepository) {
                 response.body() ?: BackendResponse(message = "Unknown error", statusCode = "500")
             } else {
                 val errorBody = response.errorBody()?.string() ?: "{}"
-                Gson().fromJson(errorBody, BackendResponse::class.java)
+                val errorResponse = Gson().fromJson(errorBody, BackendResponse::class.java)
+                BackendResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
             }
         } catch (e: Exception) {
             BackendResponse(message = e.message ?: "Unknown error", statusCode = "500")
@@ -383,4 +391,44 @@ class ToggleRequestStatusUseCase(private val userRepository: UserRepository) {
     }
 }
 
+class ChangeEmailIDUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, changeEmailRequest: ChangeEmailRequest): BackendOTPResponse {
+        return try {
+            val response = userRepository.changeEmailId(token, changeEmailRequest)
+            if (response.isSuccessful) {
+                response.body() ?: BackendOTPResponse(message = "Unknown error", statusCode = "500")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, BackendOTPResponse::class.java)
+                BackendOTPResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("catch_emailChange","${e.message}")
+            BackendOTPResponse(message = e.message ?: "Unknown error", statusCode = "500")
+        }
+    }
+}
+
+class VerifyOTPUseCase(private val userRepository: UserRepository) {
+    suspend fun execute(token: String, verifyOTPRequest: VerifyOTPRequest): BackendResponse {
+        return try {
+            val response = userRepository.verifyOTP(token, verifyOTPRequest)
+            if (response.isSuccessful) {
+                response.body() ?: BackendResponse(message = "Unknown error", statusCode = "500")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "{}"
+                val errorResponse = Gson().fromJson(errorBody, BackendOTPResponse::class.java)
+                BackendResponse(
+                    statusCode = response.code().toString(),
+                    message = errorResponse.message
+                )
+            }
+        } catch (e: Exception) {
+            BackendResponse(message = e.message ?: "Unknown error", statusCode = "500")
+        }
+    }
+}
 

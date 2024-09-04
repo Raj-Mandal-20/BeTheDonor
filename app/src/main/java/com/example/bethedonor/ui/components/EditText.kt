@@ -31,13 +31,14 @@ import com.example.bethedonor.ui.theme.teal
 
 @Composable
 fun EditText(
+    modifier:Modifier=Modifier,
     label: String = "hello",
     labelIcon: ImageVector = Icons.Filled.Person,
     onFiledValueChanged: (value: String) -> ValidationResult,
     recheckFiled: Boolean = false,
     value: String="",
     enable:Boolean=true,
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
 ) {
     var textValue by rememberSaveable {
         mutableStateOf(value)
@@ -53,7 +54,7 @@ fun EditText(
     }
     OutlinedTextField(
         readOnly=readOnly,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(8.dp)),
         label = { Text(text = label,fontSize = 14.sp) },
