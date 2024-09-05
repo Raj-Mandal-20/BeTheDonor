@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+    <!-- Add this line to request Internet permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:enableOnBackInvokedCallback="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.BeTheDonor"
+        tools:targetApi="tiramisu" >
+        <activity
+            android:name=".BeforeLogInActivity"
+            android:exported="true"
+            android:enableOnBackInvokedCallback="true"
+            android:theme="@style/Theme.BeTheDonor"
+            tools:targetApi="tiramisu">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".AfterLogInActivity"
+            android:exported="true"
+            android:enableOnBackInvokedCallback="true"
+            android:theme="@style/Theme.BeTheDonor"
+            tools:targetApi="tiramisu">
+        </activity>
+    </application>
+
+</manifest>
