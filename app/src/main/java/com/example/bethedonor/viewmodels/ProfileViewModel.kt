@@ -201,7 +201,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val closeAccountUseCase = CloseAccountUseCase(userRepository)
     private val updateProfileUseCase = UpdateProfileUseCase(userRepository)
     var requestInProgress = mutableStateOf(false)
-
+    var deletingAccountProgress= mutableStateOf(false)
+    var updatingProfileInProgress = mutableStateOf(false)
     fun getProfile(token: String, onProfileFetched: () -> Unit) {
         requestInProgress.value = true
         viewModelScope.launch {
@@ -224,7 +225,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun updateProfile(token: String, onUpdate: (Pair<String, String>) -> Unit) {
-
         val updates = UserUpdate(
             // phoneNumber = updateProfileUiState.value.phoneNo,
             gender = updateProfileUiState.value.gender,
@@ -234,7 +234,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             pin = updateProfileUiState.value.pinCode,
             available = updateProfileUiState.value.checkedAvailabilityStatus
         )
-        requestInProgress.value = true
+       updatingProfileInProgress.value=true
         viewModelScope.launch {
             try {
                 val response = updateProfileUseCase.execute("0", token, updates)
@@ -247,14 +247,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 Log.d("Error", e.message.toString())
                 onUpdate(Pair("failure", result.exceptionOrNull()?.message.toString()))
             } finally {
-                requestInProgress.value = false
+                updatingProfileInProgress.value=false
             }
         }
     }
 
 
     fun deleteAccount(token: String, onDeletePerformed: (Result<AccountResponse>) -> Unit) {
-        requestInProgress.value = true
+        deletingAccountProgress.value=true
         viewModelScope.launch {
             try {
                 val response = closeAccountUseCase.execute(token)
@@ -266,7 +266,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 Log.d("Error", e.message.toString())
                 onDeletePerformed(Result.failure(e))
             } finally {
-                requestInProgress.value = false
+                deletingAccountProgress.value=false
             }
         }
     }

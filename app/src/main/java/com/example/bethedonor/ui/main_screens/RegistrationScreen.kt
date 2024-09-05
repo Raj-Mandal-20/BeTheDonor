@@ -31,9 +31,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bethedonor.R
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.components.AvailabilityCheckerField
 import com.example.bethedonor.ui.components.ButtonComponent
@@ -410,7 +412,7 @@ fun RegistrationScreen(
 
                 }
                 if (registrationViewModel.requestInProgress.value) {
-                    ProgressIndicatorComponent()
+                    ProgressIndicatorComponent(label = stringResource(id = R.string.registering_indicator))
                 }
             }
         }

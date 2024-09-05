@@ -12,6 +12,7 @@ import com.example.bethedonor.domain.usecase.DeleteRequestUseCase
 import com.example.bethedonor.domain.usecase.GetDonorListUseCase
 import com.example.bethedonor.domain.usecase.GetRequestHistoryUseCase
 import com.example.bethedonor.domain.usecase.ToggleRequestStatusUseCase
+import com.squareup.kotlinpoet.MUTABLE_MAP
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -50,6 +51,7 @@ class HistoryViewModel : ViewModel() {
 
 
     val isRequestFetching = MutableStateFlow(false)
+    val isDeletingRequest = MutableStateFlow(false)
     val isToggleStatusRequestFetching = MutableStateFlow(mapOf<String, Boolean>())
 
     private val _recomposeTime = MutableStateFlow(-1L)
@@ -109,7 +111,7 @@ class HistoryViewModel : ViewModel() {
 
     fun deleteRequest(token: String, requestId: String, onResponse: (Result<String>) -> Unit) {
         viewModelScope.launch {
-            isRequestFetching.value = true
+         isDeletingRequest.value=true
             try {
                 Log.d("delete-request-id", requestId)
                 val response = deleteRequestUseCase.execute(token, requestId)
@@ -133,7 +135,7 @@ class HistoryViewModel : ViewModel() {
                 Log.e("HistoryViewModel", "Error deleting request: ${e.message}")
             } finally {
                 _deleteRequestResponse.value?.let { onResponse(it) }
-                isRequestFetching.value = false
+                isDeletingRequest.value=false
             }
         }
     }

@@ -39,10 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.bethedonor.R
 import com.example.bethedonor.ui.components.AcceptorDetailsCard
 import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.RequestHistoryCard
@@ -167,13 +169,13 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
     var retryFlag by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        if (retryFlag|| historyViewModel.shouldFetch())
+        if (retryFlag || historyViewModel.shouldFetch())
             networkCall(token = token, historyViewModel = historyViewModel, id = 1)
     }
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             isLoading -> {
-                ProgressIndicatorComponent()
+                ProgressIndicatorComponent(label = stringResource(id = R.string.loading_indicator))
                 retryFlag = false
             }
 
@@ -192,7 +194,7 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                     listOf()
                 }
                 requestHistory?.let {
-                    LazyColumn(state = rememberLazyListState()){
+                    LazyColumn(state = rememberLazyListState()) {
                         item {
                             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
                         }
@@ -249,7 +251,9 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                 }
             }
         }
-
+        if (historyViewModel.isDeletingRequest.collectAsState().value) {
+            ProgressIndicatorComponent(label = stringResource(id = R.string.delete_request_indicator))
+        }
     }
     if (showBottomSheet) {
         val isDonorListFetching by historyViewModel.isDonorListFetching.collectAsState()
@@ -294,7 +298,7 @@ fun RequestScreen(token: String, historyViewModel: HistoryViewModel, innerPaddin
                     }
                 }
                 if (isDonorListFetching) {
-                    ProgressIndicatorComponent()
+                    ProgressIndicatorComponent(label = stringResource(id = R.string.loading_indicator))
                 }
             }
 

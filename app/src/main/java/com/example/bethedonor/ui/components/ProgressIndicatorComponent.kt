@@ -1,10 +1,16 @@
 package com.example.bethedonor.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +29,7 @@ import com.example.bethedonor.ui.theme.teal
 
 @Preview
 @Composable
-fun ProgressIndicatorComponent() {
+fun ProgressIndicatorComponent(label: String="Deleting...") {
     Dialog(
         onDismissRequest = { },
         DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
@@ -31,15 +37,24 @@ fun ProgressIndicatorComponent() {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(60.dp)
-                .background(fadeBlue11, shape = RoundedCornerShape(30.dp))
+                .fillMaxWidth()
+                .background(fadeBlue11, shape = RoundedCornerShape(8.dp))
         ) {
-            CircularProgressIndicator(
-                color = bloodRed2,
-                strokeWidth = 4.dp,
-                trackColor = darkGray,
-                strokeCap = StrokeCap.Round
-            )
+            Row(
+                Modifier.fillMaxWidth().padding(vertical = 20.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CircularProgressIndicator(
+                    color = bloodRed2,
+                    strokeWidth = 4.dp,
+                    trackColor = darkGray,
+                    strokeCap = StrokeCap.Round
+                )
+
+                Text(text = label, style = MaterialTheme.typography.bodyLarge, color = White)
+            }
+
         }
     }
 

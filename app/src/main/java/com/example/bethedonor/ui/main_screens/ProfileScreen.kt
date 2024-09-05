@@ -17,13 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -44,14 +39,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -60,8 +49,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -75,20 +62,14 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bethedonor.R
 import com.example.bethedonor.data.dataModels.ProfileResponse
 import com.example.bethedonor.ui.components.AvailabilityCheckerField
 import com.example.bethedonor.ui.components.ButtonComponent
@@ -97,19 +78,13 @@ import com.example.bethedonor.ui.components.ProgressIndicatorComponent
 import com.example.bethedonor.ui.components.Retry
 import com.example.bethedonor.ui.components.SelectStateDistrictCityField
 import com.example.bethedonor.ui.components.SelectionField
-import com.example.bethedonor.ui.components.SubGreetText
 import com.example.bethedonor.ui.components.WarningDialog
-import com.example.bethedonor.ui.theme.ErrorColor
-import com.example.bethedonor.ui.theme.Gray1
-import com.example.bethedonor.ui.theme.Gray3
 import com.example.bethedonor.ui.theme.activeColor1
 import com.example.bethedonor.ui.theme.bgDarkBlue
 import com.example.bethedonor.ui.theme.bloodRed2
 import com.example.bethedonor.ui.theme.bloodTransparent2
 import com.example.bethedonor.ui.theme.darkGray
 import com.example.bethedonor.ui.theme.fadeBlue11
-import com.example.bethedonor.ui.theme.fadeBlue2
-import com.example.bethedonor.ui.theme.teal
 import com.example.bethedonor.ui.utils.commons.showToast
 import com.example.bethedonor.ui.utils.uievent.RegistrationUIEvent
 import com.example.bethedonor.ui.utils.validationRules.ValidationResult
@@ -123,7 +98,6 @@ import com.example.bethedonor.utils.getPhoneNoWithoutCountryCode
 import com.example.bethedonor.utils.getPinCodeList
 import com.example.bethedonor.utils.getStateDataList
 import com.example.bethedonor.viewmodels.ProfileViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -134,7 +108,7 @@ fun ProfileScreen(
     innerPadding: PaddingValues,
     profileViewmodel: ProfileViewModel,
     onLogOutNavigate: () -> Unit,
-    onEmailEditNavigate:()->Unit
+    onEmailEditNavigate: () -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -147,7 +121,7 @@ fun ProfileScreen(
         skipPartiallyExpanded = true
     )
     var showBottomSheetForEditProfile by remember { mutableStateOf(false) }
-    var showBottomSheetForEditEmail by remember { mutableStateOf(false) }
+
 
     val isRefreshing by profileViewmodel.isRefreshing.collectAsState()
     val pullToRefreshState = rememberPullToRefreshState()
@@ -326,7 +300,7 @@ fun ProfileScreen(
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.clickable {
-                                  onEmailEditNavigate()
+                                    onEmailEditNavigate()
                                 }
                             )
                         }
@@ -440,9 +414,6 @@ fun ProfileScreen(
                 )
             }
 
-            if (profileViewmodel.editEmailScreen.collectAsState().value) {
-               // EditEmailScreen(profileViewmodel, authToken, sheetState)
-            }
         }
         val recheckFiled by remember {
             mutableStateOf(false)
@@ -677,16 +648,13 @@ fun ProfileScreen(
                                                 authToken,
                                                 onResolve = {
                                                     profileResponse?.let { it ->
-                                                        if(it.isSuccess){
+                                                        if (it.isSuccess) {
                                                             profileData = it.getOrNull()
-                                                        }else{
-                                                            errorMessage=it.exceptionOrNull()?.message.toString()
+                                                        } else {
+                                                            errorMessage =
+                                                                it.exceptionOrNull()?.message.toString()
                                                         }
-//                                                        profileData = if (it.isSuccess) {
-//                                                            it.getOrNull()
-//                                                        } else {
-//                                                            ProfileResponse(message = it.exceptionOrNull()?.message.toString())
-//                                                        }
+//
                                                     }
                                                 }
                                             )
@@ -702,9 +670,14 @@ fun ProfileScreen(
         }
 
         if (profileViewmodel.requestInProgress.value && !isRefreshing) {
-            ProgressIndicatorComponent()
+            ProgressIndicatorComponent(label = stringResource(id = R.string.loading_indicator))
         }
-
+        if (profileViewmodel.deletingAccountProgress.value) {
+            ProgressIndicatorComponent(label = stringResource(id = R.string.delete_account_indicator))
+        }
+        if (profileViewmodel.updatingProfileInProgress.value) {
+            ProgressIndicatorComponent(label = stringResource(id = R.string.updating_profile_indicator))
+        }
         if (profileData?.myProfile == null && profileData?.message != null && !profileViewmodel.requestInProgress.value) {
             Retry(message = profileData?.message.toString(), onRetry = {
                 coroutineScope.launch {

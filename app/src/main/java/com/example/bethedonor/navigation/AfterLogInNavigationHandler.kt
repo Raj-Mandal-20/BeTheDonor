@@ -7,7 +7,6 @@ import androidx.compose.animation.core.EaseInQuad
 import androidx.compose.animation.core.EaseOutQuad
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -28,7 +27,7 @@ import com.example.bethedonor.ui.main_screens.HistoryScreen
 import com.example.bethedonor.ui.main_screens.HomeScreen
 import com.example.bethedonor.ui.main_screens.ProfileScreen
 import com.example.bethedonor.ui.theme.bgDarkBlue
-import com.example.bethedonor.ui.utils.uievent.BottomNavItem
+import com.example.bethedonor.ui.utils.BottomNavItem
 import com.example.bethedonor.viewmodels.MainViewModel
 
 @Composable

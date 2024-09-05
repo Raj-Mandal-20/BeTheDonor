@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -110,7 +111,7 @@ fun EditEmailScreen(
                     },
                 )
                 ButtonComponent(buttonText = "Next", onButtonClick = {
-                    editEmailViewModel.changeEmailId(authToken,userId,onResponse = { response ->
+                    editEmailViewModel.changeEmailId(authToken, userId, onResponse = { response ->
                         response.let {
                             if (!it.otpId.isNullOrEmpty()) {
                                 editEmailViewModel.setOTPDialog(true)
@@ -126,13 +127,16 @@ fun EditEmailScreen(
                 )
             }
             if (editEmailViewModel.otpDialog.collectAsState().value) {
-                OTPDialog(editEmailViewModel, authToken,onNavigateBack={
+                OTPDialog(editEmailViewModel, authToken, onNavigateBack = {
                     onNavigateBack()
                 })
             }
 
             if (editEmailViewModel.requestInProgress.value) {
-                ProgressIndicatorComponent()
+                ProgressIndicatorComponent(label = stringResource(id = R.string.sending_indicator))
+            }
+            if (editEmailViewModel.verifyInProgress.value) {
+                ProgressIndicatorComponent(label = stringResource(id = R.string.verifying_indicator))
             }
         }
     }
@@ -164,7 +168,11 @@ fun ScreenTopBar(onNavigateBack: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun OTPDialog(editEmailViewModel: EditEmailViewModel, authToken: String, onNavigateBack: () -> Unit) {
+fun OTPDialog(
+    editEmailViewModel: EditEmailViewModel,
+    authToken: String,
+    onNavigateBack: () -> Unit
+) {
     val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -306,7 +314,7 @@ fun OTPDialog(editEmailViewModel: EditEmailViewModel, authToken: String, onNavig
                                 editEmailViewModel.setOTPDialog(false)
                                 onNavigateBack()
                             }
-                            showToast(context = context,response.message.toString())
+                            showToast(context = context, response.message.toString())
                         })
                 }, isEnable = isOtpComplete)
             }

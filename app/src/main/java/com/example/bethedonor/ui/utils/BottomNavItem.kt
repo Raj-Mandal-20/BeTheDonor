@@ -1,4 +1,4 @@
-package com.example.bethedonor.ui.utils.uievent
+package com.example.bethedonor.ui.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.History

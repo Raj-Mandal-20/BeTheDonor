@@ -63,6 +63,7 @@ class EditEmailViewModel : ViewModel() {
     private val changeEmailUseCase = ChangeEmailIDUseCase(userRepository)
     private val verifyOTPUseCase = VerifyOTPUseCase(userRepository)
     var requestInProgress = mutableStateOf(false)
+    var verifyInProgress = mutableStateOf(false)
     private val otpId = mutableStateOf("")
 
     fun changeEmailId(token: String, userId: String, onResponse: (BackendOTPResponse) -> Unit) {
@@ -91,7 +92,7 @@ class EditEmailViewModel : ViewModel() {
     }
 
     fun verifyOTP(token: String, otp: String, onResponse: (BackendResponse) -> Unit) {
-        requestInProgress.value = true
+        verifyInProgress.value=true
         viewModelScope.launch {
             try {
                 val response = verifyOTPUseCase.execute(
@@ -105,7 +106,7 @@ class EditEmailViewModel : ViewModel() {
                 onResponse(BackendResponse(message = e.message.toString()))
             } finally {
                 resetTheUiState()
-                requestInProgress.value = false
+                verifyInProgress.value=false
             }
         }
     }
