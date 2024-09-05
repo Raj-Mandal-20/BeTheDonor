@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ![bethedonor](https://github.com/Raj-Mandal-20/hack4bengal/assets/99534700/ee9c848e-b303-4cf4-aa7a-deb79e6c38fa)
 
 # Introduction
@@ -68,4 +69,6 @@ https://github.com/Raj-Mandal-20/BeTheDonor.git
 * Dedicated page for posting information about future blood donation camps.
 
 [bethedonor youtube video link](https://youtu.be/qVwKbDKiQCc)
+=======
+>>>>>>> android-repo/main
 
