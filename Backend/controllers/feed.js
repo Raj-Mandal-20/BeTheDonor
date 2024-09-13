@@ -358,9 +358,26 @@ exports.donatedHistory = async (req, res, next) => {
 exports.closeAccount = async (req, res, next) => {
   try {
     await Request.deleteMany({ userId: req.userId });
-    await Donor.deleteMany({ userId: req.userId });
-    await User.deleteOne({ _id: req.userId });
+    const currentUserDonations = await Donor.find({
+      userId : req.userId,
+    });
+    console.log(currentUserDonations);
+    // delete where user alreaday donated
+    await Promise.all(
+      currentUserDonations.map(async({requestId, _id})=>{
+        const request = await Request.findById({_id : requestId});
+        const filteredDonors = request.donors.filter(donationId => donationId.toString() !== _id.toString());
 
+        request.donors = filteredDonors;
+
+        console.log(request.donors);
+        await request.save();
+      })
+    )
+    await Donor.deleteMany({userId : req.userId});
+    await User.deleteOne({ _id: req.userId });
+        
+    
     res.status(200).json({
       message: "Account Closed Successfully",
       isAccountClosed: true,
