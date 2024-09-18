@@ -14,7 +14,7 @@ const updateClosedRequests = async () => {
   }
 };
 
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("10 * * * *", async () => {
   console.log("Checking for expired deadlines...");
   await updateClosedRequests();
 });
