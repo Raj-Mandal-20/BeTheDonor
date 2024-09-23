@@ -1,12 +1,15 @@
 import Register from "@/components/Register";
-import { getHost } from "../actions";
-import data from "../../data.json";
+import state_district_city_pin from '../../lib/state_district_city_pin.json';
+import { getSession } from "../actions/auth";
+import { redirect } from "next/navigation";
 
 const page = async () => {
-    const host = await getHost();
+    if (await getSession()) {
+        redirect("/myprofile/dashboard");
+    }
     return (
         <div className="w-full p-8 flex justify-center items-start min-h-screen">
-            <Register HOST={host} data={data}/>
+            <Register data={state_district_city_pin} />
         </div>
     )
 }

@@ -1,74 +1,61 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { parseCookies } from "nookies";
 import MoonLoader from "react-spinners/MoonLoader";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import {
-//   faEnvelope,
-//   faHospital,
-//   faBell
-// } from "@fortawesome/free-regular-svg-icons";
-// import {
-//   faPhone,
-//   faLocationCrosshairs,
-//   faLocationDot
-// } from "@fortawesome/free-solid-svg-icons";
+import { acceptRequest } from "@/app/actions/requests";
+import { getUser } from "@/app/actions/user";
+import { toast } from "react-toastify";
 
 const BloodRequest = (props) => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
-  const [accepted, setAccepted] = useState(false);
-  const cookies = parseCookies();
-  const currentUser = cookies["userId"];
+  const [disabled, setDisabled] = useState(false);
+  const [isClosed, setIsClosed] = useState(props.request.isClosed);
+  const [logo, setLogo] = useState('');
   const createdAt = new Date(props.request.createdAt).toDateString();
   const lastDate = new Date(props.request.deadline).toDateString();
-  const [status, setStatus] = useState(true);
-  const [logo, setLogo] = useState('');
 
-  const fetchUser = async () => {
-    setLoading(true);
-    const getUser = await fetch(`${props.HOST}/v1/fetchUserByUserId`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + cookies["usertoken"],
-      },
-      body: JSON.stringify({ userId: props.request.userId }),
-    });
-    const fetchedUser = await getUser.json();
-    setUser(fetchedUser.user);
-    const acceptor = await fetch(`${props.HOST}/v1/donor?requestId=${props.request._id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + cookies["usertoken"],
-      },
-    });
-    const fetchedAcceptor = await acceptor.json();
-    setAccepted(fetchedAcceptor.isDonated);
+  const checkIfDeadlineIsMissed = async () => {
     let c = new Date();
     let d = new Date(props.request.deadline);
     let year = d.getFullYear() - c.getFullYear();
     let month = d.getMonth() - c.getMonth();
     let day = d.getDate() - c.getDate();
     if (year > 0) {
-      setStatus(true)
+      return false;
     } else if (year == 0) {
       if (month > 0) {
-        setStatus(true)
+        return false;
       } else if (month == 0) {
-        if (day > 0) {
-          setStatus(true)
-        } else if (day == 0) {
-          setStatus(true)
-        } else {
-          setStatus(false)
-        }
-      } else {
-        setStatus(false)
-      }
+        if (day >= 0) {
+          return false;
+        } else { return true; }
+      } else { return true; }
+    } else { return true; }
+  };
+
+  const fetchUser = async () => {
+    setLoading(true);
+    const fetchedUser = await getUser(props.request.userId);
+    if (fetchedUser.user) {
+      setUser(fetchedUser.user);
     } else {
-      setStatus(false)
+      setUser({});
+      toast.error(`Failed to fetch user for request Id: ${props.request._id}`, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+    const isDeadlineMissed = await checkIfDeadlineIsMissed();
+    if (isDeadlineMissed) {
+      setIsClosed(true);
+    } else {
+      setIsClosed(props.request.isClosed);
     }
     setLoading(false);
   };
@@ -78,7 +65,10 @@ const BloodRequest = (props) => {
   }, [props.request]);
 
   useEffect(() => {
-    if (!user.name) return;
+    if (!user.name) {
+      setLogo('');
+      return;
+    }
     let logo = '';
     let temp = user.name.trim().split(" ");
     let index = 0;
@@ -91,24 +81,15 @@ const BloodRequest = (props) => {
   }, [user]);
 
   const accept = async (e) => {
-    document.getElementById("abRq").disabled = true;
     e.preventDefault();
+    setDisabled(true);
     props.setProgress(10);
-    let res = await fetch(`${props.HOST}/v1/donation`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + cookies["usertoken"],
-      },
-      body: JSON.stringify({ requestId: props.request._id }),
-    });
-    props.setProgress(25);
-    const newCard = await res.json();
+    const newCard = await acceptRequest(props.request._id);
+    props.setProgress(50);
     if (newCard.bloodRequest) {
-      props.setProgress(50);
-      props.toast.success(newCard.message, {
+      toast.success(newCard.message, {
         position: "top-center",
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -117,15 +98,14 @@ const BloodRequest = (props) => {
         theme: "dark",
       });
       props.setProgress(75);
-      props.setDonors({ ...props.donors, [props.request._id]: newCard.bloodRequest.donors?.length });
-      setAccepted(true);
-      document.getElementById("abRq").disabled = false;
+      props.setNoOfAcceptors({ ...props.noOfAcceptors, [props.request._id]: newCard.bloodRequest.donors?.length });
+      props.setCurrentUser(prevState => ({ ...prevState, donates: [...prevState.donates, props.request._id] }));
+      setDisabled(false);
       props.setProgress(100);
     } else {
-      props.setProgress(50);
-      props.toast.error('Failed to accept the request!', {
+      toast.error('Failed to accept the request!', {
         position: "top-center",
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -133,7 +113,8 @@ const BloodRequest = (props) => {
         progress: undefined,
         theme: "dark",
       });
-      document.getElementById("abRq").disabled = false;
+      props.setProgress(75);
+      setDisabled(false);
       props.setProgress(100)
     }
   };
@@ -156,7 +137,7 @@ const BloodRequest = (props) => {
           <div className="flex flex-col gap-2 items-center w-full bg-[#39393b] p-4">
             <div className="w-full flex justify-end">
               {
-                status && (
+                !isClosed && (
                   <div className="inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold border-green-600 bg-white text-green-900">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +156,7 @@ const BloodRequest = (props) => {
                 )
               }
               {
-                !status && (
+                isClosed && (
                   <div className="inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold border-red-500 bg-white text-red-900">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +180,7 @@ const BloodRequest = (props) => {
                 <span className="text-gray-500 text-2xl font-bold">{logo}</span>
               </div>
               <div className="text-2xl font-bold flex text-center">{user.name}</div>
-              {accepted || (currentUser == props.request.userId) ?
+              {props.currentUser.donates.includes(props.request._id) || (props.currentUser._id == props.request.userId) ?
                 <div className="text-xs text-gray-300 flex flex-col gap-1 items-center">
                   <p>{user.email}</p>
                   <p>{user.phoneNumber}</p>
@@ -245,7 +226,7 @@ const BloodRequest = (props) => {
               </div>
               <div className="flex justify-between items-center">
                 <p className="text-gray-300">Acceptors</p>
-                <p>{props.donors[props.request._id]}</p>
+                <p>{props.noOfAcceptors[props.request._id]}</p>
               </div>
               <div className="flex justify-between items-center">
                 <p className="text-gray-300">Created at</p>
@@ -258,16 +239,16 @@ const BloodRequest = (props) => {
             </div>
           </div>
           <div className="flex  w-full">
-            {currentUser !== props.request.userId && (
-              status ?
-                (accepted ?
+            {props.currentUser._id !== props.request.userId && (
+              !isClosed ?
+                (props.currentUser.donates.includes(props.request._id) ?
                   <button className="px-4 py-2 w-full bg-red-300 text-black hover:cursor-not-allowed">Accepted By You</button>
                   :
-                  <button id="abRq" onClick={accept} className="px-4 py-2 w-full bg-green-300 text-black hover:bg-green-200">Accept Request</button>
+                  <button id="abRq" disabled={disabled} onClick={accept} className={`px-4 py-2 w-full ${disabled ? 'bg-[#48484a] text-white cursor-wait' : 'bg-green-300 hover:bg-green-200 text-black'}`}>{disabled ? 'Processing...' : 'Accept Request'}</button>
                 ) :
                 <button className="px-4 py-2 w-full bg-orange-300 text-black hover:cursor-not-allowed">Request Closed</button>
             )}
-            {currentUser === props.request.userId && (
+            {props.currentUser._id === props.request.userId && (
               <button className="px-4 py-2 w-full bg-blue-300 text-black hover:cursor-not-allowed">Requested By You</button>
             )}
           </div>
