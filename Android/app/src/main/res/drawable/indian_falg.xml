@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- flag_india.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Saffron stripe -->
+    <path
+        android:fillColor="#FF9933"
+        android:pathData="M0,0h24v8H0z"/>
+
+    <!-- White stripe -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,8h24v8H0z"/>
+
+    <!-- Green stripe -->
+    <path
+        android:fillColor="#138808"
+        android:pathData="M0,16h24v8H0z"/>
+
+    <!-- Ashoka Chakra -->
+    <!-- Example of a circle for the chakra -->
+    <path
+        android:fillColor="#000088"
+        android:pathData="M12,12m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+
+    <!-- Example of 24 spokes for the chakra -->
+    <!-- Adjust the exact paths and positions based on your design -->
+
+</vector>

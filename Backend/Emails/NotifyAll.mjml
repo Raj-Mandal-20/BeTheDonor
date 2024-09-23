@@ -1,0 +1,101 @@
+<mjml>
+  <mj-head>
+    <mj-title>Urgent Blood Donation Needed</mj-title>
+    <mj-preview>Help save lives—urgent blood donation needed!</mj-preview>
+    <mj-style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+      @media only screen and (max-width: 600px) {
+        .hero-text {
+          font-size: 20px !important;
+        }
+        .main-text {
+          font-size: 14px !important;
+        }
+        .button {
+          font-size: 14px !important;
+          width: 100% !important;
+          padding: 15px !important;
+        }
+        .container {
+          padding: 10px !important;
+        }
+      }
+      .hero-text {
+        font-family: 'Roboto', sans-serif;
+        line-height: 28px;
+      }
+      .main-text {
+        font-family: 'Roboto', sans-serif;
+        line-height: 24px;
+      }
+      .button {
+        font-family: 'Roboto', sans-serif;
+        border-radius: 4px;
+      }
+      .section-background {
+        border-radius: 8px;
+        padding: 20px;
+      }
+      .container {
+        border: 1px solid #dddddd;
+        border-radius: 8px;
+        background-color: #ffffff;
+        padding: 20px;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f9f9f9">
+    <mj-section background-color="#f45e00" padding="20px">
+      <mj-column>
+        <mj-text font-size="24px" font-weight="bold" color="#ffffff" align="center" css-class="hero-text">
+          Urgent Blood Donation Needed!
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding="20px" css-class="container">
+      <mj-column>
+        <mj-text font-size="18px" color="#333333" css-class="main-text">
+          Dear {{name}},
+        </mj-text>
+        <mj-text font-size="16px" color="#555555" css-class="main-text" line-height="24px">
+          We are reaching out to you because there is an urgent need for blood donations. Your help can save lives. Please consider donating blood to help those in critical need.
+        </mj-text>
+        <mj-text font-size="16px" color="#555555" css-class="main-text" line-height="24px">
+          <strong>Details:</strong>
+        </mj-text>
+        <mj-text font-size="16px" color="#555555" css-class="main-text" line-height="24px">
+          <ul style="padding-left: 20px; margin: 0;">
+            <li><strong>Date:</strong> {{date}}</li>
+            <li><strong>Time:</strong> {{time}}</li>
+            <li><strong>Location:</strong> {{location}}</li>
+            <li><strong>Contact:</strong> {{contact}}</li>
+            <li><strong>Blood Group:</strong> {{bloodGroup}}</li>
+          </ul>
+        </mj-text>
+        <mj-button background-color="#f45e00" color="#ffffff" font-size="16px" font-weight="bold" href="[Donation Link]" css-class="button" padding="15px">
+          Donate Now
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f9f9f9" padding="20px">
+      <mj-column>
+        <mj-text font-size="16px" color="#555555" css-class="main-text" align="center" line-height="24px">
+          Thank you for your generosity and support. Your donation is greatly appreciated and will make a significant difference.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#333333" padding="20px">
+      <mj-column>
+        <mj-text font-size="17px" color="#ffffff" align="center">
+          BeTheDonor
+        </mj-text>
+        <mj-text font-size="14px" color="#ffffff" align="center">
+          <a href="[Unsubscribe Link]" style="color:#ffffff; text-decoration:underline;">Unsubscribe</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

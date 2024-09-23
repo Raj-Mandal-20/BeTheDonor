@@ -36,6 +36,10 @@ const requestSchema = new Schema(
       type: Date,
       required: true,
     },
+    isClosed : {
+      type : Boolean,
+      default : false
+    },
     donors: [
       {
         type: Schema.Types.ObjectId,
@@ -50,5 +54,16 @@ const requestSchema = new Schema(
   },
   { timestamps: true }
 );
+
+requestSchema.pre("save", function (next) {
+  const currentDate = new Date();
+  
+  // Check if the deadline has passed
+  if (this.deadline < currentDate) {
+    this.isClosed = true;
+  }
+
+  next();
+});
 
 module.exports = mongoose.model("Request", requestSchema);

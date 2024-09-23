@@ -1,0 +1,89 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-text font-family="Arial, sans-serif" color="#333333" font-size="16px"></mj-text>
+      <mj-button background-color="#28a745" color="white" border-radius="50px" padding="15px 30px"></mj-button>
+      <mj-divider border-color="#eeeeee"></mj-divider>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .otp-box {
+        background-color: #00ff00;
+        font-size: 24px;
+        font-weight: bold;
+        max-width : 22%;
+        border-radius : 50rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin : 0 auto;
+        display : flex;
+      	flex-flow : column;
+        align-items :center;
+      }
+      .footer {        
+        display : flex;
+        flex-flow : column;
+        justify-content : center;
+        align-items : center;
+        font-size: 12px;
+        color: #aaaaaa;
+        padding-top: 10px;
+      }
+      .header-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333333;
+        text-align: center;
+        padding-bottom: 10px;
+        margin : auto;
+      }
+      .body-section {
+        padding: 10px 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  		display : flex;
+        justify-content : center;
+				
+      }
+      
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f6f6f6">
+    <mj-section background-color="#f6f6f6" padding="10px 25px">
+      <mj-column>
+        <!-- Lock Icon -->
+        <mj-image src="https://img.icons8.com/color/96/000000/lock.png" alt="Lock Icon" width="50px" align="center" />
+      </mj-column>
+    </mj-section>
+
+    <mj-section css-class="body-section">
+      <mj-column>
+        <!-- Header Text -->
+        <mj-text css-class="header-text" line-height="25px" font-size="25px">
+          Reset Email
+        </mj-text>
+
+        <mj-divider border-color="#eeeeee" width="99%"></mj-divider>
+
+        <!-- Body Text -->
+        <mj-text font-size="16px" line-height="25px">
+          Your requested OTP for <strong>Email OTP</strong> is:
+        </mj-text>
+
+        <!-- Centered OTP Box -->
+        <!-- <mj-column vertical-align="middle" align="center" line-height="25px" padding-top="10px" padding-bottom="10px"> -->
+          <mj-text css-class="otp-box">
+            {{otp}} 
+          </mj-text>
+        <!-- </mj-column> -->
+
+        <!-- Additional Information -->
+        <mj-text font-size="16px"line-height="25px">
+          We have just received a request to change the email associated with your account from <strong>{{oldEmail}}</strong> email.
+        </mj-text>
+        <mj-text font-size="14px" color="#666666" padding-top="20px" css-class="message" line-height="25px">
+          Please enter this code in the required field to verify your email address. This code will expire in 10 minutes.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">BeTheDonor</string>
+    <string name="app_name_for_logo">Be-The-Donor</string>
+    <string name="title_activity_before_log_in">BeforeLogInActivity</string>
+    <string name="delete_account_indicator">Deleting Account…</string>
+    <string name="delete_request_indicator">Deleting Request…</string>
+    <string name="loading_indicator">Loading…</string>
+    <string name="updating_profile_indicator">Updating Profile…</string>
+    <string name="registering_indicator">Registering…</string>
+    <string name="login_indicator">Logging in…</string>
+    <string name="creating_indicator">Creating…</string>
+    <string name="sending_indicator">Sending…</string>
+    <string name="verifying_indicator">Verifying OTP…</string>
+</resources>
