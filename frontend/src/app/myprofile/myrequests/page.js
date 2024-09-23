@@ -1,32 +1,37 @@
 import React from 'react';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getHost } from "../../actions";
-import SearchPosts from '@/components/SearchPosts';
-import data from "../../../data.json";
-
-const fetchRequests = async () => {
-    const cookieStore = cookies();
-    const getHistory = await fetch(`${process.env.HOST}/v1/request-history`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + cookieStore.get("usertoken").value,
-        },
-    }, { cache: 'no-store' });
-    const history = await getHistory.json();
-    return history.bloodRequests;
-};
+import SearchMyRequests from '@/components/SearchMyRequests';
+import { getMyRequests } from '@/app/actions/requests';
+import { getSession } from '@/app/actions/auth';
+import state_district_city_pin from "@/lib/state_district_city_pin.json";
+import Image from 'next/image';
+import error from '../../../../public/error.webp';
 
 const Page = async () => {
-    if (!cookies().has("usertoken")) {
+    if (!await getSession()) {
         redirect("/login");
     }
-    const host = await getHost();
-    const myRequests = await fetchRequests();
-    return (
-        <SearchPosts HOST={host} myRequests={myRequests} data={data} />
-    );
+    const myRequestsResponse = await getMyRequests();
+    if (myRequestsResponse.bloodRequests) {
+        const myRequests = myRequestsResponse.bloodRequests.filter(request => request != null);
+        myRequests.reverse();
+        return (
+            <SearchMyRequests myRequests={myRequests} data={state_district_city_pin} />
+        );
+    } else {
+        return (
+            <div className='w-[85%] min-h-screen flex justify-center items-center'>
+                <div className='flex flex-col justify-center items-center'>
+                    <Image src={error} height={200} width={200} alt="" priority />
+                    <div className='w-full p-12 flex flex-wrap gap-4'>
+                        <h1 className='text-lg text-white'>{myRequestsResponse.statusCode}</h1>
+                        <h1 className='text-lg text-gray-400'>|</h1>
+                        <h1 className='text-lg text-white'>{myRequestsResponse.message}</h1>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default Page;

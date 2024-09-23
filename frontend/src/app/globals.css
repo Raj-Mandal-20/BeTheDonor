@@ -73,6 +73,18 @@ body {
   }
 }
 
+@keyframes blinkT {
+
+  0%,
+  100% {
+    color: black;
+  }
+
+  50% {
+    color: darkslategray;
+  }
+}
+
 .blinkOpen {
   animation: blinkO 1s infinite;
 }
@@ -83,6 +95,10 @@ body {
 
 .blinkL {
   animation: blinkL 1s infinite;
+}
+
+.blinkT {
+  animation: blinkT 1s infinite;
 }
 
 .logo-circle {
