@@ -23,44 +23,14 @@ const Login = () => {
     const { push } = useRouter();
 
     const submit = async (e) => {
-        e.preventDefault();
-        setPending(true);
-        setProgress(10)
-        const res = await login(data.email, data.password);
-        setProgress(70);
-        if (res.message) {
-            toast.error(res.message, {
-                position: "top-center",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            setPending(false);
-            setProgress(100);
-        }
-        else {
-            const responseAfterSettingCookie = await createSession(res.token);
-            setProgress(85);
-            if (responseAfterSettingCookie.statusCode === 200) {
-                toast.success(responseAfterSettingCookie.message, {
-                    position: "top-center",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-                setIsLoggedIn(true);
-                setProgress(100);
-                push("/allrequests");
-            } else {
-                toast.error(responseAfterSettingCookie.message, {
+        try {
+            e.preventDefault();
+            setPending(true);
+            setProgress(10);
+            const res = await login(data.email, data.password);
+            setProgress(70);
+            if (res.message) {
+                toast.error(res.message, {
                     position: "top-center",
                     autoClose: 1000,
                     hideProgressBar: false,
@@ -73,6 +43,51 @@ const Login = () => {
                 setPending(false);
                 setProgress(100);
             }
+            else {
+                const responseAfterSettingCookie = await createSession(res.token);
+                setProgress(85);
+                if (responseAfterSettingCookie.statusCode === 200) {
+                    toast.success(responseAfterSettingCookie.message, {
+                        position: "top-center",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                    setIsLoggedIn(true);
+                    setProgress(100);
+                    push("/allrequests");
+                } else {
+                    toast.error(responseAfterSettingCookie.message, {
+                        position: "top-center",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                    setPending(false);
+                    setProgress(100);
+                }
+            }
+        } catch (error) {
+            toast.error(error.message, {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setPending(false);
+            setProgress(100);
         }
     };
 
