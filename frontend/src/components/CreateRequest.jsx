@@ -187,13 +187,44 @@ const CreateRequest = (props) => {
     };
 
     const submit = async (e) => {
-        e.preventDefault();
-        setDisable(true);
-        setProgress(10);
-        const response = await createRequest(data);
-        setProgress(50);
-        if (!response.bloodRequest) {
-            toast.error(response.message, {
+        try {
+            e.preventDefault();
+            setDisable(true);
+            setProgress(10);
+            const response = await createRequest(data);
+            setProgress(50);
+            if (!response.bloodRequest) {
+                toast.error(response.message, {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisable(false);
+                setProgress(100);
+            }
+            else {
+                toast.success(response.message, {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisable(false);
+                setOpenModal(false);
+                setProgress(100);
+                push('/myprofile/myrequests');
+            }
+        } catch (error) {
+            toast.error("Server Timed Out!", {
                 position: "top-center",
                 autoClose: 1000,
                 hideProgressBar: false,
@@ -205,22 +236,6 @@ const CreateRequest = (props) => {
             });
             setDisable(false);
             setProgress(100);
-        }
-        else {
-            toast.success(response.message, {
-                position: "top-center",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            setDisable(false);
-            setOpenModal(false);
-            setProgress(100);
-            push('/myprofile/myrequests');
         }
     };
 

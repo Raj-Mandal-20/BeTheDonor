@@ -61,16 +61,46 @@ const Register = (props) => {
     };
 
     const submit = async (e) => {
-        e.preventDefault();
-        setDisable(true);
-        if (data.password === password) {
-            setProgress(10)
-            const result = await register(data);
-            setProgress(70);
-            if (result.message != 'Verification Email Sent Successfully!') {
-                toast.error(result.message, {
+        try {
+            e.preventDefault();
+            setDisable(true);
+            if (data.password === password) {
+                setProgress(10)
+                const result = await register(data);
+                setProgress(70);
+                if (result.message != 'Verification Email Sent Successfully!') {
+                    toast.error(result.message, {
+                        position: "top-center",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                    setDisable(false);
+                    setProgress(100);
+                }
+                else {
+                    toast.success(result.message, {
+                        position: "top-center",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                    setIsEmailSent(true);
+                    setProgress(100);
+                    push("/login");
+                }
+            } else {
+                toast.error('Please type the passwords correctly!', {
                     position: "top-center",
-                    autoClose: 1000,
+                    autoClose: 3000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
@@ -79,27 +109,11 @@ const Register = (props) => {
                     theme: "dark",
                 });
                 setDisable(false);
-                setProgress(100);
             }
-            else {
-                toast.success(result.message, {
-                    position: "top-center",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-                setIsEmailSent(true);
-                setProgress(100);
-                push("/login");
-            }
-        } else {
-            toast.error('Please type the passwords correctly!', {
+        } catch (error) {
+            toast.error("Server Timed Out!", {
                 position: "top-center",
-                autoClose: 3000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -108,6 +122,7 @@ const Register = (props) => {
                 theme: "dark",
             });
             setDisable(false);
+            setProgress(100);
         }
     };
 
@@ -436,7 +451,7 @@ const Register = (props) => {
                     </div>
                     <div className='text-gray-400 text-sm'>This will allow others to see your contact information.</div>
                 </div>
-                <button disabled={disable} type="submit" className={`px-4 py-2 w-full rounded-md text-white hover:shadow-md ${disable? isEmailSent? 'bg-green-700 cursor-not-allowed' : 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'}`}>{disable? isEmailSent? 'E-Mail Sent' : 'Processing' : 'Register'}</button>
+                <button disabled={disable} type="submit" className={`px-4 py-2 w-full rounded-md text-white hover:shadow-md ${disable ? isEmailSent ? 'bg-green-700 cursor-not-allowed' : 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'}`}>{disable ? isEmailSent ? 'E-Mail Sent' : 'Processing' : 'Register'}</button>
             </div>
             <div className='p-2 text-sm text-gray-400'>Already have an account? <Link href={"/login"} className='underline text-white'>Login</Link></div>
         </form>

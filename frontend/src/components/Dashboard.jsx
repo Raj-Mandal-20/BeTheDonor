@@ -339,38 +339,53 @@ const Dashboard = (props) => {
   };
 
   const save = async (e) => {
-    e.preventDefault();
-    setDisable(true);
-    setProgress(10);
-    const response = await updateProfile(user, sectionID);
-    setProgress(50);
-    if (response.message === 'Profile Updated Successfully') {
-      setOriginalUser(user);
-      if (sectionID === '1') {
-        setEditPrimary(false);
-        setSectionID('');
-      } else if (sectionID === '2') {
-        setEditPersonal(false);
-        setSectionID('');
+    try {
+      e.preventDefault();
+      setDisable(true);
+      setProgress(10);
+      const response = await updateProfile(user, sectionID);
+      setProgress(50);
+      if (response.message === 'Profile Updated Successfully') {
+        setOriginalUser(user);
+        if (sectionID === '1') {
+          setEditPrimary(false);
+          setSectionID('');
+        } else if (sectionID === '2') {
+          setEditPersonal(false);
+          setSectionID('');
+        } else {
+          setEditAddress(false);
+          setSectionID('');
+        }
+        setProgress(75);
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setProgress(100);
+        setDisable(false);
       } else {
-        setEditAddress(false);
-        setSectionID('');
+        toast.error(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setProgress(100);
+        setDisable(false);
       }
-      setProgress(75);
-      toast.success(response.message, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setProgress(100);
-      setDisable(false);
-    } else {
-      toast.error(response.message, {
+    } catch (error) {
+      toast.error("Server Timed Out!", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -386,30 +401,45 @@ const Dashboard = (props) => {
   };
 
   const saveEmail = async (e) => {
-    e.preventDefault();
-    setDisable(true);
-    setProgress(10);
-    const response = await updateEmail(user.email);
-    setProgress(50);
-    if (response.statusCode === 200) {
-      setOtpID(response.otpId);
-      setOtp({ digit1: '', digit2: '', digit3: '', digit4: '', digit5: '', digit6: '' });
-      setOpenOTPmodal(true);
-      setProgress(75);
-      toast.success(response.message, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setProgress(100);
-      setDisable(false);
-    } else {
-      toast.error(response.message, {
+    try {
+      e.preventDefault();
+      setDisable(true);
+      setProgress(10);
+      const response = await updateEmail(user.email);
+      setProgress(50);
+      if (response.statusCode === 200) {
+        setOtpID(response.otpId);
+        setOtp({ digit1: '', digit2: '', digit3: '', digit4: '', digit5: '', digit6: '' });
+        setOpenOTPmodal(true);
+        setProgress(75);
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setProgress(100);
+        setDisable(false);
+      } else {
+        toast.error(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setProgress(100);
+        setDisable(false);
+      }
+    } catch (error) {
+      toast.error("Server Timed Out!", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -456,30 +486,45 @@ const Dashboard = (props) => {
   };
 
   const verifyOTP = async (e) => {
-    e.preventDefault();
-    setDisable(true);
-    setProgress(10);
-    const otpValue = otp.digit1 + otp.digit2 + otp.digit3 + otp.digit4 + otp.digit5 + otp.digit6;
-    const response = await submitOTP(otpValue, otpID);
-    setProgress(50);
-    if (response.statusCode === 200) {
-      toast.success(response.message, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setProgress(100);
-      setOriginalUser(user);
-      setEditEmail(false);
-      setOpenOTPmodal(false);
-      setDisable(false);
-    } else {
-      toast.error(response.message, {
+    try {
+      e.preventDefault();
+      setDisable(true);
+      setProgress(10);
+      const otpValue = otp.digit1 + otp.digit2 + otp.digit3 + otp.digit4 + otp.digit5 + otp.digit6;
+      const response = await submitOTP(otpValue, otpID);
+      setProgress(50);
+      if (response.statusCode === 200) {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setProgress(100);
+        setOriginalUser(user);
+        setEditEmail(false);
+        setOpenOTPmodal(false);
+        setDisable(false);
+      } else {
+        toast.error(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setProgress(100);
+        setDisable(false);
+      }
+    } catch (error) {
+      toast.error("Server Timed Out!", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -495,28 +540,43 @@ const Dashboard = (props) => {
   };
 
   const deleteCurrentProfile = async () => {
-    setDisable(true);
-    setProgress(10);
-    const response = await deleteProfile();
-    setProgress(50);
-    if (response.isAccountClosed) {
-      toast.success(response.message, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setProgress(75);
-      const responseAfterLogOut = await deleteSession();
-      if (responseAfterLogOut.statusCode === 200) {
-        setProgress(100);
-        setDisable(false);
+    try {
+      setDisable(true);
+      setProgress(10);
+      const response = await deleteProfile();
+      setProgress(50);
+      if (response.isAccountClosed) {
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setProgress(75);
+        const responseAfterLogOut = await deleteSession();
+        if (responseAfterLogOut.statusCode === 200) {
+          setProgress(100);
+          setDisable(false);
+        } else {
+          toast.error(responseAfterLogOut.message, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          setProgress(100);
+          setDisable(false);
+        }
       } else {
-        toast.error(responseAfterLogOut.message, {
+        toast.error(response.message, {
           position: "top-center",
           autoClose: 1000,
           hideProgressBar: false,
@@ -529,8 +589,8 @@ const Dashboard = (props) => {
         setProgress(100);
         setDisable(false);
       }
-    } else {
-      toast.error(response.message, {
+    } catch (error) {
+      toast.error("Server Timed Out!", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
