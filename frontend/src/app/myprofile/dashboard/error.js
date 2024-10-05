@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import Image from 'next/image';
-import errorImg from '../../../public/error.webp';
+import errorImg from '../../../../public/error.webp';
 
 export default function Error({ error, reset }) {
     useEffect(() => {
@@ -11,13 +11,13 @@ export default function Error({ error, reset }) {
     }, [error])
 
     return (
-        <div className='w-full min-h-screen flex justify-center items-center'>
+        <div className='w-[85%] min-h-screen flex justify-center items-center'>
             <div className='flex flex-col justify-center items-center'>
                 <Image src={errorImg} height={200} width={200} alt="" priority />
                 <div className='w-full p-12 flex text-wrap gap-4'>
                     <h1 className='text-lg text-white'>504</h1>
                     <h1 className='text-lg text-gray-400'>|</h1>
-                    <h1 className='text-lg text-white'>{error.message}</h1>
+                    <h1 className='text-lg text-white'>Server Timed Out</h1>
                 </div>
             </div>
         </div>

@@ -11,36 +11,21 @@ const Page = async () => {
     if (!await getSession()) {
         redirect("/login");
     }
-    try {
-        const currentUserResponse = await getCurrentUser();
-        if (currentUserResponse.myProfile) {
-            const currentUser = currentUserResponse.myProfile;
-            return (
-                <Dashboard user={currentUser} data={state_district_city_pin} />
-            );
-        } else {
-            return (
-                <div className='w-[85%] min-h-screen flex justify-center items-center'>
-                    <div className='flex flex-col justify-center items-center'>
-                        <Image src={error} height={200} width={200} alt="" priority />
-                        <div className='w-full p-12 flex flex-wrap gap-4'>
-                            <h1 className='text-lg text-white'>{currentUserResponse.statusCode}</h1>
-                            <h1 className='text-lg text-gray-400'>|</h1>
-                            <h1 className='text-lg text-white'>{currentUserResponse.message}</h1>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-    } catch (error) {
+    const currentUserResponse = await getCurrentUser();
+    if (currentUserResponse.myProfile) {
+        const currentUser = currentUserResponse.myProfile;
+        return (
+            <Dashboard user={currentUser} data={state_district_city_pin} />
+        );
+    } else {
         return (
             <div className='w-[85%] min-h-screen flex justify-center items-center'>
                 <div className='flex flex-col justify-center items-center'>
                     <Image src={error} height={200} width={200} alt="" priority />
                     <div className='w-full p-12 flex flex-wrap gap-4'>
-                        <h1 className='text-lg text-white'>504</h1>
+                        <h1 className='text-lg text-white'>{currentUserResponse.statusCode}</h1>
                         <h1 className='text-lg text-gray-400'>|</h1>
-                        <h1 className='text-lg text-white'>Server Timed Out!</h1>
+                        <h1 className='text-lg text-white'>{currentUserResponse.message}</h1>
                     </div>
                 </div>
             </div>
