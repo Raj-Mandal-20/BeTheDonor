@@ -12,7 +12,7 @@ const page = async () => {
   if (!await getSession()) {
     redirect("/login")
   }
-  try {
+  // try {
     const allBloodRequestsResponse = await getAllRequests();
     if (allBloodRequestsResponse.allBloodRequest) {
       const allBloodRequests = allBloodRequestsResponse.allBloodRequest.filter(request => request != null);
@@ -55,20 +55,20 @@ const page = async () => {
         </div>
       )
     }
-  } catch (error) {
-    return (
-      <div className='w-full min-h-screen flex justify-center items-center'>
-        <div className='flex flex-col justify-center items-center'>
-          <Image src={error} height={200} width={200} alt="" priority />
-          <div className='w-full p-12 flex text-wrap gap-4'>
-            <h1 className='text-lg text-white'>504</h1>
-            <h1 className='text-lg text-gray-400'>|</h1>
-            <h1 className='text-lg text-white'>Server Timed Out!</h1>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // } catch (error) {
+  //   return (
+  //     <div className='w-full min-h-screen flex justify-center items-center'>
+  //       <div className='flex flex-col justify-center items-center'>
+  //         <Image src={error} height={200} width={200} alt="" priority />
+  //         <div className='w-full p-12 flex text-wrap gap-4'>
+  //           <h1 className='text-lg text-white'>504</h1>
+  //           <h1 className='text-lg text-gray-400'>|</h1>
+  //           <h1 className='text-lg text-white'>Server Timed Out!</h1>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 }
 
 export default page
