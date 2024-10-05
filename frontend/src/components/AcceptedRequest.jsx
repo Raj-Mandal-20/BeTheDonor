@@ -50,12 +50,6 @@ const AcceptedRequest = (props) => {
                     theme: "dark",
                 });
             }
-            const isDeadlineMissed = await checkIfDeadlineIsMissed();
-            if (isDeadlineMissed) {
-                setIsClosed(true);
-            } else {
-                setIsClosed(props.request.isClosed);
-            }
         } catch (error) {
             setUser({});
             toast.error(`Server timed out for request Id: ${props.request._id}`, {
@@ -68,6 +62,12 @@ const AcceptedRequest = (props) => {
                 progress: undefined,
                 theme: "dark",
             });
+        }
+        const isDeadlineMissed = await checkIfDeadlineIsMissed();
+        if (isDeadlineMissed) {
+            setIsClosed(true);
+        } else {
+            setIsClosed(props.request.isClosed);
         }
         setLoading(false);
     };

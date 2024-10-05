@@ -98,7 +98,7 @@ const Register = (props) => {
                     push("/login");
                 }
             } else {
-                toast.error('Please type the passwords correctly!', {
+                toast.error('Please type the passwords correctly', {
                     position: "top-center",
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -111,7 +111,7 @@ const Register = (props) => {
                 setDisable(false);
             }
         } catch (error) {
-            toast.error("Server Timed Out!", {
+            toast.error("Server Timed Out", {
                 position: "top-center",
                 autoClose: 1000,
                 hideProgressBar: false,

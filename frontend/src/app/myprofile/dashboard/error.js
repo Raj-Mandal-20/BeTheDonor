@@ -17,7 +17,7 @@ export default function Error({ error, reset }) {
                 <div className='w-full p-12 flex text-wrap gap-4'>
                     <h1 className='text-lg text-white'>504</h1>
                     <h1 className='text-lg text-gray-400'>|</h1>
-                    <h1 className='text-lg text-white'>Server Timed Out</h1>
+                    <h1 className='text-lg text-white'>{error.message}</h1>
                 </div>
             </div>
         </div>

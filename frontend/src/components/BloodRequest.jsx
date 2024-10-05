@@ -52,12 +52,6 @@ const BloodRequest = (props) => {
           theme: "dark",
         });
       }
-      const isDeadlineMissed = await checkIfDeadlineIsMissed();
-      if (isDeadlineMissed) {
-        setIsClosed(true);
-      } else {
-        setIsClosed(props.request.isClosed);
-      }
     } catch (error) {
       setUser({});
       toast.error(`Server timed out for request Id: ${props.request._id}`, {
@@ -70,6 +64,12 @@ const BloodRequest = (props) => {
         progress: undefined,
         theme: "dark",
       });
+    }
+    const isDeadlineMissed = await checkIfDeadlineIsMissed();
+    if (isDeadlineMissed) {
+      setIsClosed(true);
+    } else {
+      setIsClosed(props.request.isClosed);
     }
     setLoading(false);
   };
@@ -118,7 +118,7 @@ const BloodRequest = (props) => {
         setDisabled(false);
         props.setProgress(100);
       } else {
-        toast.error('Failed to accept the request!', {
+        toast.error('Failed to accept the request', {
           position: "top-center",
           autoClose: 1000,
           hideProgressBar: false,
@@ -133,7 +133,7 @@ const BloodRequest = (props) => {
         props.setProgress(100);
       }
     } catch (error) {
-      toast.error("Server Timed Out!", {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,

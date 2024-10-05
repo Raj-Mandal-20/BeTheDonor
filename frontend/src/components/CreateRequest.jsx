@@ -224,7 +224,7 @@ const CreateRequest = (props) => {
                 push('/myprofile/myrequests');
             }
         } catch (error) {
-            toast.error("Server Timed Out!", {
+            toast.error("Server Timed Out", {
                 position: "top-center",
                 autoClose: 1000,
                 hideProgressBar: false,

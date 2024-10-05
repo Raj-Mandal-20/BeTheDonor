@@ -76,7 +76,7 @@ const Login = () => {
                 }
             }
         } catch (error) {
-            toast.error("Server Timed Out!", {
+            toast.error("Server Timed Out", {
                 position: "top-center",
                 autoClose: 1000,
                 hideProgressBar: false,
@@ -119,7 +119,7 @@ const Login = () => {
             const response = await forgetPassword(email);
             setProgress(70);
             if (response.statusCode === 200) {
-                toast.success(`Link has been sent to the given e-mail address!`, {
+                toast.success(`Link has been sent to the given e-mail address`, {
                     position: "top-center",
                     autoClose: 1000,
                     hideProgressBar: false,
@@ -147,7 +147,7 @@ const Login = () => {
                 setDisabled(false);
             }
         } catch (error) {
-            toast.error("Server Timed Out!", {
+            toast.error("Server Timed Out", {
                 position: "top-center",
                 autoClose: 1000,
                 hideProgressBar: false,

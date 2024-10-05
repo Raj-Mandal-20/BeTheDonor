@@ -385,7 +385,7 @@ const Dashboard = (props) => {
         setDisable(false);
       }
     } catch (error) {
-      toast.error("Server Timed Out!", {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -439,7 +439,7 @@ const Dashboard = (props) => {
         setDisable(false);
       }
     } catch (error) {
-      toast.error("Server Timed Out!", {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -524,7 +524,7 @@ const Dashboard = (props) => {
         setDisable(false);
       }
     } catch (error) {
-      toast.error("Server Timed Out!", {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -590,7 +590,7 @@ const Dashboard = (props) => {
         setDisable(false);
       }
     } catch (error) {
-      toast.error("Server Timed Out!", {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,

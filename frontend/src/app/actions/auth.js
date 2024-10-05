@@ -12,18 +12,18 @@ export async function createSession(userToken) {
             sameSite: 'lax',
             path: '/',
         });
-        return { message: 'Successfully logged in!', statusCode: 200 };
+        return { message: 'Successfully logged in', statusCode: 200 };
     } catch (error) {
-        return { message: 'Unable to set the cookie!', statusCode: 408 };
+        return { message: 'Unable to set the cookie', statusCode: 408 };
     }
 }
 
 export async function deleteSession() {
     try {
         cookies().delete('userToken');
-        return { message: 'Logged Out Successfully!', statusCode: 200 };
+        return { message: 'Logged Out Successfully', statusCode: 200 };
     } catch (error) {
-        return { message: 'Unable to delete the cookie!', statusCode: 408 };
+        return { message: 'Unable to delete the cookie', statusCode: 408 };
     }
 }
 
