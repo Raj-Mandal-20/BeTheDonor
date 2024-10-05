@@ -48,6 +48,7 @@ export const login = async (email, password) => {
             body: JSON.stringify({ email, password })
         });
         const parsedResponse = await response.json();
+        if(parsedResponse === undefined) return { message: 'Server Timed Out', statusCode: 504 };
         return parsedResponse;
     } catch (error) {
         return { message: error.message, statusCode: 408 };

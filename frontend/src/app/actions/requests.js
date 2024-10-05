@@ -14,6 +14,7 @@ export const getAllRequests = async () => {
             },
         }, { cache: 'no-store' });
         const parsedResponse = await response.json();
+        if(parsedResponse === undefined) return { message: 'Server Timed Out', statusCode: 504 };
         return parsedResponse;
     } catch (error) {
         return { message: error.message, statusCode: 408 };
