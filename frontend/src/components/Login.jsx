@@ -1,18 +1,18 @@
 "use client"
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import Link from 'next/link';
 import { toast } from 'react-toastify';
 import LoadingBar from 'react-top-loading-bar';
 import { createSession } from "../app/actions/auth";
 import { login } from '@/app/actions/user';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { forgetPassword } from '@/app/actions/user';
 
 const Login = () => {
-    const [data, setData] = useState({ "email": "", "password": "" })
+    const [data, setData] = useState({ "email": "", "password": "" });
     const [progress, setProgress] = useState(0);
     const [showpassword, setShowpassword] = useState('password');
     const [pending, setPending] = useState(false);
@@ -23,44 +23,14 @@ const Login = () => {
     const { push } = useRouter();
 
     const submit = async (e) => {
-        e.preventDefault();
-        setPending(true);
-        setProgress(10)
-        const res = await login(data.email, data.password);
-        setProgress(70);
-        if (res.message) {
-            toast.error(res.message, {
-                position: "top-center",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            setPending(false);
-            setProgress(100);
-        }
-        else {
-            const responseAfterSettingCookie = await createSession(res.token);
-            setProgress(85);
-            if (responseAfterSettingCookie.statusCode === 200) {
-                toast.success(responseAfterSettingCookie.message, {
-                    position: "top-center",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-                setIsLoggedIn(true);
-                setProgress(100);
-                push("/allrequests");
-            } else {
-                toast.error(responseAfterSettingCookie.message, {
+        try {
+            e.preventDefault();
+            setPending(true);
+            setProgress(10);
+            const res = await login(data.email, data.password);
+            setProgress(70);
+            if (res.message) {
+                toast.error(res.message, {
                     position: "top-center",
                     autoClose: 1000,
                     hideProgressBar: false,
@@ -73,6 +43,51 @@ const Login = () => {
                 setPending(false);
                 setProgress(100);
             }
+            else {
+                const responseAfterSettingCookie = await createSession(res.token);
+                setProgress(85);
+                if (responseAfterSettingCookie.statusCode === 200) {
+                    toast.success(responseAfterSettingCookie.message, {
+                        position: "top-center",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                    setIsLoggedIn(true);
+                    setProgress(100);
+                    push("/allrequests");
+                } else {
+                    toast.error(responseAfterSettingCookie.message, {
+                        position: "top-center",
+                        autoClose: 1000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                    setPending(false);
+                    setProgress(100);
+                }
+            }
+        } catch (error) {
+            toast.error("Server Timed Out", {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setPending(false);
+            setProgress(100);
         }
     };
 
@@ -97,27 +112,42 @@ const Login = () => {
     };
 
     const submitEmail = async (e) => {
-        e.preventDefault();
-        setDisabled(true);
-        setProgress(10);
-        const response = await forgetPassword(email);
-        setProgress(70);
-        if (response.statusCode === 200) {
-            toast.success(`Link has been sent to the given e-mail address!`, {
-                position: "top-center",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            setProgress(100);
-            setDisabled(false);
-            setOpenModal(false);
-        } else {
-            toast.error(response.message, {
+        try {
+            e.preventDefault();
+            setDisabled(true);
+            setProgress(10);
+            const response = await forgetPassword(email);
+            setProgress(70);
+            if (response.statusCode === 200) {
+                toast.success(`Link has been sent to the given e-mail address`, {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setProgress(100);
+                setDisabled(false);
+                setOpenModal(false);
+            } else {
+                toast.error(response.message, {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setProgress(100);
+                setDisabled(false);
+            }
+        } catch (error) {
+            toast.error("Server Timed Out", {
                 position: "top-center",
                 autoClose: 1000,
                 hideProgressBar: false,

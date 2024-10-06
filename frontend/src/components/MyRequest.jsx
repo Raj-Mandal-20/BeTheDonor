@@ -50,32 +50,47 @@ const MyRequest = (props) => {
   }, [props.request]);
 
   const showAcceptors = async (e) => {
-    e.preventDefault();
-    setIsFetchingAcceptors(true);
-    props.setProgress(10);
-    const response = await getAcceptors(props.request._id);
-    props.setProgress(50);
-    if (response.statusCode == 200) {
-      const acceptors = response.donors.filter(request => request != null);
-      acceptors.reverse();
-      props.setProgress(75);
-      props.setIsSliderOpened(true);
-      props.setAcceptors(acceptors);
-      toast.success(response.message, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      props.setProgress(100);
-      setIsFetchingAcceptors(false);
-    }
-    else {
-      toast.error(response.message, {
+    try {
+      e.preventDefault();
+      setIsFetchingAcceptors(true);
+      props.setProgress(10);
+      const response = await getAcceptors(props.request._id);
+      props.setProgress(50);
+      if (response.statusCode == 200) {
+        const acceptors = response.donors.filter(request => request != null);
+        acceptors.reverse();
+        props.setProgress(75);
+        props.setIsSliderOpened(true);
+        props.setAcceptors(acceptors);
+        toast.success(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        props.setProgress(100);
+        setIsFetchingAcceptors(false);
+      }
+      else {
+        toast.error(response.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        props.setProgress(100);
+        setIsFetchingAcceptors(false);
+      }
+    } catch (error) {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -91,31 +106,46 @@ const MyRequest = (props) => {
   };
 
   const deleteCurrentRequest = async (e) => {
-    e.preventDefault();
-    setIsDeleting(true);
-    props.setProgress(10);
-    const deleteRequestParsedResponse = await deleteRequest(props.request._id);
-    props.setProgress(50);
-    if (deleteRequestParsedResponse.statusCode == 200) {
-      const newMyRequests = props.myRequests.filter((request) => request._id !== props.request._id);
-      props.setMyRequests(newMyRequests);
-      const newMyRequestsProps = props.myRequestsProps.filter((request) => request._id !== props.request._id);
-      props.setMyRequestsProps(newMyRequestsProps);
-      props.setProgress(75);
-      toast.success(deleteRequestParsedResponse.message, {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      props.setProgress(100);
-      setIsDeleting(false);
-    } else {
-      toast.error(deleteRequestParsedResponse.message, {
+    try {
+      e.preventDefault();
+      setIsDeleting(true);
+      props.setProgress(10);
+      const deleteRequestParsedResponse = await deleteRequest(props.request._id);
+      props.setProgress(50);
+      if (deleteRequestParsedResponse.statusCode == 200) {
+        const newMyRequests = props.myRequests.filter((request) => request._id !== props.request._id);
+        props.setMyRequests(newMyRequests);
+        const newMyRequestsProps = props.myRequestsProps.filter((request) => request._id !== props.request._id);
+        props.setMyRequestsProps(newMyRequestsProps);
+        props.setProgress(75);
+        toast.success(deleteRequestParsedResponse.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        props.setProgress(100);
+        setIsDeleting(false);
+      } else {
+        toast.error(deleteRequestParsedResponse.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        props.setProgress(100);
+        setIsDeleting(false);
+      }
+    } catch (error) {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -131,40 +161,14 @@ const MyRequest = (props) => {
   }
 
   const toggleStatus = async (e) => {
-    e.preventDefault();
-    props.setProgress(10);
-    setIsTogglingStatus(true);
-    const isDeadlineMissed = await checkIfDeadlineIsMissed();
-    props.setProgress(20);
-    if (isDeadlineMissed) {
-      toast.warn("Deadline has been missed!", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setIsTogglingStatus(false);
-      props.setProgress(100);
-    } else {
-      const toggleRequestStatusParsedResponse = await toggleRequestStatus(props.request._id);
-      props.setProgress(50);
-      if (toggleRequestStatusParsedResponse.statusCode === 200) {
-        const newMyRequests = props.myRequests.map((request) => {
-          if (request._id === props.request._id) { return { ...request, isClosed: !request.isClosed }; }
-          return request;
-        });
-        props.setMyRequests(newMyRequests);
-        const newMyRequestsProps = props.myRequestsProps.map((request) => {
-          if (request._id === props.request._id) { return { ...request, isClosed: !request.isClosed }; }
-          return request;
-        });
-        props.setMyRequestsProps(newMyRequestsProps);
-        props.setProgress(75);
-        toast.success(toggleRequestStatusParsedResponse.message, {
+    try {
+      e.preventDefault();
+      props.setProgress(10);
+      setIsTogglingStatus(true);
+      const isDeadlineMissed = await checkIfDeadlineIsMissed();
+      props.setProgress(20);
+      if (isDeadlineMissed) {
+        toast.warn("Deadline has been missed", {
           position: "top-center",
           autoClose: 1000,
           hideProgressBar: false,
@@ -177,19 +181,60 @@ const MyRequest = (props) => {
         setIsTogglingStatus(false);
         props.setProgress(100);
       } else {
-        toast.error(toggleRequestStatusParsedResponse.message, {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-        setIsTogglingStatus(false);
-        props.setProgress(100);
+        const toggleRequestStatusParsedResponse = await toggleRequestStatus(props.request._id);
+        props.setProgress(50);
+        if (toggleRequestStatusParsedResponse.statusCode === 200) {
+          const newMyRequests = props.myRequests.map((request) => {
+            if (request._id === props.request._id) { return { ...request, isClosed: !request.isClosed }; }
+            return request;
+          });
+          props.setMyRequests(newMyRequests);
+          const newMyRequestsProps = props.myRequestsProps.map((request) => {
+            if (request._id === props.request._id) { return { ...request, isClosed: !request.isClosed }; }
+            return request;
+          });
+          props.setMyRequestsProps(newMyRequestsProps);
+          props.setProgress(75);
+          toast.success(toggleRequestStatusParsedResponse.message, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          setIsTogglingStatus(false);
+          props.setProgress(100);
+        } else {
+          toast.error(toggleRequestStatusParsedResponse.message, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          setIsTogglingStatus(false);
+          props.setProgress(100);
+        }
       }
+    } catch (error) {
+      toast.error("Server Timed Out", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setIsTogglingStatus(false);
+      props.setProgress(100);
     }
   }
 

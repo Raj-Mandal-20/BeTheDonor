@@ -33,12 +33,26 @@ const AcceptedRequest = (props) => {
 
     const fetchUser = async () => {
         setLoading(true);
-        const fetchedUser = await getUser(props.request.userId);
-        if (fetchedUser.user) {
-            setUser(fetchedUser.user);
-        } else {
+        try {
+            const fetchedUser = await getUser(props.request.userId);
+            if (fetchedUser.user) {
+                setUser(fetchedUser.user);
+            } else {
+                setUser({});
+                toast.error(`Failed to fetch user for request Id: ${props.request._id}`, {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+        } catch (error) {
             setUser({});
-            toast.error(`Failed to fetch user for request Id: ${props.request._id}`, {
+            toast.error(`Server timed out for request Id: ${props.request._id}`, {
                 position: "top-center",
                 autoClose: 1000,
                 hideProgressBar: false,

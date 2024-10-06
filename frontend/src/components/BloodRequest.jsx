@@ -35,12 +35,26 @@ const BloodRequest = (props) => {
 
   const fetchUser = async () => {
     setLoading(true);
-    const fetchedUser = await getUser(props.request.userId);
-    if (fetchedUser.user) {
-      setUser(fetchedUser.user);
-    } else {
+    try {
+      const fetchedUser = await getUser(props.request.userId);
+      if (fetchedUser.user) {
+        setUser(fetchedUser.user);
+      } else {
+        setUser({});
+        toast.error(`Failed to fetch user for request Id: ${props.request._id}`, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    } catch (error) {
       setUser({});
-      toast.error(`Failed to fetch user for request Id: ${props.request._id}`, {
+      toast.error(`Server timed out for request Id: ${props.request._id}`, {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -81,13 +95,45 @@ const BloodRequest = (props) => {
   }, [user]);
 
   const accept = async (e) => {
-    e.preventDefault();
-    setDisabled(true);
-    props.setProgress(10);
-    const newCard = await acceptRequest(props.request._id);
-    props.setProgress(50);
-    if (newCard.bloodRequest) {
-      toast.success(newCard.message, {
+    try {
+      e.preventDefault();
+      setDisabled(true);
+      props.setProgress(10);
+      const newCard = await acceptRequest(props.request._id);
+      props.setProgress(50);
+      if (newCard.bloodRequest) {
+        toast.success(newCard.message, {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        props.setProgress(75);
+        props.setNoOfAcceptors({ ...props.noOfAcceptors, [props.request._id]: newCard.bloodRequest.donors?.length });
+        props.setCurrentUser(prevState => ({ ...prevState, donates: [...prevState.donates, props.request._id] }));
+        setDisabled(false);
+        props.setProgress(100);
+      } else {
+        toast.error('Failed to accept the request', {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        props.setProgress(75);
+        setDisabled(false);
+        props.setProgress(100);
+      }
+    } catch (error) {
+      toast.error("Server Timed Out", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -98,24 +144,8 @@ const BloodRequest = (props) => {
         theme: "dark",
       });
       props.setProgress(75);
-      props.setNoOfAcceptors({ ...props.noOfAcceptors, [props.request._id]: newCard.bloodRequest.donors?.length });
-      props.setCurrentUser(prevState => ({ ...prevState, donates: [...prevState.donates, props.request._id] }));
       setDisabled(false);
       props.setProgress(100);
-    } else {
-      toast.error('Failed to accept the request!', {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      props.setProgress(75);
-      setDisabled(false);
-      props.setProgress(100)
     }
   };
 
