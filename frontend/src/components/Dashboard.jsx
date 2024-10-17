@@ -606,7 +606,7 @@ const Dashboard = (props) => {
   };
 
   return (
-    <div className="relative w-[85%] flex flex-col">
+    <div className="relative w-[80%] mini:w-full flex flex-col ">
       <LoadingBar
         color='#b9003a'
         progress={progress}
@@ -616,69 +616,69 @@ const Dashboard = (props) => {
 
       {/* Confirmation Modal */}
 
-      <div className={`absolute h-screen overflow-auto w-full bg-[#161618] bg-opacity-80 z-20 ${openConfirmationModal ? 'flex justify-center p-16' : 'hidden'}`}>
-        <div className="flex flex-col gap-4 bg-[#1c1c1f] shadow-lg shadow-black rounded-md p-8 w-2/5 h-fit">
+      <div className={`absolute h-screen overflow-auto w-full bg-[#161618] bg-opacity-80 z-20 ${openConfirmationModal ? 'flex justify-center p-16 nano:p-8' : 'hidden'}`}>
+        <div className="flex flex-col gap-4 bg-[#1c1c1f] shadow-lg shadow-black rounded-md p-8 w-[425px] h-fit">
           <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-2 text-red-500 text-lg">
+            <div className="flex items-center gap-2 text-red-500 text-lg nano:text-sm">
               <FontAwesomeIcon icon={faTriangleExclamation} />
-              <p className="text-red-500 text-xl">Delete Account</p>
+              <p className="text-red-500 text-xl nano:text-sm">Delete Account</p>
             </div>
-            <button title="Close This Modal" disabled={disable} onClick={() => { setOpenConfirmationModal(false); }} className={`${disable ? 'text-gray-400 cursor-not-allowed' : 'text-white hover:text-gray-300'} text-lg`}><FontAwesomeIcon icon={faXmark} /></button>
+            <button title="Close This Modal" disabled={disable} onClick={() => { setOpenConfirmationModal(false); }} className={`${disable ? 'text-gray-400 cursor-not-allowed' : 'text-white hover:text-gray-300'} text-lg nano:text-sm`}><FontAwesomeIcon icon={faXmark} /></button>
           </div>
-          <p className="text-red-400 text-sm">This action cannot be undone. This will permanently delete your account and remove your data from our servers. Are you sure you want to delete your account?</p>
-          <div className="flex w-full gap-4">
-            <button onClick={() => { setOpenConfirmationModal(false); }} disabled={disable} className={`${disable ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'} text-black px-4 py-2 rounded-md w-full`}>Cancel</button>
-            <button onClick={deleteCurrentProfile} disabled={disable} className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-red-500 hover:bg-red-600'} text-white px-4 py-2 rounded-md w-full`}>{disable ? 'Processing...' : 'Delete'}</button>
+          <p className="text-red-400 text-sm nano:text-xs">This action cannot be undone. This will permanently delete your account and remove your data from our servers. Are you sure you want to delete your account?</p>
+          <div className="flex w-full gap-4 nano:gap-2">
+            <button onClick={() => { setOpenConfirmationModal(false); }} disabled={disable} className={`${disable ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'} text-black px-4 py-2 rounded-md w-full nano:text-sm`}>Cancel</button>
+            <button onClick={deleteCurrentProfile} disabled={disable} className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-red-500 hover:bg-red-600'} text-white px-4 py-2 rounded-md w-full nano:text-sm`}>{disable ? 'Processing...' : 'Delete'}</button>
           </div>
         </div>
       </div>
 
       {/* OTP Modal */}
 
-      <div className={`absolute h-screen overflow-auto w-full bg-[#161618] bg-opacity-80 z-20 ${openOTPmodal ? 'flex justify-center p-16' : 'hidden'}`}>
-        <div className="flex flex-col gap-4 bg-[#1c1c1f] shadow-lg shadow-black rounded-md p-8 w-2/5 h-fit">
+      <div className={`absolute h-screen overflow-auto w-full bg-[#161618] bg-opacity-80 z-20 ${openOTPmodal ? 'flex justify-center p-16 nano:p-8' : 'hidden'}`}>
+        <div className="flex flex-col gap-4 bg-[#1c1c1f] shadow-lg shadow-black rounded-md p-8 w-[435px] h-fit">
           <div className="flex justify-between items-center w-full">
-            <p className="text-white text-xl">Enter the OTP</p>
-            <button disabled={disable} title="Close This Modal" onClick={() => { setOpenOTPmodal(false); }} className={`${disable ? 'text-gray-400 cursor-not-allowed' : 'text-white hover:text-gray-300'} text-lg`}><FontAwesomeIcon icon={faXmark} /></button>
+            <p className="text-white text-xl nano:text-sm">Enter the OTP</p>
+            <button disabled={disable} title="Close This Modal" onClick={() => { setOpenOTPmodal(false); }} className={`${disable ? 'text-gray-400 cursor-not-allowed' : 'text-white hover:text-gray-300'} text-lg nano:text-sm`}><FontAwesomeIcon icon={faXmark} /></button>
           </div>
-          <p className="text-gray-400">Enter the 6 digit OTP sent to your new e-mail address to complete this process.</p>
+          <p className="text-gray-400 nano:text-xs">Enter the 6 digit OTP sent to your new e-mail address to complete this process.</p>
           <form onSubmit={verifyOTP} className="flex flex-col gap-4">
-            <div className="flex justify-between gap-4">
-              <input type="text" name="digit1" id="digit1" value={otp.digit1} onChange={changeOTP} className="w-1/6 h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
-              <input type="text" name="digit2" id="digit2" value={otp.digit2} onChange={changeOTP} className="w-1/6 h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
-              <input type="text" name="digit3" id="digit3" value={otp.digit3} onChange={changeOTP} className="w-1/6 h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
-              <input type="text" name="digit4" id="digit4" value={otp.digit4} onChange={changeOTP} className="w-1/6 h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
-              <input type="text" name="digit5" id="digit5" value={otp.digit5} onChange={changeOTP} className="w-1/6 h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
-              <input type="text" name="digit6" id="digit6" value={otp.digit6} onChange={changeOTP} className="w-1/6 h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
+            <div className="flex justify-between gap-4 nano:gap-2">
+              <input type="text" name="digit1" id="digit1" value={otp.digit1} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
+              <input type="text" name="digit2" id="digit2" value={otp.digit2} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
+              <input type="text" name="digit3" id="digit3" value={otp.digit3} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
+              <input type="text" name="digit4" id="digit4" value={otp.digit4} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
+              <input type="text" name="digit5" id="digit5" value={otp.digit5} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
+              <input type="text" name="digit6" id="digit6" value={otp.digit6} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
             </div>
-            <button disabled={disable} type="submit" className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'} text-white px-4 py-2 rounded-md`}>{disable ? 'Processing...' : 'Verify OTP'}</button>
+            <button disabled={disable} type="submit" className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'} text-white nano:text-sm px-4 py-2 rounded-md`}>{disable ? 'Processing...' : 'Verify OTP'}</button>
           </form>
         </div>
       </div>
 
       {/* Dashboard card */}
 
-      <div className="w-full flex justify-center items-start p-8 h-screen overflow-auto">
-        <div className="bg-[#1c1c1f] w-[70%] py-8 px-12 rounded-lg shadow-lg shadow-black flex flex-col gap-8">
-          <div className="w-full flex items-center gap-8">
-            <div className="w-[10%]">
+      <div className="w-full flex justify-center items-start p-12 micro:p-8 h-screen overflow-auto">
+        <div className="bg-[#1c1c1f] w-[75%] small:w-full py-8 px-12 nano:px-8 rounded-lg shadow-lg shadow-black flex flex-col gap-8">
+          <div className="w-full flex items-center gap-8 micro:flex-col">
+            <div className="w-[10%] micro:w-full micro:flex micro:justify-center">
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-gray-500 text-2xl font-bold">{logo}</span>
+                <span className="text-gray-500 text-2xl mini:text-xl font-bold">{logo}</span>
               </div>
             </div>
-            <div className="flex justify-between w-[90%]">
-              <div className="flex gap-4">
-                <div className="flex flex-col items-center">
-                  <p className="text-white text-lg">{originalUser.donates?.length}</p>
-                  <p className="text-gray-400 text-base">Total Accepts</p>
+            <div className="flex justify-between w-[90%] micro:w-full">
+              <div className="flex nano:flex-col gap-4 nano:items-start">
+                <div className="flex flex-col items-center micro:flex-row-reverse gap-2">
+                  <p className="text-white text-lg mini:text-base nano:text-sm">{originalUser.donates?.length}</p>
+                  <p className="text-gray-400 text-base mini:text-sm nano:text-xs">My Accepts</p>
                 </div>
-                <div className="flex flex-col items-center">
-                  <p className="text-white text-lg">{originalUser.requests?.length}</p>
-                  <p className="text-gray-400 text-base">Total Requests</p>
+                <div className="flex flex-col items-center micro:flex-row-reverse gap-2">
+                  <p className="text-white text-lg mini:text-base nano:text-sm">{originalUser.requests?.length}</p>
+                  <p className="text-gray-400 text-base mini:text-sm nano:text-xs">My Requests</p>
                 </div>
               </div>
               <div>
-                <button onClick={() => { setOpenConfirmationModal(true); }} title="Delete Profile" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-red-500 border-red-500'} text-xs p-2 border rounded-md`}>
+                <button onClick={() => { setOpenConfirmationModal(true); }} title="Delete Profile" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-red-500 border-red-500'} text-xs p-2 nano:p-1 border rounded-md`}>
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
               </div>
@@ -687,14 +687,38 @@ const Dashboard = (props) => {
 
           {/* Email with OTP validation */}
 
-          <form onSubmit={saveEmail} className="flex items-center w-full">
-            <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">E-mail Address</p>
-            <div className="flex w-3/5 justify-between">
+          <form onSubmit={saveEmail} className="flex items-center w-full justify-between micro:flex-col micro:items-stretch gap-2">
+            <div className="hidden justify-between items-center micro:flex">
+              <legend className="text-gray-400 text-base nano:text-sm">E-mail</legend>
+              {
+                editEmail ?
+                  <div className="flex gap-2">
+                    <button disabled={disable} type="submit" className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-green-500 border-green-500'} text-xs p-2 nano:p-1 border rounded-md`}><FontAwesomeIcon icon={faCheck} /></button>
+                    <button onClick={closeEmail} className="text-red-500 text-xs p-2 nano:p-1 border border-red-500 rounded-md"><FontAwesomeIcon icon={faXmark} /></button>
+                  </div>
+                  :
+                  <button onClick={openEmail} className="text-white text-xs p-2 nano:p-1 border border-gray-600 rounded-md"><FontAwesomeIcon icon={faPen} /></button>
+              }
+            </div>
+            {
+              editEmail ? (
+                <input type="email" name="email" value={user.email} onChange={change} className='w-full micro:block hidden border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md text-sm nano:text-xs' required />
+              ) : (
+                <p className="w-full micro:flex hidden text-sm items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white nano:text-xs break-all">
+                  {user.email}
+                </p>
+              )
+            }
+
+            <div className="flex w-2/5 micro:hidden">
+              <p className="text-gray-400 w-full mini:text-sm flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">E-mail Address</p>
+            </div>
+            <div className="flex w-3/5 micro:hidden justify-between items-center">
               {
                 editEmail ? (
-                  <input type="email" name="email" value={user.email} onChange={change} className='w-2/3 border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md' required />
+                  <input type="email" name="email" value={user.email} onChange={change} className='w-2/3 border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white mini:text-sm rounded-md' required />
                 ) : (
-                  <p className="w-2/3 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white">
+                  <p className="w-2/3 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white mini:text-sm break-all">
                     {user.email}
                   </p>
                 )
@@ -715,40 +739,40 @@ const Dashboard = (props) => {
 
           <form onSubmit={save} className="flex flex-col gap-4">
 
-            <div className="flex justify-between">
-              <legend className="text-white text-lg">Primary details</legend>
+            <div className="flex justify-between items-center">
+              <legend className="text-white text-lg mini:text-base nano:text-sm">Primary</legend>
               {
                 editPrimary ? (
                   <div className="flex gap-2">
-                    <button title="Save Primary Details" type="submit" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-green-500 border-green-500'} text-xs p-2 border rounded-md`}><FontAwesomeIcon icon={faCheck} /></button>
-                    <button title="Close Primary Details" onClick={closePrimary} className="text-red-500 text-xs p-2 border border-red-500 rounded-md"><FontAwesomeIcon icon={faXmark} /></button>
+                    <button title="Save Primary Details" type="submit" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-green-500 border-green-500'} text-xs p-2 nano:p-1 border rounded-md`}><FontAwesomeIcon icon={faCheck} /></button>
+                    <button title="Close Primary Details" onClick={closePrimary} className="text-red-500 text-xs p-2 nano:p-1 border border-red-500 rounded-md"><FontAwesomeIcon icon={faXmark} /></button>
                   </div>
                 ) : (
-                  <button title="Edit Primary Details" onClick={openPrimary} className="text-white text-xs p-2 border border-gray-600 rounded-md"><FontAwesomeIcon icon={faPen} /></button>
+                  <button title="Edit Primary Details" onClick={openPrimary} className="text-white text-xs p-2 nano:p-1 border border-gray-600 rounded-md"><FontAwesomeIcon icon={faPen} /></button>
                 )
               }
             </div>
 
             <div className="flex flex-col w-full gap-2">
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Full Name</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Full Name</p>
                 {
                   editPrimary ? (
-                    <input type="text" name="name" value={user.name} onChange={change} className='w-2/5 border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md' required />
+                    <input type="text" name="name" value={user.name} onChange={change} className='w-2/5 micro:w-full nano:text-xs border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white mini:text-sm rounded-md' maxLength={25} required />
                   ) : (
-                    <p className="w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white">
+                    <p className="w-2/5 micro:w-full nano:text-xs flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white mini:text-sm ">
                       {user.name}
                     </p>
                   )
                 }
               </div>
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Status</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Status</p>
                 {
                   editPrimary ? (
                     <div className="flex gap-2 items-center">
                       <input type="checkbox" id="availabled" name="available" checked={user.available} onChange={change} className='accent-cyan-500' />
-                      <label htmlFor="availabled" className='text-white text-sm'>Available to Donate?</label>
+                      <label htmlFor="availabled" className='text-white text-sm nano:text-xs'>Available to Donate?</label>
                     </div>
                   ) : (
                     user.available === true ? (
@@ -756,14 +780,14 @@ const Dashboard = (props) => {
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                         </svg>
-                        <p>Available</p>
+                        <p className='mini:text-sm nano:text-xs'>Available</p>
                       </span>
                     ) : (
                       <span className="flex items-center text-red-600">
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                         </svg>
-                        <p>Not Available</p>
+                        <p className='mini:text-sm nano:text-xs'>Not Available</p>
                       </span>
                     )
                   )
@@ -777,52 +801,52 @@ const Dashboard = (props) => {
 
           <form onSubmit={save} className="flex flex-col gap-4">
 
-            <div className="flex justify-between">
-              <legend className="text-white text-lg">Personal details</legend>
+            <div className="flex justify-between items-center">
+              <legend className="text-white text-lg mini:text-base nano:text-sm">Personal</legend>
               {editPersonal ?
                 <div className="flex gap-2">
-                  <button title="Save Personal Details" type="submit" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-green-500 border-green-500'} text-xs p-2 border rounded-md`}><FontAwesomeIcon icon={faCheck} /></button>
-                  <button title="Close Personal Details" onClick={closePersonal} className="text-red-500 text-xs p-2 border border-red-500 rounded-md"><FontAwesomeIcon icon={faXmark} /></button>
+                  <button title="Save Personal Details" type="submit" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-green-500 border-green-500'} text-xs p-2 nano:p-1 border rounded-md`}><FontAwesomeIcon icon={faCheck} /></button>
+                  <button title="Close Personal Details" onClick={closePersonal} className="text-red-500 text-xs p-2 nano:p-1 border border-red-500 rounded-md"><FontAwesomeIcon icon={faXmark} /></button>
                 </div>
                 :
-                <button title="Edit Personal Details" onClick={openPersonal} className="text-white text-xs p-2 border border-gray-600 rounded-md"><FontAwesomeIcon icon={faPen} /></button>
+                <button title="Edit Personal Details" onClick={openPersonal} className="text-white text-xs p-2 nano:p-1 border border-gray-600 rounded-md"><FontAwesomeIcon icon={faPen} /></button>
               }
             </div>
 
             <div className="flex flex-col w-full gap-2">
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Contact Number</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm w-2/5 micro:w-full nano:text-xs flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Contact Number</p>
                 {
                   editPersonal ? (
-                    <input type="tel" name="phoneNumber" value={user.phoneNumber} onChange={change} className='w-2/5 border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md' maxLength={10} required />
+                    <input type="tel" name="phoneNumber" value={user.phoneNumber} onChange={change} className='w-2/5 micro:w-full nano:text-xs border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white mini:text-sm rounded-md' maxLength={10} required />
                   ) : (
-                    <div className="w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white">
+                    <div className="w-2/5 micro:w-full nano:text-xs flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white mini:text-sm">
                       {user.phoneNumber}
                     </div>
                   )
                 }
               </div>
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Gender</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Gender</p>
                 {
                   editPersonal ? (
-                    <select name="gender" onChange={change} defaultValue={user.gender} title='Your Gender' className='w-2/5 border-2 h-[2rem] border-solid border-gray-500 outline-none bg-transparent text-white rounded-md' required>
+                    <select name="gender" onChange={change} defaultValue={user.gender} title='Your Gender' className='w-2/5 micro:w-full border-2 h-[2rem] border-solid border-gray-500 outline-none bg-transparent text-white mini:text-sm nano:text-xs rounded-md' required>
                       <option value="male" className='text-gray-800'>male</option>
                       <option value="female" className='text-gray-800'>female</option>
                       <option value="others" className='text-gray-800'>others</option>
                     </select>
                   ) : (
-                    <div className="w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white">
+                    <div className="w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white mini:text-sm nano:text-xs">
                       {user.gender}
                     </div>
                   )
                 }
               </div>
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Blood Group</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Blood Group</p>
                 {
                   editPersonal ? (
-                    <select name="bloodGroup" defaultValue={user.bloodGroup} title='Your Blood Group' onChange={change} className='w-2/5 h-[2rem] border-2 border-solid border-gray-500 outline-none bg-transparent text-white rounded-md' required>
+                    <select name="bloodGroup" defaultValue={user.bloodGroup} title='Your Blood Group' onChange={change} className='w-2/5 micro:w-full nano:text-xs h-[2rem] border-2 border-solid border-gray-500 outline-none bg-transparent text-white mini:text-sm rounded-md' required>
                       <option value="A+" className='text-gray-800'>A+</option>
                       <option value="B+" className='text-gray-800'>B+</option>
                       <option value="AB+" className='text-gray-800'>AB+</option>
@@ -833,19 +857,19 @@ const Dashboard = (props) => {
                       <option value="O-" className='text-gray-800'>O-</option>
                     </select>
                   ) : (
-                    <div className="w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white">
+                    <div className="w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white mini:text-sm nano:text-xs">
                       {user.bloodGroup}
                     </div>
                   )
                 }
               </div>
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Date of Birth</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Date of Birth</p>
                 {
                   editPersonal ? (
-                    <input className='w-2/5 h-[2rem] border-2 border-solid border-gray-500 outline-none bg-transparent text-white rounded-md date-input' type="date" name="dob" value={user.dob} onChange={change} min={minDate} max={maxDate} required />
+                    <input className='w-2/5 micro:w-full h-[2rem] border-2 border-solid border-gray-500 outline-none bg-transparent text-white mini:text-sm nano:text-xs rounded-md date-input' type="date" name="dob" value={user.dob} onChange={change} min={minDate} max={maxDate} required />
                   ) : (
-                    <div className="w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white">
+                    <div className="w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f] text-white mini:text-sm nano:text-xs">
                       {new Date(user.dob).toDateString()}
                     </div>
                   )
@@ -858,86 +882,86 @@ const Dashboard = (props) => {
 
           <form onSubmit={save} className="flex flex-col gap-4">
 
-            <div className="flex justify-between">
-              <legend className="text-white text-lg">Address</legend>
+            <div className="flex justify-between items-center">
+              <legend className="text-white text-lg mini:text-base nano:text-sm">Address</legend>
               {editAddress ?
                 <div className="flex gap-2">
-                  <button title="Save Address" type="submit" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-green-500 border-green-500'} text-xs p-2 border rounded-md`}><FontAwesomeIcon icon={faCheck} /></button>
-                  <button title="Close Address" onClick={closeAddress} className="text-red-500 text-xs p-2 border border-red-500 rounded-md"><FontAwesomeIcon icon={faXmark} /></button>
+                  <button title="Save Address" type="submit" disabled={disable} className={`${disable ? 'text-white border-gray-600 cursor-wait' : 'text-green-500 border-green-500'} text-xs p-2 nano:p-1 border rounded-md`}><FontAwesomeIcon icon={faCheck} /></button>
+                  <button title="Close Address" onClick={closeAddress} className="text-red-500 text-xs p-2 nano:p-1 border border-red-500 rounded-md"><FontAwesomeIcon icon={faXmark} /></button>
                 </div>
                 :
-                <button title="Edit Address" onClick={openAddress} className="text-white text-xs p-2 border border-gray-600 rounded-md"><FontAwesomeIcon icon={faPen} /></button>
+                <button title="Edit Address" onClick={openAddress} className="text-white text-xs p-2 nano:p-1 border border-gray-600 rounded-md"><FontAwesomeIcon icon={faPen} /></button>
               }
             </div>
 
             <div className="flex flex-col w-full gap-2">
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">State</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">State</p>
                 {
                   editAddress ? (
-                    <div className="flex w-2/5">
-                      <select name="state" onChange={change} id="stated" title='Your State' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md rounded-r-none border-r-0' required>
+                    <div className="flex w-2/5 micro:w-full">
+                      <select name="state" onChange={change} id="stated" title='Your State' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white mini:text-sm nano:text-xs rounded-md rounded-r-none border-r-0' required>
                       </select>
-                      <button title="Clear State" onClick={clearState} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
+                      <button title="Clear State" onClick={clearState} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base mini:text-sm nano:text-xs rounded-md rounded-l-none border-l-0 px-2'>
                         <FontAwesomeIcon icon={faXmark} />
                       </button>
                     </div>
                   ) : (
-                    <p className="text-white w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
+                    <p className="text-white mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
                       {user.state}
                     </p>
                   )
                 }
               </div>
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">District</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">District</p>
                 {
                   editAddress ? (
-                    <div className="flex w-2/5">
-                      <select name="district" onChange={change} id="districtd" title='Your District' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md rounded-r-none border-r-0' required>
+                    <div className="flex w-2/5 micro:w-full">
+                      <select name="district" onChange={change} id="districtd" title='Your District' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white mini:text-sm nano:text-xs rounded-md rounded-r-none border-r-0' required>
                       </select>
-                      <button title="Clear District" onClick={clearDistrict} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
+                      <button title="Clear District" onClick={clearDistrict} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base mini:text-sm nano:text-xs rounded-md rounded-l-none border-l-0 px-2'>
                         <FontAwesomeIcon icon={faXmark} />
                       </button>
                     </div>
                   ) : (
-                    <p className="text-white w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
+                    <p className="text-white mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
                       {user.district}
                     </p>
                   )
                 }
               </div>
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">City</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">City</p>
                 {
                   editAddress ? (
-                    <div className="flex w-2/5">
-                      <select name="city" onChange={change} id="cityd" title='Your City' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md rounded-r-none border-r-0' required>
+                    <div className="flex w-2/5 micro:w-full">
+                      <select name="city" onChange={change} id="cityd" title='Your City' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white mini:text-sm nano:text-xs rounded-md rounded-r-none border-r-0' required>
                       </select>
-                      <button title="Clear City" onClick={clearCity} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
+                      <button title="Clear City" onClick={clearCity} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base mini:text-sm nano:text-xs rounded-md rounded-l-none border-l-0 px-2'>
                         <FontAwesomeIcon icon={faXmark} />
                       </button>
                     </div>
                   ) : (
-                    <p className="text-white w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
+                    <p className="text-white mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
                       {user.city}
                     </p>
                   )
                 }
               </div>
-              <div className="flex w-full">
-                <p className="text-gray-400 w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Pincode</p>
+              <div className="flex w-full micro:flex-col">
+                <p className="text-gray-400 mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">Pincode</p>
                 {
                   editAddress ? (
-                    <div className="flex w-2/5">
-                      <select name="pin" onChange={change} id="pind" title='Your Pincode' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white rounded-md rounded-r-none border-r-0' required>
+                    <div className="flex w-2/5 micro:w-full">
+                      <select name="pin" onChange={change} id="pind" title='Your Pincode' className='w-full border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white mini:text-sm nano:text-xs rounded-md rounded-r-none border-r-0' required>
                       </select>
-                      <button title="Clear Pincode" onClick={clearPin} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
+                      <button title="Clear Pincode" onClick={clearPin} className='border-2 border-solid h-[2rem] border-gray-500 outline-none bg-transparent text-white text-base mini:text-sm nano:text-xs rounded-md rounded-l-none border-l-0 px-2'>
                         <FontAwesomeIcon icon={faXmark} />
                       </button>
                     </div>
                   ) : (
-                    <p className="text-white w-2/5 flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
+                    <p className="text-white mini:text-sm nano:text-xs w-2/5 micro:w-full flex items-center h-[2rem] border-2 border-solid border-[#1c1c1f]">
                       {user.pin}
                     </p>
                   )

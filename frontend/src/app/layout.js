@@ -21,7 +21,7 @@ export default async function RootLayout({ children }) {
         <div className="flex flex-col relative">
           {cookie ? <CreateRequest data={state_district_city_pin} /> : <></>}
           <div className="flex flex-col h-screen overflow-auto justify-between bg-[#161618]">
-            <div className="flex flex-col">
+            <div className="relative flex flex-col">
               <Navbar cookie={cookie} />
               {children}
             </div>

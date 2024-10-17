@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import MoonLoader from "react-spinners/MoonLoader";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPersonWalkingArrowLoopLeft, faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
 import { getUser } from "@/app/actions/user";
 import { toast } from "react-toastify";
 
@@ -89,10 +91,12 @@ const AcceptedRequest = (props) => {
         setLogo(logo.toUpperCase());
     }, [user]);
 
+
+
     return (
         <>
             {loading && (
-                <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[618.4px] text-white w-[20rem] flex justify-center items-center`}>
+                <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[268px] nano:h-[332px] text-white w-[20rem] nano:w-[14rem] flex justify-center items-center`}>
                     <MoonLoader
                         color={"white"}
                         loading={loading}
@@ -103,112 +107,72 @@ const AcceptedRequest = (props) => {
                 </div>
             )}
             {!loading && (
-                <div className={`card h-fit bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col text-white w-[20rem]`}>
-                    <div className="flex flex-col gap-2 items-center w-full bg-[#39393b] p-4">
-                        <div className="w-full flex justify-end">
+                <div className='h-[268px] nano:h-[332px] bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col justify-between gap-4 text-white w-[20rem] nano:w-[14rem] p-4'>
+                    <div className='flex flex-col gap-1'>
+                        <p className='text-lg nano:text-base'>{props.request.donationCenter}</p>
+                        <div className='flex nano:flex-col gap-1'>
+                            <div className='flex gap-1 items-center user_name relative'>
+                                <p className='text-xs text-gray-400 italic'>by</p>
+                                <p className="text-xs italic underline hover:cursor-pointer">{user.name}</p>
+                                <div className='user_details absolute bg-[#1c1c1f] z-10 p-4 rounded-md shadow-xl shadow-black hidden flex-col gap-2 w-[18rem] nano:w-[12rem]'>
+                                    <p className="text-gray-500 text-sm bg-gray-200 rounded-full p-2 w-8 h-8 flex justify-center items-center">{logo}</p>
+                                    <div className='flex flex-col gap-1'>
+                                        <p className='text-xs text-gray-400 italic'>User Name</p>
+                                        <p className='text-white text-xs'>{user.name}</p>
+                                    </div>
+                                    <div className='flex flex-col gap-1'>
+                                        <p className='text-xs text-gray-400 italic'>Phone Number</p>
+                                        <p className='text-white text-xs'>{user.phoneNumber}</p>
+                                    </div>
+                                    <div className='flex flex-col gap-1 break-all'>
+                                        <p className='text-xs text-gray-400 italic'>E-Mail Address</p>
+                                        <p className='text-white text-xs'>{user.email}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p className='text-xs text-gray-400 italic'>{createdAt}</p>
+                        </div>
+                    </div>
+                    <div className='flex flex-col gap-1'>
+                        <p className='text-xs text-gray-400 italic'>Address</p>
+                        <p className='text-xs'>{props.request.city}, {props.request.district}, {props.request.state}, {props.request.pin}</p>
+                    </div>
+                    <div className='flex w-full justify-between'>
+                        <div className='flex items-center gap-1'>
+                            <p className='text-xs text-gray-400 italic'>Blood Group</p>
+                            <p className='text-xs'>{props.request.bloodGroup}</p>
+                        </div>
+                        <div className='flex items-center gap-1'>
+                            <p className='text-xs text-gray-400 italic'>Blood Units</p>
+                            <p className='text-xs'>{props.request.bloodUnit}</p>
+                        </div>
+                    </div>
+                    <div className='flex nano:flex-col-reverse nano:gap-2 w-full justify-between'>
+                        <div className='flex items-center gap-1'>
+                            <p className='text-xs text-gray-400 italic'>Deadline</p>
+                            <p className='text-xs'>{lastDate}</p>
+                        </div>
+                        <div className='flex items-center gap-1'>
+                            <p className='text-xs text-gray-400 italic'>Acceptors</p>
+                            <p className='text-xs'>{props.request.donors?.length}</p>
+                        </div>
+                    </div>
+                    <div className='flex w-full justify-between items-center'>
+                        <div className='flex text-sm'>
                             {
                                 !isClosed && (
-                                    <div className="inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold border-green-600 bg-white text-green-900">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-3 w-3 -translate-x-1 text-green-300"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <circle className="blinkOpen" cx="12" cy="12" r="10"></circle>
-                                        </svg>
-                                        Open
-                                    </div>
+                                    <div title="Open" className={`text-blue-500`}><FontAwesomeIcon icon={faLockOpen} /></div>
                                 )
                             }
                             {
                                 isClosed && (
-                                    <div className="inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold border-red-500 bg-white text-red-900">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-3 w-3 -translate-x-1 text-red-300"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <circle className="blinkClose" cx="12" cy="12" r="10"></circle>
-                                        </svg>
-                                        Closed
-                                    </div>
+                                    <div title="Closed" className={`text-yellow-500`}><FontAwesomeIcon icon={faLock} /></div>
                                 )
                             }
                         </div>
-                        <div className="flex flex-col justify-center items-center gap-2 w-full">
-                            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                                <span className="text-gray-500 text-2xl font-bold">{logo}</span>
-                            </div>
-                            <div className="text-2xl font-bold flex text-center">{user.name}</div>
-                            <div className="text-xs text-gray-300 flex flex-col gap-1 items-center">
-                                <p>{user.email}</p>
-                                <p>{user.phoneNumber}</p>
-                            </div>
+                        <div className='flex text-sm'>
+                            <button title='Revoke Acceptance' className={`text-red-600 hover:text-red-500`}><FontAwesomeIcon icon={faPersonWalkingArrowLoopLeft} /></button>
                         </div>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full p-4 text-sm">
-                        <div className="flex flex-col gap-2 w-full py-4 border-b border-gray-600">
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">Center</p>
-                                <p>{props.request.donationCenter}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">State</p>
-                                <p>{props.request.state}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">District</p>
-                                <p>{props.request.district}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">City</p>
-                                <p>{props.request.city}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">Pincode</p>
-                                <p>{props.request.pin}</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-2 w-full py-4">
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">Blood Group</p>
-                                <p>{props.request.bloodGroup}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">Blood Unit</p>
-                                <p>{props.request.bloodUnit}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">Acceptors</p>
-                                <p>{props.request.donors?.length}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">Created at</p>
-                                <p>{createdAt}</p>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <p className="text-gray-300">Deadline</p>
-                                <p>{lastDate}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex  w-full">
-                        {
-                            !isClosed ?
-                                <button id="cbmd" className="px-4 py-2 w-full bg-red-300 text-black hover:cursor-not-allowed">Revoke</button>
-                                :
-                                <button className="px-4 py-2 w-full bg-orange-300 text-black hover:cursor-not-allowed">Request Closed</button>
-                        }
                     </div>
                 </div>
             )}

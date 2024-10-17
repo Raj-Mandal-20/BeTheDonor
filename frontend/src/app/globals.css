@@ -110,3 +110,8 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+/* Show the user details when hovering over the username */
+.user_name:hover .user_details {
+  display: flex;
+}

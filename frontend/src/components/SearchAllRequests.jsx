@@ -213,14 +213,14 @@ const SearchAllRequests = (props) => {
     };
 
     return (
-        <div className={`flex flex-col gap-8 items-center min-h-screen w-full`}>
+        <div className={`flex flex-col gap-4 items-center min-h-screen w-full`}>
             <LoadingBar
                 color='#b9003a'
                 progress={progress}
                 height={4}
                 onLoaderFinished={() => setProgress(0)}
             />
-            <div className="flex gap-8 pt-10 w-full justify-center flex-wrap">
+            <div className="flex gap-8 p-8 w-full justify-center flex-wrap">
                 <div className='flex w-[20rem]'>
                     <select name="state" onChange={change} id="stateS" title='Center State' className='w-full h-[2rem] rounded-md bg-transparent text-white border-2 border-solid border-gray-500 outline-none border-r-0 rounded-r-none' required>
                     </select>
@@ -250,14 +250,14 @@ const SearchAllRequests = (props) => {
                     </button>
                 </div>
             </div>
-            <div className='flex flex-wrap gap-8 p-12 justify-center w-full'>
+            <div className='flex flex-wrap gap-8 p-8 justify-center w-full'>
                 {
                     allBloodRequests?.length > 0 ? (
                         allBloodRequests.map((request, index) => (
                             <BloodRequest key={index} request={request} currentUser={currentUser} setCurrentUser={setCurrentUser} noOfAcceptors={noOfAcceptors} setNoOfAcceptors={setNoOfAcceptors} setProgress={setProgress} />
                         ))
                     ) : (
-                        <div className="text-white p-4 text-center">
+                        <div className="text-white p-4 text-center nano:text-sm">
                             No Blood Requests Found
                         </div>
                     )

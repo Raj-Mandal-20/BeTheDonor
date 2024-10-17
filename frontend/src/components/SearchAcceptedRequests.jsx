@@ -211,14 +211,14 @@ const SearchAcceptedRequests = (props) => {
     };
 
     return (
-        <div className={`flex flex-col gap-4 items-center h-screen overflow-auto w-[85%]`}>
+        <div className={`flex flex-col gap-4 items-center h-screen overflow-auto w-[80%] mini:w-full`}>
             <LoadingBar
                 color='#b9003a'
                 progress={progress}
                 height={4}
                 onLoaderFinished={() => setProgress(0)}
             />
-            <div className="flex gap-4 pt-8 w-full justify-center flex-wrap">
+            <div className="flex gap-4 p-4 w-full justify-center flex-wrap">
                 <div className='flex w-[12rem]'>
                     <select name="state" onChange={change} id="stateMyD" title='Center State' className='w-full h-[2rem] rounded-md bg-transparent text-white border-2 border-solid border-gray-500 outline-none border-r-0 rounded-r-none' required>
                     </select>
@@ -255,7 +255,7 @@ const SearchAcceptedRequests = (props) => {
                             <AcceptedRequest key={index} request={request} setProgress={setProgress} />
                         ))
                     ) : (
-                        <div className="text-white p-4 text-center">
+                        <div className="text-white p-4 text-center micro:text-sm">
                             No Accepted Requests Found
                         </div>
                     )

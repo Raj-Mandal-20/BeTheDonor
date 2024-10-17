@@ -214,7 +214,7 @@ const SearchPosts = (props) => {
     };
 
     return (
-        <div className='relative w-[85%] flex'>
+        <div className='relative w-[80%] mini:w-full flex'>
             <div className={`flex flex-col gap-4 items-center h-screen w-full overflow-auto`}>
                 <LoadingBar
                     color='#b9003a'
@@ -222,7 +222,7 @@ const SearchPosts = (props) => {
                     height={4}
                     onLoaderFinished={() => setProgress(0)}
                 />
-                <div className="flex gap-4 w-full justify-center flex-wrap pt-8">
+                <div className="flex gap-4 w-full justify-center flex-wrap p-4">
                     <div className='flex w-[12rem]'>
                         <select name="state" onChange={change} id="stateMyR" title='Center State' className='w-full h-[2rem] rounded-md bg-transparent text-white border-2 border-solid border-gray-500 outline-none border-r-0 rounded-r-none' required>
                         </select>
@@ -259,37 +259,32 @@ const SearchPosts = (props) => {
                                 <MyRequest key={index} request={request} setAcceptors={setAcceptors} setIsSliderOpened={setIsSliderOpened} setProgress={setProgress} myRequests={myRequests} setMyRequests={setMyRequests} myRequestsProps={myRequestsProps} setMyRequestsProps={setMyRequestsProps} />
                             ))
                         ) : (
-                            <div className="text-white p-4 text-center">
+                            <div className="text-white p-4 text-center micro:text-sm">
                                 No Previous Requests Found
                             </div>
                         )
                     }
                 </div>
             </div>
-            <div className={`flex flex-col h-screen overflow-hidden absolute bg-[#161618] ${isSliderOpened ? 'w-full' : 'w-0'} border-r  border-gray-800 transition-all ease-linear duration-500 z-20`}>
+            <div className={`flex flex-col h-screen overflow-hidden absolute bg-[#161618] ${isSliderOpened ? 'w-full' : 'w-0'} border-r border-gray-800 transition-all ease-linear duration-250 z-20`}>
                 <button title='Close Slider' onClick={() => setIsSliderOpened(false)} className='text-white py-4 px-8 text-2xl text-right'>
                     <FontAwesomeIcon icon={faXmark} />
                 </button>
-                <div className='flex flex-wrap w-full overflow-auto justify-center items-center p-12 gap-4'>
+                <div className='flex flex-wrap w-full overflow-auto justify-center items-center p-4 gap-4'>
                     {
                         acceptors?.length > 0 ? (
                             acceptors.map((acceptor, index) => (
-                                <div key={index} className="p-4 w-[30rem] bg-[#1c1c1f] shadow-lg shadow-black border flex flex-col gap-2 border-[#1c1c1f]">
+                                <div key={index} className="p-4 w-[20rem] nano:w-[14rem] h-[164px] bg-[#1c1c1f] shadow-lg shadow-black flex flex-col gap-2 justify-between rounded-lg">
                                     <div className="flex w-full justify-between">
                                         <p className='text-white text-sm'>{acceptor.name}</p>
                                         <p className="text-red-500 text-sm">{acceptor.blooodGroup}</p>
                                     </div>
-                                    <div className='flex flex-col text-gray-400 text-xs'>
-                                        <span>{acceptor.email}</span>
+                                    <div className='flex flex-col text-gray-400 text-xs break-all'>
                                         <span>{acceptor.phoneNumber}</span>
+                                        <span>{acceptor.email}</span>
                                     </div>
-                                    <div className='flex text-gray-400 text-xs flex-wrap'>
-                                        <span>{acceptor.state}</span>
-                                        <span>, {acceptor.district}</span>
-                                        <span>, {acceptor.city}</span>
-                                        <span>, {acceptor.pin}</span>
-                                    </div>
-                                    <div className='flex text-gray-400 text-xs'>
+                                    <div className='text-xs text-gray-400'>
+                                        {acceptor.city}, {acceptor.district}, {acceptor.state}, {acceptor.pin}
                                     </div>
                                 </div>
                             ))

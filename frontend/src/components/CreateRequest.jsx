@@ -241,70 +241,70 @@ const CreateRequest = (props) => {
 
     return (
         <>
-            <div className={`create-request-modal h-screen overflow-auto w-full absolute z-40 bg-[#161618] bg-opacity-80 ${openModal ? 'flex flex-col items-center p-20' : 'hidden'}`}>
+            <div className={`create-request-modal h-screen overflow-auto w-full absolute z-40 bg-[#161618] bg-opacity-80 ${openModal ? 'flex flex-col items-center p-16 micro:p-12 nano:p-8' : 'hidden'}`}>
                 <LoadingBar
                     color='#b9003a'
                     progress={progress}
                     height={4}
                     onLoaderFinished={() => setProgress(0)}
                 />
-                <div className="flex flex-col gap-4 w-1/2 p-12 text-white rounded-md bg-[#1c1c1f] shadow-lg shadow-black">
+                <div className="flex flex-col gap-4 w-1/2 small:w-2/3 mini:w-3/4 micro:w-full p-12 nano:p-8 text-white rounded-md bg-[#1c1c1f] shadow-lg shadow-black">
                     <div className='flex justify-between w-full items-center'>
-                        <p className="text-xl font-bold mb-2">Request For Donation</p>
-                        <button title='Close This Modal' disabled={disable} onClick={() => { setOpenModal(false); }} className={`${disable ? 'text-gray-400 cursor-not-allowed' : 'text-white hover:text-gray-300'} text-xl`}>
+                        <p className="text-xl nano:text-base font-bold">Request For Donation</p>
+                        <button title='Close This Modal' disabled={disable} onClick={() => { setOpenModal(false); }} className={`${disable ? 'text-gray-400 cursor-not-allowed' : 'text-white hover:text-gray-300'} text-xl nano:text-base`}>
                             <FontAwesomeIcon icon={faXmark} />
                         </button>
                     </div>
-                    <p className="text-gray-400">Fill out this form to make a request for new blood donations.</p>
+                    <p className="text-gray-400 nano:text-xs">Fill out this form to make a request for new blood donations.</p>
                     <form onSubmit={submit}>
                         <div className="flex flex-col gap-8 py-4 w-full">
                             <div className='flex w-full relative'>
-                                <input id='dcRQ' type="text" name="donationCenter" value={data.donationCenter} onChange={change} className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required />
-                                <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="dcRQ">Donation Center</label>
+                                <input id='dcRQ' type="text" maxLength={30} name="donationCenter" value={data.donationCenter} onChange={change} className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none' required />
+                                <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="dcRQ">Donation Center</label>
                             </div>
-                            <div className="flex gap-4">
-                                <div className='flex w-1/2 relative'>
-                                    <select name="state" onChange={change} id="stateRQ" title='Center State' className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
+                            <div className="flex nano:flex-col gap-4">
+                                <div className='flex w-1/2 nano:w-full relative'>
+                                    <select name="state" onChange={change} id="stateRQ" title='Center State' className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
                                     </select>
-                                    <button title="Clear State" onClick={clearState} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
+                                    <button title="Clear State" onClick={clearState} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base nano:text-sm rounded-md rounded-l-none border-l-0 px-2'>
                                         <FontAwesomeIcon icon={faXmark} />
                                     </button>
-                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="stateRQ">State</label>
+                                    <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="stateRQ">State</label>
                                 </div>
-                                <div className='flex w-1/2 relative'>
-                                    <select name="district" onChange={change} id="districtRQ" title='Center District' className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
+                                <div className='flex w-1/2 nano:w-full relative'>
+                                    <select name="district" onChange={change} id="districtRQ" title='Center District' className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
                                     </select>
-                                    <button title="Clear District" onClick={clearDistrict} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
+                                    <button title="Clear District" onClick={clearDistrict} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base nano:text-sm rounded-md rounded-l-none border-l-0 px-2'>
                                         <FontAwesomeIcon icon={faXmark} />
                                     </button>
-                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="districtRQ">District</label>
-                                </div>
-                            </div>
-                            <div className="flex gap-4">
-                                <div className='flex w-1/2 relative'>
-                                    <select name="city" onChange={change} id="cityRQ" title='Center City' className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
-                                    </select>
-                                    <button title="Clear City" onClick={clearCity} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </button>
-                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="cityRQ">City</label>
-                                </div>
-                                <div className='flex w-1/2 relative'>
-                                    <select name="pin" onChange={change} id="pinRQ" title='Center Pincode' className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
-                                    </select>
-                                    <button title="Clear Pincode" onClick={clearPin} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base rounded-md rounded-l-none border-l-0 px-2'>
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </button>
-                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="pinRQ">Pincode</label>
+                                    <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="districtRQ">District</label>
                                 </div>
                             </div>
-                            <div className="flex gap-4">
-                                <div className='flex w-1/2 relative'>
-                                    <input className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' type="number" min={1} max={15} id="bloodUnitRQ" name="bloodUnit" value={data.bloodUnit} onChange={change} required />
-                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="bloodUnitRQ">Blood Unit</label>
+                            <div className="flex nano:flex-col gap-4">
+                                <div className='flex w-1/2 nano:w-full relative'>
+                                    <select name="city" onChange={change} id="cityRQ" title='Center City' className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
+                                    </select>
+                                    <button title="Clear City" onClick={clearCity} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base nano:text-sm rounded-md rounded-l-none border-l-0 px-2'>
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </button>
+                                    <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="cityRQ">City</label>
                                 </div>
-                                <div className='flex w-1/2 relative'>
-                                    <select id='bloodGroupRQ' title='Required Blood Group' name="bloodGroup" value={data.bloodGroup} onChange={change} className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none' required>
+                                <div className='flex w-1/2 nano:w-full relative'>
+                                    <select name="pin" onChange={change} id="pinRQ" title='Center Pincode' className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none rounded-r-none border-r-0' required>
+                                    </select>
+                                    <button title="Clear Pincode" onClick={clearPin} className='border-2 border-solid border-gray-400 outline-none bg-transparent text-white text-base nano:text-sm rounded-md rounded-l-none border-l-0 px-2'>
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </button>
+                                    <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="pinRQ">Pincode</label>
+                                </div>
+                            </div>
+                            <div className="flex nano:flex-col gap-4">
+                                <div className='flex w-1/2 nano:w-full relative'>
+                                    <input className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none' type="number" min={1} max={15} id="bloodUnitRQ" name="bloodUnit" value={data.bloodUnit} onChange={change} required />
+                                    <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="bloodUnitRQ">Blood Unit</label>
+                                </div>
+                                <div className='flex w-1/2 nano:w-full relative'>
+                                    <select id='bloodGroupRQ' title='Required Blood Group' name="bloodGroup" value={data.bloodGroup} onChange={change} className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none' required>
                                         <option value="any" className='text-gray-800'>Any Group</option>
                                         <option value="A+" className='text-gray-800'>A+</option>
                                         <option value="B+" className='text-gray-800'>B+</option>
@@ -315,19 +315,19 @@ const CreateRequest = (props) => {
                                         <option value="O-" className='text-gray-800'>O-</option>
                                         <option value="AB-" className='text-gray-800'>AB-</option>
                                     </select>
-                                    <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="bloodGroupRQ">Blood Group</label>
+                                    <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="bloodGroupRQ">Blood Group</label>
                                 </div>
                             </div>
                             <div className='flex relative'>
-                                <input className='w-full px-4 py-2 rounded-md bg-transparent text-white border-2 border-solid border-gray-400 outline-none date-input' type="date" id="deadlineRQ" name="deadline" value={data.deadline} min={minDate} max={maxDate} onChange={change} required />
-                                <label className="text-sm rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="deadlineRQ">Deadline</label>
+                                <input className='w-full px-4 py-2 rounded-md bg-transparent text-white nano:text-sm border-2 border-solid border-gray-400 outline-none date-input' type="date" id="deadlineRQ" name="deadline" value={data.deadline} min={minDate} max={maxDate} onChange={change} required />
+                                <label className="text-sm nano:text-xs rounded-md absolute top-0 -translate-y-1/2 bg-[#1c1c1f] px-1 left-4" htmlFor="deadlineRQ">Deadline</label>
                             </div>
                         </div>
-                        <button disabled={disable} className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'} px-4 py-2 w-full rounded-md hover:shadow-md text-white`} type="submit">{disable ? 'Processing...' : 'Submit'}</button>
+                        <button disabled={disable} className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'} px-4 py-2 nano:text-sm w-full rounded-md hover:shadow-md text-white`} type="submit">{disable ? 'Processing...' : 'Submit'}</button>
                     </form>
                 </div>
             </div>
-            <button title='Create New Request' className={`fixed ${openModal ? 'hidden' : 'flex'} top-[90%] left-[90%] bg-[#b9003a] p-4 rounded-full shadow-lg shadow-black hover:bg-[#e2034b] text-white z-10`} onClick={() => { setOpenModal(true); }}>
+            <button title='Create New Request' className={`fixed ${openModal ? 'hidden' : 'flex'} top-[90%] left-[90%] nano:left-[80%] bg-[#b9003a] p-4 rounded-full shadow-lg shadow-black hover:bg-[#e2034b] text-white nano:text-xs z-10`} onClick={() => { setOpenModal(true); }}>
                 <FontAwesomeIcon icon={faPlus} />
             </button>
         </>
