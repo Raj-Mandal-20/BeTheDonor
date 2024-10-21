@@ -17,6 +17,7 @@ module.exports = {
         'mini': { 'max': "1080px" },
         'micro': { 'max': "800px" },
         'nano': { 'max': "600px" },
+        'pico': { 'max': "375px" },
       }
     },
   },

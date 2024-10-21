@@ -327,8 +327,9 @@ const CreateRequest = (props) => {
                     </form>
                 </div>
             </div>
-            <button title='Create New Request' className={`fixed ${openModal ? 'hidden' : 'flex'} top-[90%] left-[90%] nano:left-[80%] bg-[#b9003a] p-4 rounded-full shadow-lg shadow-black hover:bg-[#e2034b] text-white nano:text-xs z-10`} onClick={() => { setOpenModal(true); }}>
-                <FontAwesomeIcon icon={faPlus} />
+            <button title='Create New Request' className={`bg-[#b9003a] hover:bg-[#e2034b] rounded-full text-white nano:text-xs fixed ${openModal ? 'hidden' : 'flex items-center gap-2'} top-[90%] left-[90%] mini:left-[87%] micro:left-[82%] nano:left-[75%] pico:left-[70%] z-10 create-request-button shadow-xl shadow-black`} onClick={() => { setOpenModal(true); }}>
+                <FontAwesomeIcon icon={faPlus} className='p-4 create-request-icon' />
+                <p className='text-sm nano:text-xs text-white create-request-banner hidden pr-4'>Create</p>
             </button>
         </>
     )

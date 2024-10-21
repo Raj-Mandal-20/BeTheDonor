@@ -190,7 +190,7 @@ const Login = () => {
                             <p onClick={() => { setOpenModal(true); }} className='text-sm nano:text-xs cursor-pointer text-gray-400 hover:text-white'>Forgot Password?</p>
                         </div>
                         <button disabled={pending} id='sbLog' type="submit" className={`px-4 w-full py-2 rounded-md hover:shadow-md text-white nano:text-sm ${pending ? isLoggedIn ? 'bg-green-700 cursor-not-allowed' : 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'}`}>
-                            {pending ? isLoggedIn ? 'Logged In' : 'Processing...' : 'Login'}
+                            {pending ? isLoggedIn ? 'Logged In' : 'Logging in...' : 'Login'}
                         </button>
                     </form>
                     <div className='p-2 text-sm nano:text-xs text-gray-400'>Don&apos;t have an account? <Link href={"/register"} className='underline text-white'>Register</Link></div>

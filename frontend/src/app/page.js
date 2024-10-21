@@ -5,7 +5,7 @@ import { faDownload } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   return (
-    <section className="flex flex-col min-h-screen nano:min-h-fit w-full">
+    <section className="flex flex-col min-h-screen w-full">
       <div className="flex justify-center p-16 w-full">
         <div className="flex flex-col p-12 nano:p-4 gap-8 items-center text-center w-1/2 mini:w-3/4 micro:w-4/5 nano:w-full">
           <p className="text-6xl micro:text-4xl nano:text-xl font-bold text-white">

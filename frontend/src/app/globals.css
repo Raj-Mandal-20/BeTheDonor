@@ -4,18 +4,7 @@
 
 body {
   inset: 0;
-  /* background: linear-gradient(135deg, #323235 0%, #141418 75%); */
-  /* [#39393b] */
-  /* font-family: 'Inter', sans-serif; */
 }
-
-/* .card-gradient {
-  background: linear-gradient(to bottom right, #1b3363, #122141);
-}
-
-.card {
-  font-family: Arial, sans-serif;
-} */
 
 ::-webkit-scrollbar {
   width: 4px;
@@ -37,7 +26,37 @@ body {
   filter: invert(1);
 }
 
-@keyframes blinkO {
+@keyframes blinkL {
+
+  0%,
+  100% {
+    color: white;
+  }
+
+  50% {
+    color: grey;
+  }
+}
+
+.blinkL {
+  animation: blinkL 1s infinite;
+}
+
+
+/* Show the user details when hovering over the username */
+.user_name:hover .user_details {
+  display: flex;
+}
+
+.create-request-button:hover .create-request-icon {
+  padding-right: 2px;
+}
+
+.create-request-button:hover .create-request-banner {
+  display: block;
+}
+
+/* @keyframes blinkO {
 
   0%,
   100% {
@@ -61,18 +80,6 @@ body {
   }
 }
 
-@keyframes blinkL {
-
-  0%,
-  100% {
-    color: white;
-  }
-
-  50% {
-    color: grey;
-  }
-}
-
 @keyframes blinkT {
 
   0%,
@@ -93,25 +100,16 @@ body {
   animation: blinkC 1s infinite;
 }
 
-.blinkL {
-  animation: blinkL 1s infinite;
-}
-
 .blinkT {
   animation: blinkT 1s infinite;
-}
+} */
 
-.logo-circle {
-  /* background-color: #051a39; */
+/* .logo-circle {
+  background-color: #051a39;
   background-color: #b9003a;
   border-radius: 50%;
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Show the user details when hovering over the username */
-.user_name:hover .user_details {
-  display: flex;
-}
+} */

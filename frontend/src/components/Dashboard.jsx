@@ -628,7 +628,7 @@ const Dashboard = (props) => {
           <p className="text-red-400 text-sm nano:text-xs">This action cannot be undone. This will permanently delete your account and remove your data from our servers. Are you sure you want to delete your account?</p>
           <div className="flex w-full gap-4 nano:gap-2">
             <button onClick={() => { setOpenConfirmationModal(false); }} disabled={disable} className={`${disable ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'} text-black px-4 py-2 rounded-md w-full nano:text-sm`}>Cancel</button>
-            <button onClick={deleteCurrentProfile} disabled={disable} className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-red-500 hover:bg-red-600'} text-white px-4 py-2 rounded-md w-full nano:text-sm`}>{disable ? 'Processing...' : 'Delete'}</button>
+            <button onClick={deleteCurrentProfile} disabled={disable} className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-red-500 hover:bg-red-600'} text-white px-4 py-2 rounded-md w-full nano:text-sm`}>{disable ? 'Deleting...' : 'Delete'}</button>
           </div>
         </div>
       </div>
@@ -651,15 +651,15 @@ const Dashboard = (props) => {
               <input type="text" name="digit5" id="digit5" value={otp.digit5} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
               <input type="text" name="digit6" id="digit6" value={otp.digit6} onChange={changeOTP} className="w-1/6 nano:h-7 nano:text-xs h-10 text-center border-2 border-solid border-gray-500 rounded-md bg-transparent text-white" required />
             </div>
-            <button disabled={disable} type="submit" className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'} text-white nano:text-sm px-4 py-2 rounded-md`}>{disable ? 'Processing...' : 'Verify OTP'}</button>
+            <button disabled={disable} type="submit" className={`${disable ? 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'} text-white nano:text-sm px-4 py-2 rounded-md`}>{disable ? 'Verifying...' : 'Verify OTP'}</button>
           </form>
         </div>
       </div>
 
       {/* Dashboard card */}
 
-      <div className="w-full flex justify-center items-start p-12 micro:p-8 h-screen overflow-auto">
-        <div className="bg-[#1c1c1f] w-[75%] small:w-full py-8 px-12 nano:px-8 rounded-lg shadow-lg shadow-black flex flex-col gap-8">
+      <div className="w-full flex justify-center items-start p-12 micro:p-8 nano:p-4 pico:p-2 h-screen overflow-auto">
+        <div className="bg-[#1c1c1f] w-[75%] small:w-full py-8 px-12 nano:px-8 pico:px-6 rounded-lg shadow-lg shadow-black flex flex-col gap-8">
           <div className="w-full flex items-center gap-8 micro:flex-col">
             <div className="w-[10%] micro:w-full micro:flex micro:justify-center">
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">

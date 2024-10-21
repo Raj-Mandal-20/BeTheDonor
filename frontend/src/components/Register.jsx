@@ -451,7 +451,7 @@ const Register = (props) => {
                     </div>
                     <div className='text-gray-400 text-sm micro:text-xs'>This will allow others to see your contact information.</div>
                 </div>
-                <button disabled={disable} type="submit" className={`px-4 py-2 w-full rounded-md text-white nano:text-base hover:shadow-md ${disable ? isEmailSent ? 'bg-green-700 cursor-not-allowed' : 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'}`}>{disable ? isEmailSent ? 'E-Mail Sent' : 'Processing' : 'Register'}</button>
+                <button disabled={disable} type="submit" className={`px-4 py-2 w-full rounded-md text-white nano:text-base hover:shadow-md ${disable ? isEmailSent ? 'bg-green-700 cursor-not-allowed' : 'bg-[#48484a] cursor-wait' : 'bg-[#b9003a] hover:bg-[#e2034b]'}`}>{disable ? isEmailSent ? 'E-Mail Sent' : 'Sending E-Mail...' : 'Register'}</button>
             </div>
             <div className='p-2 text-sm micro:text-xs text-gray-400'>Already have an account? <Link href={"/login"} className='underline text-white'>Login</Link></div>
         </form>

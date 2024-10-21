@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import MoonLoader from "react-spinners/MoonLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPersonWalkingArrowLoopLeft, faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
+import { faPersonWalkingArrowLoopLeft, faLock, faLockOpen, faCalendar, faUser, faEnvelope, faLocationDot, faDroplet, faPeopleGroup, faPhoneVolume } from "@fortawesome/free-solid-svg-icons";
 import { getUser } from "@/app/actions/user";
 import { toast } from "react-toastify";
 
@@ -96,7 +96,7 @@ const AcceptedRequest = (props) => {
     return (
         <>
             {loading && (
-                <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[268px] nano:h-[332px] text-white w-[20rem] nano:w-[14rem] flex justify-center items-center`}>
+                <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[272.8px] text-white w-[20rem] flex justify-center items-center`}>
                     <MoonLoader
                         color={"white"}
                         loading={loading}
@@ -107,9 +107,23 @@ const AcceptedRequest = (props) => {
                 </div>
             )}
             {!loading && (
-                <div className='h-[268px] nano:h-[332px] bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col justify-between gap-4 text-white w-[20rem] nano:w-[14rem] p-4'>
-                    <div className='flex flex-col gap-1'>
-                        <p className='text-lg nano:text-base'>{props.request.donationCenter}</p>
+                <div className='h-[272.8px] nano:h-fit bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col justify-between gap-4 text-white w-[20rem] pt-4'>
+                    <div className='flex flex-col gap-1 px-4'>
+                        <div className='flex gap-2 items-center'>
+                            <p className='text-lg nano:text-base pico:text-xs'>{props.request.donationCenter}</p>
+                            <div className='flex text-xs'>
+                                {
+                                    !isClosed && (
+                                        <div title="Open" className={`text-blue-500`}><FontAwesomeIcon icon={faLockOpen} /></div>
+                                    )
+                                }
+                                {
+                                    isClosed && (
+                                        <div title="Closed" className={`text-yellow-500`}><FontAwesomeIcon icon={faLock} /></div>
+                                    )
+                                }
+                            </div>
+                        </div>
                         <div className='flex nano:flex-col gap-1'>
                             <div className='flex gap-1 items-center user_name relative'>
                                 <p className='text-xs text-gray-400 italic'>by</p>
@@ -117,15 +131,24 @@ const AcceptedRequest = (props) => {
                                 <div className='user_details absolute bg-[#1c1c1f] z-10 p-4 rounded-md shadow-xl shadow-black hidden flex-col gap-2 w-[18rem] nano:w-[12rem]'>
                                     <p className="text-gray-500 text-sm bg-gray-200 rounded-full p-2 w-8 h-8 flex justify-center items-center">{logo}</p>
                                     <div className='flex flex-col gap-1'>
-                                        <p className='text-xs text-gray-400 italic'>User Name</p>
+                                        <div className='flex gap-1 items-center'>
+                                            <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faUser} /></p>
+                                            <p className='text-xs text-gray-400 italic'>User Name</p>
+                                        </div>
                                         <p className='text-white text-xs'>{user.name}</p>
                                     </div>
                                     <div className='flex flex-col gap-1'>
-                                        <p className='text-xs text-gray-400 italic'>Phone Number</p>
+                                        <div className='flex gap-1 items-center'>
+                                            <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faPhoneVolume} /></p>
+                                            <p className='text-xs text-gray-400 italic'>Phone Number</p>
+                                        </div>
                                         <p className='text-white text-xs'>{user.phoneNumber}</p>
                                     </div>
                                     <div className='flex flex-col gap-1 break-all'>
-                                        <p className='text-xs text-gray-400 italic'>E-Mail Address</p>
+                                        <div className='flex gap-1 items-center'>
+                                            <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faEnvelope} /></p>
+                                            <p className='text-xs text-gray-400 italic'>E-Mail Address</p>
+                                        </div>
                                         <p className='text-white text-xs'>{user.email}</p>
                                     </div>
                                 </div>
@@ -133,47 +156,46 @@ const AcceptedRequest = (props) => {
                             <p className='text-xs text-gray-400 italic'>{createdAt}</p>
                         </div>
                     </div>
-                    <div className='flex flex-col gap-1'>
-                        <p className='text-xs text-gray-400 italic'>Address</p>
+                    <div className='flex flex-col gap-1 px-4'>
+                        <div className='flex gap-1 items-center'>
+                            <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faLocationDot} /></p>
+                            <p className='text-xs text-gray-400 italic'>Address</p>
+                        </div>
                         <p className='text-xs'>{props.request.city}, {props.request.district}, {props.request.state}, {props.request.pin}</p>
                     </div>
-                    <div className='flex w-full justify-between'>
+                    <div className='flex pico:flex-col pico:gap-2 w-full justify-between px-4'>
                         <div className='flex items-center gap-1'>
-                            <p className='text-xs text-gray-400 italic'>Blood Group</p>
+                            <div className='flex gap-1 items-center'>
+                                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faDroplet} /></p>
+                                <p className='text-xs text-gray-400 italic'>Blood Group</p>
+                            </div>
                             <p className='text-xs'>{props.request.bloodGroup}</p>
                         </div>
                         <div className='flex items-center gap-1'>
-                            <p className='text-xs text-gray-400 italic'>Blood Units</p>
+                            <div className='flex gap-1 items-center'>
+                                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faDroplet} /></p>
+                                <p className='text-xs text-gray-400 italic'>Blood Units</p>
+                            </div>
                             <p className='text-xs'>{props.request.bloodUnit}</p>
                         </div>
                     </div>
-                    <div className='flex nano:flex-col-reverse nano:gap-2 w-full justify-between'>
+                    <div className='flex pico:flex-col pico:gap-2 w-full justify-between px-4'>
                         <div className='flex items-center gap-1'>
-                            <p className='text-xs text-gray-400 italic'>Deadline</p>
+                            <div className='flex gap-1 items-center'>
+                                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faCalendar} /></p>
+                                <p className='text-xs text-gray-400 italic'>Deadline</p>
+                            </div>
                             <p className='text-xs'>{lastDate}</p>
                         </div>
                         <div className='flex items-center gap-1'>
-                            <p className='text-xs text-gray-400 italic'>Acceptors</p>
+                            <div className='flex gap-1 items-center'>
+                                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faPeopleGroup} /></p>
+                                <p className='text-xs text-gray-400 italic'>Acceptors</p>
+                            </div>
                             <p className='text-xs'>{props.request.donors?.length}</p>
                         </div>
                     </div>
-                    <div className='flex w-full justify-between items-center'>
-                        <div className='flex text-sm'>
-                            {
-                                !isClosed && (
-                                    <div title="Open" className={`text-blue-500`}><FontAwesomeIcon icon={faLockOpen} /></div>
-                                )
-                            }
-                            {
-                                isClosed && (
-                                    <div title="Closed" className={`text-yellow-500`}><FontAwesomeIcon icon={faLock} /></div>
-                                )
-                            }
-                        </div>
-                        <div className='flex text-sm'>
-                            <button title='Revoke Acceptance' className={`text-red-600 hover:text-red-500`}><FontAwesomeIcon icon={faPersonWalkingArrowLoopLeft} /></button>
-                        </div>
-                    </div>
+                    <button title='Withdraw Acceptance' className={`rounded-b-md pt-2 pb-4 border-t border-solid border-[#39393b] hover:bg-[#232323] text-sm text-red-500`}><FontAwesomeIcon icon={faPersonWalkingArrowLoopLeft} /> withdraw</button>
                 </div>
             )}
         </>
