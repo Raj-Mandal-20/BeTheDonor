@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const SearchAcceptedRequests = (props) => {
     const [acceptedRequests, setAcceptedRequests] = useState(props.acceptedRequests);
     const [progress, setProgress] = useState(0);
-    const [data, setData] = useState({ city: "", state: "", district: "", pin: "" });
+    const [data, setData] = useState({ city: "", state: "", district: "", pin: "", bloodGroup: "all", status: "all" });
 
     useEffect(() => {
         document.getElementById('stateMyD').innerHTML = '<option value="" class="hidden">--select state--</option>';
@@ -28,7 +28,7 @@ const SearchAcceptedRequests = (props) => {
         if (e.target.name == 'state') {
             setData({ ...data, state: e.target.value, district: '', city: '', pin: '' });
             const temp = props.acceptedRequests.filter((request) => {
-                return request.state.trim() == e.target.value.trim();
+                return (request.state.trim() == e.target.value.trim() && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all'));
             })
             setAcceptedRequests(temp);
             document.getElementById('districtMyD').innerHTML = '<option value="" class="hidden">--select district--</option>';
@@ -49,7 +49,7 @@ const SearchAcceptedRequests = (props) => {
         if (e.target.name == 'district') {
             setData({ ...data, district: e.target.value, city: '', pin: '' });
             const temp = props.acceptedRequests.filter((request) => {
-                if (request.state.trim() == data.state.trim() && request.district.trim() == e.target.value.trim()) {
+                if (request.state.trim() == data.state.trim() && request.district.trim() == e.target.value.trim() && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all')) {
                     return request;
                 }
             })
@@ -86,7 +86,7 @@ const SearchAcceptedRequests = (props) => {
         }
         if (e.target.name == 'city') {
             const temp = props.acceptedRequests.filter((request) => {
-                if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim() && request.city.trim() == e.target.value.trim()) {
+                if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim() && request.city.trim() == e.target.value.trim() && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all')) {
                     return request;
                 }
             })
@@ -110,7 +110,7 @@ const SearchAcceptedRequests = (props) => {
         if (e.target.name == 'pin') {
             setData({ ...data, pin: e.target.value });
             const temp = props.acceptedRequests.filter((request) => {
-                if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim() && request.pin.trim() == e.target.value.trim()) {
+                if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim() && request.pin.trim() == e.target.value.trim() && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all')) {
                     return request;
                 }
             })
@@ -134,6 +134,24 @@ const SearchAcceptedRequests = (props) => {
                 }
             }
         }
+        if (e.target.name === 'bloodGroup') {
+            setData({ ...data, bloodGroup: e.target.value });
+            const temp = props.acceptedRequests.filter((request) => {
+                if ((request.bloodGroup.trim() == e.target.value.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || e.target.value == 'all') && (request.state.trim() == data.state.trim() || data.state.trim() == '') && (request.district.trim() == data.district.trim() || data.district.trim() == '') && (request.pin.trim() == data.pin.trim() || data.pin.trim() == '') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all')) {
+                    return request;
+                }
+            })
+            setAcceptedRequests(temp);
+        }
+        if (e.target.name === 'status') {
+            setData({ ...data, status: e.target.value });
+            const temp = props.acceptedRequests.filter((request) => {
+                if (((e.target.value == 'opened' && !isClosed(request)) || (e.target.value == 'closed' && isClosed(request)) || e.target.value == 'all') && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && (request.state.trim() == data.state.trim() || data.state.trim() == '') && (request.district.trim() == data.district.trim() || data.district.trim() == '') && (request.pin.trim() == data.pin.trim() || data.pin.trim() == '')) {
+                    return request;
+                }
+            })
+            setAcceptedRequests(temp);
+        }
     }
 
     const clearState = () => {
@@ -142,7 +160,10 @@ const SearchAcceptedRequests = (props) => {
         document.getElementById('cityMyD').innerHTML = '<option value="" class="hidden">--select city--</option>';
         document.getElementById('pinMyD').innerHTML = '<option value="" class="hidden">--select pincode--</option>';
         setData({ ...data, state: '', district: '', city: '', pin: '' });
-        setAcceptedRequests(props.acceptedRequests);
+        const temp = props.acceptedRequests.filter((request) => {
+            return (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all');
+        })
+        setAcceptedRequests(temp);
     };
 
     const clearDistrict = () => {
@@ -151,7 +172,7 @@ const SearchAcceptedRequests = (props) => {
         document.getElementById('pinMyD').innerHTML = '<option value="" class="hidden">--select pincode--</option>';
         setData({ ...data, district: '', city: '', pin: '' });
         const temp = props.acceptedRequests.filter((request) => {
-            return request.state.trim() == data.state.trim();
+            return (request.state.trim() == data.state.trim() && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all'));
         })
         setAcceptedRequests(temp);
     };
@@ -176,7 +197,7 @@ const SearchAcceptedRequests = (props) => {
             }
         }
         const temp = props.acceptedRequests.filter((request) => {
-            if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim()) {
+            if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim() && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all')) {
                 return request;
             }
         })
@@ -203,22 +224,42 @@ const SearchAcceptedRequests = (props) => {
             }
         }
         const temp = props.acceptedRequests.filter((request) => {
-            if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim()) {
+            if (request.state.trim() == data.state.trim() && request.district.trim() == data.district.trim() && (request.bloodGroup.trim() == data.bloodGroup.trim() || request.bloodGroup.trim().toLowerCase() == 'any' || data.bloodGroup.trim() == 'all') && ((data.status == 'opened' && !isClosed(request)) || (data.status == 'closed' && isClosed(request)) || data.status == 'all')) {
                 return request;
             }
         })
         setAcceptedRequests(temp);
     };
 
+    const isClosed = (request) => {
+        let c = new Date();
+        let d = new Date(request.deadline);
+        let year = d.getFullYear() - c.getFullYear();
+        let month = d.getMonth() - c.getMonth();
+        let day = d.getDate() - c.getDate();
+        if (year > 0) {
+            return request.isClosed;
+        } else if (year == 0) {
+            if (month > 0) {
+                return request.isClosed;
+            } else if (month == 0) {
+                if (day >= 0) {
+                    return request.isClosed;
+                } else { return true; }
+            } else { return true; }
+        } else { return true; }
+    };
+
     return (
-        <div className={`flex flex-col gap-4 items-center h-screen overflow-auto w-[85%]`}>
+        <div className={`flex flex-col gap-4 items-center h-screen overflow-auto w-[80%] mini:w-full`}>
             <LoadingBar
                 color='#b9003a'
                 progress={progress}
                 height={4}
                 onLoaderFinished={() => setProgress(0)}
             />
-            <div className="flex gap-4 pt-8 w-full justify-center flex-wrap">
+            <p className='hidden mini:block text-lg text-white italic pt-8 px-4'>My Accepted Requests</p>
+            <div className="flex gap-4 p-4 w-full justify-center flex-wrap pt-8 mini:pt-4">
                 <div className='flex w-[12rem]'>
                     <select name="state" onChange={change} id="stateMyD" title='Center State' className='w-full h-[2rem] rounded-md bg-transparent text-white border-2 border-solid border-gray-500 outline-none border-r-0 rounded-r-none' required>
                     </select>
@@ -247,6 +288,26 @@ const SearchAcceptedRequests = (props) => {
                         <FontAwesomeIcon icon={faXmark} />
                     </button>
                 </div>
+                <div className='flex w-[12rem]'>
+                    <select title='Required Blood Group' name="bloodGroup" value={data.bloodGroup} onChange={change} className='w-full h-[2rem] rounded-md bg-transparent text-white border-2 border-solid border-gray-500 outline-none' required>
+                        <option value="all" className='text-gray-800'>All Blood Groups</option>
+                        <option value="A+" className='text-gray-800'>A+</option>
+                        <option value="B+" className='text-gray-800'>B+</option>
+                        <option value="O+" className='text-gray-800'>O+</option>
+                        <option value="AB+" className='text-gray-800'>AB+</option>
+                        <option value="A-" className='text-gray-800'>A-</option>
+                        <option value="B-" className='text-gray-800'>B-</option>
+                        <option value="O-" className='text-gray-800'>O-</option>
+                        <option value="AB-" className='text-gray-800'>AB-</option>
+                    </select>
+                </div>
+                <div className='flex w-[12rem]'>
+                    <select title='Request Activation Status' name="status" value={data.status} onChange={change} className='w-full h-[2rem] rounded-md bg-transparent text-white border-2 border-solid border-gray-500 outline-none' required>
+                        <option value="all" className='text-gray-800'>All Requests</option>
+                        <option value="opened" className='text-gray-800'>Opened</option>
+                        <option value="closed" className='text-gray-800'>Closed</option>
+                    </select>
+                </div>
             </div>
             <div className='flex flex-wrap gap-4 p-4 justify-center w-full'>
                 {
@@ -255,7 +316,7 @@ const SearchAcceptedRequests = (props) => {
                             <AcceptedRequest key={index} request={request} setProgress={setProgress} />
                         ))
                     ) : (
-                        <div className="text-white p-4 text-center">
+                        <div className="text-white p-4 text-center micro:text-sm">
                             No Accepted Requests Found
                         </div>
                     )

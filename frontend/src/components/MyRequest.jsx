@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import MoonLoader from "react-spinners/MoonLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faLock, faLockOpen, faCalendar, faLocationDot, faDroplet, faPeopleGroup, faPersonWalkingArrowLoopLeft } from "@fortawesome/free-solid-svg-icons";
 import { toast } from 'react-toastify';
 import { toggleRequestStatus, deleteRequest, getAcceptors } from "@/app/actions/requests";
 
@@ -110,15 +110,10 @@ const MyRequest = (props) => {
       e.preventDefault();
       setIsDeleting(true);
       props.setProgress(10);
-      const deleteRequestParsedResponse = await deleteRequest(props.request._id);
-      props.setProgress(50);
-      if (deleteRequestParsedResponse.statusCode == 200) {
-        const newMyRequests = props.myRequests.filter((request) => request._id !== props.request._id);
-        props.setMyRequests(newMyRequests);
-        const newMyRequestsProps = props.myRequestsProps.filter((request) => request._id !== props.request._id);
-        props.setMyRequestsProps(newMyRequestsProps);
-        props.setProgress(75);
-        toast.success(deleteRequestParsedResponse.message, {
+      const isDeadlineMissed = await checkIfDeadlineIsMissed();
+      props.setProgress(20);
+      if (isDeadlineMissed) {
+        toast.error("Deadline has been missed", {
           position: "top-center",
           autoClose: 1000,
           hideProgressBar: false,
@@ -131,18 +126,40 @@ const MyRequest = (props) => {
         props.setProgress(100);
         setIsDeleting(false);
       } else {
-        toast.error(deleteRequestParsedResponse.message, {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-        props.setProgress(100);
-        setIsDeleting(false);
+        const deleteRequestParsedResponse = await deleteRequest(props.request._id);
+        props.setProgress(50);
+        if (deleteRequestParsedResponse.statusCode == 200) {
+          const newMyRequests = props.myRequests.filter((request) => request._id !== props.request._id);
+          props.setMyRequests(newMyRequests);
+          const newMyRequestsProps = props.myRequestsProps.filter((request) => request._id !== props.request._id);
+          props.setMyRequestsProps(newMyRequestsProps);
+          props.setProgress(75);
+          toast.success(deleteRequestParsedResponse.message, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          props.setProgress(100);
+          setIsDeleting(false);
+        } else {
+          toast.error(deleteRequestParsedResponse.message, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          props.setProgress(100);
+          setIsDeleting(false);
+        }
       }
     } catch (error) {
       toast.error("Server Timed Out", {
@@ -168,7 +185,7 @@ const MyRequest = (props) => {
       const isDeadlineMissed = await checkIfDeadlineIsMissed();
       props.setProgress(20);
       if (isDeadlineMissed) {
-        toast.warn("Deadline has been missed", {
+        toast.error("Deadline has been missed", {
           position: "top-center",
           autoClose: 1000,
           hideProgressBar: false,
@@ -241,7 +258,7 @@ const MyRequest = (props) => {
   return (
     <>
       {loading && (
-        <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[474.4px] max-w-lg text-white w-[20rem] flex justify-center items-center`}>
+        <div className={`card bg-[#1c1c1f] shadow-lg shadow-black rounded-lg p-4 h-[268.8px] text-white w-[20rem] flex justify-center items-center`}>
           <MoonLoader
             color={"white"}
             loading={loading}
@@ -252,100 +269,67 @@ const MyRequest = (props) => {
         </div>
       )}
       {!loading && (
-        <div className={`card h-fit bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col text-white w-[20rem]`}>
-          <div className="flex gap-2 justify-between items-center w-full bg-[#39393b] p-4">
-            <div className="flex justify-center">
-              {
-                !isClosed && (
-                  <button title="Toggle Status" disabled={isTogglingStatus} onClick={toggleStatus} className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold ${isTogglingStatus ? 'border-black text-black cursor-wait' : 'border-green-600 text-green-900'} bg-white`}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3 w-3 -translate-x-1 text-green-300"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle className={`${isTogglingStatus ? 'blinkT' : 'blinkOpen'}`} cx="12" cy="12" r="10"></circle>
-                    </svg>
-                    Open
-                  </button>
-                )
-              }
-              {
-                isClosed && (
-                  <button title="Toggle Status" disabled={isTogglingStatus} onClick={toggleStatus} className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold ${isTogglingStatus ? 'border-black text-black cursor-wait' : 'border-red-500 text-red-900'} bg-white`}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3 w-3 -translate-x-1 text-red-300"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle className={`${isTogglingStatus ? 'blinkT' : 'blinkClose'}`} cx="12" cy="12" r="10"></circle>
-                    </svg>
-                    Closed
-                  </button>
-                )
-              }
+        <div className='h-[268.8px] nano:h-fit bg-[#1c1c1f] shadow-xl shadow-black rounded-lg flex flex-col justify-between gap-4 text-white w-[20rem] pt-4'>
+          <div className='flex flex-col gap-1 px-4'>
+            <div className='flex gap-2 items-center'>
+              <p className='text-lg nano:text-base pico:text-xs'>{props.request.donationCenter}</p>
+              <div className='flex text-xs'>
+                {
+                  !isClosed && (
+                    <button title="Close Request" disabled={isTogglingStatus} onClick={toggleStatus} className={`${isTogglingStatus ? 'text-gray-400 cursor-wait' : 'text-blue-600 hover:text-blue-500'}`}><FontAwesomeIcon icon={faLockOpen} /></button>
+                  )
+                }
+                {
+                  isClosed && (
+                    <button title="Open Request" disabled={isTogglingStatus} onClick={toggleStatus} className={`${isTogglingStatus ? 'text-gray-400 cursor-wait' : 'text-yellow-500 hover:text-yellow-400'}`}><FontAwesomeIcon icon={faLock} /></button>
+                  )
+                }
+              </div>
             </div>
-            <button id="drbmr" disabled={isDeleting} onClick={deleteCurrentRequest} title="Delete Request" className={`p-2 text-xs border rounded-md ${isDeleting ? 'text-white border-gray-500 cursor-wait' : 'text-red-500 border-red-500 hover:text-white hover:bg-red-500'}`}>
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
+            <p className='text-xs text-gray-400 italic'>{createdAt}</p>
           </div>
-          <div className="flex flex-col gap-2 w-full p-4 text-sm">
-            <div className="flex flex-col gap-2 w-full py-4 border-b border-gray-600">
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">Center</p>
-                <p>{props.request.donationCenter}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">State</p>
-                <p>{props.request.state}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">District</p>
-                <p>{props.request.district}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">City</p>
-                <p>{props.request.city}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">Pincode</p>
-                <p>{props.request.pin}</p>
-              </div>
+          <div className='flex flex-col gap-1 px-4'>
+            <div className='flex gap-1 items-center'>
+              <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faLocationDot} /></p>
+              <p className='text-xs text-gray-400 italic'>Address</p>
             </div>
-            <div className="flex flex-col gap-2 w-full py-4">
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">Blood Group</p>
-                <p>{props.request.bloodGroup}</p>
+            <p className='text-xs'>{props.request.city}, {props.request.district}, {props.request.state}, {props.request.pin}</p>
+          </div>
+          <div className='flex pico:flex-col pico:gap-2 w-full justify-between px-4'>
+            <div className='flex items-center gap-1'>
+              <div className='flex gap-1 items-center'>
+                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faDroplet} /></p>
+                <p className='text-xs text-gray-400 italic'>Blood Group</p>
               </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">Blood Unit</p>
-                <p>{props.request.bloodUnit}</p>
+              <p className='text-xs'>{props.request.bloodGroup}</p>
+            </div>
+            <div className='flex items-center gap-1'>
+              <div className='flex gap-1 items-center'>
+                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faDroplet} /></p>
+                <p className='text-xs text-gray-400 italic'>Blood Units</p>
               </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">Acceptors</p>
-                <p>{props.request.donors?.length}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">Created at</p>
-                <p>{createdAt}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-gray-300">Deadline</p>
-                <p>{lastDate}</p>
-              </div>
+              <p className='text-xs'>{props.request.bloodUnit}</p>
             </div>
           </div>
-          <div className="flex w-full">
-            <button disabled={isFetchingAcceptors} onClick={showAcceptors} className={`px-4 py-2 w-full ${isFetchingAcceptors ? 'bg-[#48484a] text-white cursor-wait' : 'bg-green-300 hover:bg-green-200 text-black'}`}>{isFetchingAcceptors ? 'Processing...' : 'Show Acceptors'}</button>
+          <div className='flex pico:flex-col pico:gap-2 w-full justify-between px-4'>
+            <div className='flex items-center gap-1'>
+              <div className='flex gap-1 items-center'>
+                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faCalendar} /></p>
+                <p className='text-xs text-gray-400 italic'>Deadline</p>
+              </div>
+              <p className='text-xs'>{lastDate}</p>
+            </div>
+            <div className='flex items-center gap-1'>
+              <div className='flex gap-1 items-center'>
+                <p className='text-xs text-gray-400'><FontAwesomeIcon icon={faPeopleGroup} /></p>
+                <p className='text-xs text-gray-400 italic'>Acceptors</p>
+              </div>
+              <p className='text-xs'>{props.request.donors?.length}</p>
+            </div>
+          </div>
+          <div className='flex w-full justify-between items-center'>
+            <button disabled={isDeleting} onClick={deleteCurrentRequest} title="Delete Request" className={`w-full rounded-bl-md pt-2 pb-4 border-t border-r border-solid border-[#39393b] hover:bg-[#232323] text-xs ${isDeleting ? 'text-gray-400 cursor-wait' : 'text-red-600 hover:text-red-500'}`}><FontAwesomeIcon icon={faTrash} />{isDeleting ? ' deleting...' : ' delete'}</button>
+            <button disabled={isFetchingAcceptors} onClick={showAcceptors} title='Show Acceptors' className={`w-full rounded-br-md pt-2 pb-4 border-t border-solid border-[#39393b] hover:bg-[#232323] text-xs ${isFetchingAcceptors ? 'text-gray-400 cursor-wait' : 'text-green-500'}`}><FontAwesomeIcon icon={faPeopleGroup} />{isFetchingAcceptors ? ' fetching...' : ' acceptors'}</button>
           </div>
         </div>
       )}

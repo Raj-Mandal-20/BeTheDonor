@@ -23,9 +23,9 @@ const Page = async () => {
                 <div className='flex flex-col justify-center items-center'>
                     <Image src={error} height={200} width={200} alt="" priority />
                     <div className='w-full p-12 flex flex-wrap gap-4'>
-                        <h1 className='text-lg text-white'>{currentUserResponse.statusCode}</h1>
-                        <h1 className='text-lg text-gray-400'>|</h1>
-                        <h1 className='text-lg text-white'>{currentUserResponse.message}</h1>
+                        <h1 className='text-lg micro:text-sm text-white'>{currentUserResponse.statusCode}</h1>
+                        <h1 className='text-lg micro:text-sm text-gray-400'>|</h1>
+                        <h1 className='text-lg micro:text-sm text-white'>{currentUserResponse.message}</h1>
                     </div>
                 </div>
             </div>

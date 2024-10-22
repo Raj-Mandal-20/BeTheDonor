@@ -10,7 +10,7 @@ export default function Loading() {
                 aria-label="Loading Spinner"
                 data-testid="loader"
             />
-            <p className="text-2xl mt-10 blinkL">Loading</p>
+            <p className="text-2xl micro:text-lg mt-10 blinkL">Loading</p>
         </div>
     )
 }
